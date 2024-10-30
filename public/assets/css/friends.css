@@ -46,14 +46,20 @@ h1 {
 }
 
 .container {
-    position: absolute; 
-    top: 60px; 
-    left: 0; 
-    right: 0; 
-    color: white; 
-    max-width: 600px; 
-    margin: auto; 
-    padding: 20px; 
+    position: absolute;
+    top: 60px;
+    left: 0;
+    right: 0;
+    color: white;
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+    background-color: black;
+}
+
+.container ul {
+    list-style-type: none;
+    padding: 0;
 }
 
 #headCard {
@@ -71,60 +77,56 @@ ul {
 }
 
 .user-card {
-    display: flex; 
-    flex-direction: column; 
-    border: 1px solid #3d3d3d; 
-    border-radius: 8px; 
-    padding: 10px; 
-    margin-bottom: 10px; 
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #3d3d3d;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    background-color: #1e1e1e;
 }
 
 .user-info {
-    display: flex; 
-    align-items: flex-start; 
-    width: 100%;
+    display: flex;
+    align-items: center;
 }
 
 .profile-pic {
-    width: 50px; 
-    height: 50px; 
-    border-radius: 50%; 
-    margin-right: 10px; 
+    width: 70px;
+    height: 70px;
+    border-radius: 10px;
+    margin-right: 15px;
 }
-
 .user-details {
     flex-direction: row;
     color: white; 
 }
 
 .user-name {
-    font-weight: bold; 
-    margin: 0; 
-    margin-right: 10px;
-    margin-bottom: 0; 
-   
+    font-weight: bold;
+    margin: 0;
+    color: white;
 }
-
 .username-button {
-    display: flex; 
-    align-items: baseline; 
-    margin-left: 10px; 
-    justify-content: space-between; 
-    flex-grow: 1; 
-}
-
-.description {
-    margin-top: 10px;
-    font-size: 0.8em; 
-    color: #a0a0a0; 
-    width: 100%; 
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-grow: 1;
 }
 
 .unfollow-button {
-    background-color: aquamarine; 
-    border: none; 
-    padding: 5px 10px; 
-    border-radius: 5px; 
-    cursor: pointer; 
-    color: black; 
+    background-color: aquamarine;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    color: black;
+    font-size: 0.9em;
+}
+
+.description {
+    font-size: 0.9em;
+    color: #a0a0a0;
+    margin: 0;
+    word-wrap: break-word;
 }

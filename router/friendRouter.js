@@ -6,15 +6,26 @@ const prisma = new PrismaClient()
 
 friendRouter.get('/users-to-follow', authguard, async (req, res) => {
     try {
-        const loggedUser = req.session.users.id_user 
+        const loggedUser = req.session.users.id_user;
         const users = await prisma.users.findUnique({
-            where: { id_user: req.session.users.id_user }
+            where: { id_user: loggedUser }
         });
        
+        const followedUsers = await prisma.follows.findMany({
+            where: {
+                follower_id: loggedUser
+            },
+            select: {
+                followed_id: true
+            }
+        });
+
+        const followedUserIds = followedUsers.map(follow => follow.followed_id);
         const usersToFollow = await prisma.users.findMany({
             where: {
                 id_user: {
-                    not: loggedUser
+                    not: loggedUser,
+                    notIn: followedUserIds
                 }
             }
         });
@@ -42,13 +53,12 @@ friendRouter.post('/follow/:id', authguard, async (req, res) => {
             }
         });
 
-        res.redirect('/users-to-follow'); 
+        res.redirect('/following'); 
     } catch (error) {
         console.error(error);
         res.status(500).send("Erreur lors de l'ajout du follow.");
     }
 });
-
 friendRouter.get('/following', authguard, async (req, res) => {
     try {
         const loggedUserId = req.session.users.id_user;

@@ -48,42 +48,63 @@
 								Votre navigateur ne supporte pas l'élément vidéo.
 							</video>
 						{% endif %}
-							<div class="interaction">
-								<div class="like-section">
-									<form action="/like/{{ content.id }}" method="POST">
-										<button type="submit" class="like-button">❤
-											{{ content.likes|length }}</button>
-									</form>
-								</div>
-
-								<div class="comment-section">
-									<button class="comment-toggle-btn" data-asset-id="{{ content.id }}">
-										💬
-										{{ content.commentCount }}
-									</button>
-								</div>
-							</div>
-
-							<div class="comments-container" id="comments-{{ content.id }}" style="display: none;">
-								{% if content.Commentaires is defined and content.Commentaires is not empty %}
-									{% for comment in content.Commentaires %}
-										<div class="comment">
-											<p>
-												<strong>{{ comment.Users.userName }}</strong>:
-												{{ comment.content }}
-											</p>
-											<small>{{ comment.created_at|date("d/m/Y H:i") }}</small>
-										</div>
-									{% endfor %}
-								{% else %}
-									<p>Aucun commentaire pour le moment.</p>
-								{% endif %}
-
-								<form action="/comment/{{ content.id }}" method="POST" class="comment-form">
-									<textarea name="commentContent" required></textarea>
-									<button type="submit">Ajouter un commentaire</button>
+						<div class="interaction">
+							<div class="like-section">
+								<form action="/like/{{ content.id }}" method="POST">
+									<button type="submit" class="like-button">❤
+										{{ content.likes|length }}</button>
 								</form>
 							</div>
+							<div class="comment-section">
+								<button class="comment-toggle-btn" data-asset-id="{{ content.id }}">
+									💬
+									{{ content.commentCount }}
+								</button>
+							</div>
+							<button id="shareButton-{{ content.id }}" class="share-button">
+								<img src="/../../assets/imgs/share.png" alt="Partager" style="width: 20px; height: 20px;">
+							</button>
+						</div>
+						<div class="comments-container" id="comments-{{ content.id }}" style="display: none;">
+							{% if content.Commentaires is defined and content.Commentaires is not empty %}
+								{% for comment in content.Commentaires %}
+									<div class="comment">
+										<p>
+											<strong>{{ comment.Users.userName }}</strong>:
+											{{ comment.content }}
+										</p>
+										<small>{{ comment.created_at|date("d/m/Y H:i") }}</small>
+									</div>
+								{% endfor %}
+							{% else %}
+								<p>Aucun commentaire pour le moment.</p>
+							{% endif %}
+
+							<form action="/comment/{{ content.id }}" method="POST" class="comment-form">
+								<textarea name="commentContent" required></textarea>
+								<button type="submit">Ajouter un commentaire</button>
+							</form>
+						</div>
+						<div class="share-section">
+							<div id="shareModal-{{ content.id }}" class="share-modal" style="display: none;">
+								<div class="modal-content">
+									<h3>Partager le post</h3>
+									<div class="share-options">
+										<button onclick="shareOnFacebook('{{ content.id }}')"><img src="/../../assets/imgs/Facebook.png" alt="Facebook"></button>
+										<button onclick="shareOnTwitter('{{ content.id }}')"><img src="/../../assets/imgs/X.png" alt="Twitter"></button>
+										<button onclick="shareOnLinkedIn('{{ content.id }}')"><img src="/../../assets/imgs/linkedin.png" alt="LinkedIn"></button>
+										<button onclick="shareOnWhatsApp('{{ content.id }}')"><img src="/../../assets/imgs/whatsApp.png" alt="WhatsApp"></button>
+										<button onclick="copyLink('{{ content.id }}')"><img src="/../../assets/imgs/copy-link.png" alt="Copy Link"></button>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div id="customModal" class="modal">
+							<div class="modal-content">
+								<p id="modalMessage"></p>
+								<button id="closeModal">OK</button>
+							</div>
+						</div>
 					</li>
 				{% endfor %}
 			{% endif %}

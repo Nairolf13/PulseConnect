@@ -9,9 +9,11 @@ body {
 }
 
 h1 {
+
+    font-size: 1.2em; 
     text-align: center;
     color: aquamarine;
-    margin-bottom: 20px;
+   
 }
 
 img {

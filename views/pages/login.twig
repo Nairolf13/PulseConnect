@@ -10,37 +10,39 @@
 
 {% block main %}
 	<main>
-    <section>
-        <img src="/../../assets/imgs/LogoWhiteRemoveBg.png" alt="Logo">
-    </section>
-    <section id="form">
-        <div>
-            <form action="/login" method="POST">
-                <div>
-                    <h1>Connexion</h1>
-                </div>
-                <div>
-                    <label for="mail">Adresse mail</label>
-                    <input id="mail" type="email" name="mail" placeholder="Votre adresse mail" required>
-                    {% if error %}
-                        <p>{{error.mail}}</p>
-                    {% endif %}
-                </div>
-                <div>
-                    <label for="password">Mot de passe</label>
-                    <input id="password" type="password" name="password" placeholder="Mot de passe" required>
-                    {% if error %}
-                        <p>{{error.Password}}</p>
-                    {% endif %}
-                </div>
-                <a href="/forgot-password">Mot de passe oublié ?</a>
-                <button type="submit">Se connecter</button>
-                <section>
-                    <a href="/register">Si vous n'avez pas de compte, cliquez <span>ICI</span></a>
-                </section>
-            </form>
-        </div>
-    </section>
-</main>
+		<section>
+			<img src="/../../assets/imgs/LogoWhiteRemoveBg.png" alt="Logo">
+		</section>
+		<section id="form">
+			<div>
+				<form action="/login" method="POST">
+					<div>
+						<h1>Connexion</h1>
+					</div>
+					<div>
+						<label for="mail">Adresse mail</label>
+						<input id="mail" type="email" name="mail" placeholder="Votre adresse mail" required>
+						{% if error %}
+							<p>{{error.mail}}</p>
+						{% endif %}
+					</div>
+					<div>
+						<label for="password">Mot de passe</label>
+						<input id="password" type="password" name="password" placeholder="Mot de passe" required>
+						{% if error %}
+							<p>{{error.Password}}</p>
+						{% endif %}
+					</div>
+					<a href="/forgot-password">Mot de passe oublié ?</a><br>
+					<button type="submit">Se connecter</button>
+					<section>
+						<a href="/register">Si vous n'avez pas de compte, cliquez
+							<span>ICI</span>
+						</a>
+					</section>
+				</form>
+			</div>
+		</section>
+	</main>
 
 {% endblock %}

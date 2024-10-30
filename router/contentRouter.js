@@ -126,7 +126,8 @@ contentRouter.get("/personalContent", authguard, async (req, res) => {
         
         const content = await prisma.assets.findMany({
             where: {
-                id_user: req.session.users.id_user          },
+                id_user: req.session.users.id_user
+            },
             include: {
                 Users: true,
                 likes: true 
@@ -136,14 +137,51 @@ contentRouter.get("/personalContent", authguard, async (req, res) => {
             }
         });
 
+        // Récupération séparée des commentaires
+        const commentaires = await prisma.commentaires.findMany({
+            where: {
+                id_asset: {
+                    in: content.map(item => item.id)
+                }
+            },
+            include: {
+                Users: {
+                    select: {
+                        userName: true
+                    }
+                }
+            },
+            orderBy: {
+                created_at: 'desc'
+            }
+        });
+
+        const commentCounts = await prisma.commentaires.groupBy({
+            by: ['id_asset'],
+            _count: {
+                id_asset: true
+            },
+            where: {
+                id_asset: {
+                    in: content.map(item => item.id)
+                }
+            }
+        });
+        
+        const contentWithCommentsAndCounts = content.map(item => ({
+            ...item,
+            Commentaires: commentaires.filter(comment => comment.id_asset === item.id),
+            commentCount: commentCounts.find(count => count.id_asset === item.id)?._count?.id_asset || 0
+        }));
+
         res.render("pages/profil.twig", { 
             users, 
-            content
+            content: contentWithCommentsAndCounts
         });
         
     } catch (error) {
-        console.error("Erreur lors du rendu de la page d'accueil :", error);
-        res.render("pages/home.twig", { error });
+        console.error("Erreur lors du rendu de la page de profil :", error);
+        res.render("pages/profil.twig", { error });
     }
 });
 

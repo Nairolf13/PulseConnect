@@ -1,0 +1,106 @@
+{% extends "../layouts/base.twig" %}
+
+{% block style %}
+	<link rel="stylesheet" href="/../../assets/css/profil.css">
+{% endblock %}
+
+{% block title %}
+	<title>{{title}}</title>
+{% endblock %}
+
+{% block main %}
+	{% include "../partials/header.twig" %}
+	<div class="headerRes">
+		<section>
+			<a href="/home" class="back-arrow"><img src="/../../assets/imgs/flecheBack.png" alt="arrowBack"></a>
+			<img src="/../../assets/imgs/LogoWhiteRemoveBg.png" alt="Logo" class="logo">
+			<a href="/logout" class="logout-btn"><img src="/../../assets/imgs/logoutRm.png" alt=""></a>
+		</section>
+	</div>
+	<div class="container">
+		<div id="profilEdit">
+			<img src="{{ users.picture }}" alt="Photo de profil" class="profile-pic"/>
+			<a href="/update">Modifier le profil</a>
+		</div>
+		<div id="username">{{users.userName}}
+		</div>
+		<div id="description">{{users.description}}</div>
+		<ul>
+			{% if content is empty %}
+				<li>Aucun contenu disponible.</li>
+			{% else %}
+				{% for content in content %}
+					<li>
+						<button class="delete" onclick="openModal({{ content.id }})">X</button>
+						<p>{{ content.Users.userName }}</p>
+						<h2>{{ content.name }}</h2>
+						<p>{{ content.description }}</p>
+						{% if content.url and (content.url ends with '.mp3' or content.url ends with '.wav' or content.url ends with '.ogg' or content.url ends with '.flac') %}
+							<audio controls>
+								<source src="./uploads/{{ content.url }}" type="audio/mpeg">
+								Votre navigateur ne supporte pas l'élément audio.
+							</audio>
+						{% endif %}
+
+						{% if content.url and (content.url ends with '.mp4' or content.url ends with '.avi' or content.url ends with '.mkv' or content.url ends with '.mov') %}
+							<video controls>
+								<source src="./uploads/{{ content.url }}" type="video/mp4">
+								Votre navigateur ne supporte pas l'élément vidéo.
+							</video>
+						{% endif %}
+							<div class="interaction">
+								<div class="like-section">
+									<form action="/like/{{ content.id }}" method="POST">
+										<button type="submit" class="like-button">❤
+											{{ content.likes|length }}</button>
+									</form>
+								</div>
+
+								<div class="comment-section">
+									<button class="comment-toggle-btn" data-asset-id="{{ content.id }}">
+										💬
+										{{ content.commentCount }}
+									</button>
+								</div>
+							</div>
+
+							<div class="comments-container" id="comments-{{ content.id }}" style="display: none;">
+								{% if content.Commentaires is defined and content.Commentaires is not empty %}
+									{% for comment in content.Commentaires %}
+										<div class="comment">
+											<p>
+												<strong>{{ comment.Users.userName }}</strong>:
+												{{ comment.content }}
+											</p>
+											<small>{{ comment.created_at|date("d/m/Y H:i") }}</small>
+										</div>
+									{% endfor %}
+								{% else %}
+									<p>Aucun commentaire pour le moment.</p>
+								{% endif %}
+
+								<form action="/comment/{{ content.id }}" method="POST" class="comment-form">
+									<textarea name="commentContent" required></textarea>
+									<button type="submit">Ajouter un commentaire</button>
+								</form>
+							</div>
+					</li>
+				{% endfor %}
+			{% endif %}
+		</ul>
+		<div id="deleteModal" class="modal">
+			<div class="modal-content">
+				<h2>Confirmation de suppression</h2>
+				<p>Êtes-vous sûr de vouloir supprimer ce contenu ?</p>
+				<form id="deleteForm" method="POST">
+					<button type="submit" class="confirm-delete">Oui, supprimer</button>
+					<button type="button" class="cancel-delete" onclick="closeModal()">Annuler</button>
+				</form>
+			</div>
+		</div>
+	</div>
+	{% block script %}
+		<script src="/../../assets/js/profil.js"></script>
+	{% endblock %}
+
+{% endblock %}

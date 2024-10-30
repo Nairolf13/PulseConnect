@@ -1,0 +1,108 @@
+{% extends "../layouts/base.twig" %}
+
+{% block style %}
+    <link rel="stylesheet" href="/../../assets/css/register.css">
+{% endblock %}
+
+{% block title %}
+    <title>{{title}}</title>
+{% endblock %}
+
+{% block main %}
+    <main>
+        <section>
+            <img src="/../../assets/imgs/LogoWhiteRemoveBg.png" alt="">
+        </section>
+        <section id="form">
+            <div>
+                <form action="/register" method="POST">
+                    <div>
+                        <h1>Inscription</h1>
+                    </div>
+                    <div>
+                        <label for="lastName"></label>
+                        <input id="lastName" type="text" name="lastName" placeholder="Votre nom">
+                    </div>
+                    <div>
+                        <label for="firstName"></label>
+                        <input id="firstName" type="text" name="firstName" placeholder="Votre prénom">
+                    </div>
+                    <div>
+                        <label for="userName"></label>
+                        <input id="userName" type="text" name="userName" placeholder="Votre nom d'utilisateur">
+                    </div>
+                    <div>
+                        <label for="age"></label>
+                        <input type="number" name="age" id="age" placeholder="Votre age" value="">
+                    </div>
+                    <div> 
+                        <label for="genre"></label>
+                        <select id="genre" name="genre" required>
+                            <option value="">Sélectionnez votre genre</option>
+                            <option value="Masculin">Masculin</option>
+                            <option value="Feminin">Féminin</option>
+                            <option value="Autre">Autre</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="mail"></label>
+                        <input id="mail" type="email" name="mail" placeholder="Votre adresse mail">
+                    </div>
+                    <div>
+                        <label for="localisation"></label>
+                        <input id="localisation" type="text" name="localisation" placeholder="Votre adresse postal">
+                    </div>
+                    <div>
+                        <label for="password"></label>
+                        <input id="password" type="password" name="password" placeholder="(12 caractères, majuscule, chiffre, spécial)">
+                    </div>
+                  
+                    <div>
+                        <label for="confirmPassword"></label>
+                        <input id="confirmPassword" type="password" name="confirmPassword" placeholder="Confirmer le mot de passe">
+                        {% if error %}
+                            <p>{{error.confirmPassword}}</p>
+                        {% endif %}
+                    </div>
+                    <button type="submit">S'inscrire</button>
+                    <section>
+                        <a href="/login">Si vous avez déjà un compte cliquez <span>ICI</span></a>
+                    </section>
+                </form>
+
+                <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="errorModalLabel">Erreur d'inscription</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <ul id="errorList"></ul>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <script>
+        $(document).ready(function () {
+            {% if error %}
+                const errorList = $("#errorList");
+                errorList.empty(); 
+                {% for key, value in error %}
+                    errorList.append("<li>{{ value }}</li>");
+                {% endfor %}
+                $("#errorModal").modal("show");
+            {% endif %}
+        });
+    </script>
+{% endblock %}

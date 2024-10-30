@@ -1,0 +1,83 @@
+{% extends "../layouts/base.twig" %}
+
+{% block style %}
+	<link rel="stylesheet" href="/../../assets/css/welcome.css">
+{% endblock %}
+
+{% block title %}
+	<title>{{title}}</title>
+{% endblock %}
+
+{% block main %}
+	<div id="headWelcome">
+		<img src="/../../assets/imgs/LogoWhiteRemoveBg.png" alt="logo Pulse connect" class="logo">
+		<div class="burger-menu" onclick="toggleMenu()">
+			<span></span>
+			<span></span>
+			<span></span>
+		</div>
+		<nav id="nav-menu">
+			<ul>
+				<li><a href="/register">S'inscrire</a></li>
+				<li><a href="/login">Se connecter</a></li>
+			</ul>
+		</nav>
+	</div>
+	<section>
+		<h2>Top Artiste</h2>
+		<div class="carousel-container">
+			<div class="carousel">
+				{% for user in topUsers %}
+					<div class="user-card">
+						<img src="{{ user.picture }}" alt="Photo de profil de {{ user.userName }}" class="profile-pic">
+						<div class="user-info">
+							<p class="user-name">{{ user.userName }}</p>
+						</div>
+					</div>
+				{% endfor %}
+			</div>
+		</div>
+	</section>
+
+	<section id="clipWelcome">
+
+		<h3>Top clip</h3>
+		<div class="slider-container">
+			<div class="slider">
+				<ul>
+					{% for post in topLikedPosts %}
+						<li>
+							<h3>{{ post.name }}</h3>
+							<p>
+								{% if post.Users %}
+									{{ post.Users.userName }}{% else %}Utilisateur inconnu
+								{% endif %}
+							</p>
+							{% if post.url and (post.url ends with '.mp3' or post.url ends with '.wav' or post.url ends with '.ogg' or post.url ends with '.flac') %}
+								<audio controls>
+									<source src="./uploads/{{ post.url }}" type="audio/mpeg">
+									Votre navigateur ne supporte pas l'élément audio.
+								</audio>
+							{% endif %}
+
+							{% if post.url and (post.url ends with '.mp4' or post.url ends with '.avi' or post.url ends with '.mkv' or post.url ends with '.mov') %}
+								<video controls>
+									<source src="./uploads/{{ post.url }}" type="video/mp4">
+									Votre navigateur ne supporte pas l'élément vidéo.
+								</video>
+							{% endif %}
+						</li>
+					{% endfor %}
+				</ul>
+			</div>
+			<button class="prev" onclick="moveSlider(-1)">&#10094;</button>
+			<button class="next" onclick="moveSlider(1)">&#10095;</button>
+		</div>
+	</section>
+
+
+	{% block script %}
+		<script src="/../../assets/js/welcome.js"></script>
+	{% endblock %}
+
+{% endblock %}

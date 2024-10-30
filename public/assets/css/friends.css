@@ -1,0 +1,130 @@
+body {
+    background-color: black; 
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; 
+    min-height: 100vh; 
+    margin: 0;
+    font-family: Arial, sans-serif; 
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; 
+    padding: 5px; 
+    width: 100%; 
+    border-bottom: 1px solid #3d3d3d;
+}
+
+.back-arrow {
+    margin-right: auto; 
+}
+
+.back-arrow img {
+    width: 16px; 
+    height: auto; 
+}
+
+.title {
+    flex-grow: 1; 
+    text-align: center;
+    color: aquamarine;
+    z-index: 1000;
+    margin-top: 5px; 
+}
+
+h1 {
+    font-size: 1.2em; 
+}
+
+.addFriend {
+    cursor: pointer; 
+    width: 20px; 
+    height: 20px;
+    border-radius: 50%; 
+}
+
+.container {
+    position: absolute; 
+    top: 60px; 
+    left: 0; 
+    right: 0; 
+    color: white; 
+    max-width: 600px; 
+    margin: auto; 
+    padding: 20px; 
+}
+
+#headCard {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; 
+    width: 100%; 
+}
+
+ul {
+    list-style: none; 
+    padding: 0; 
+    margin: 0; 
+    width: 100%; 
+}
+
+.user-card {
+    display: flex; 
+    flex-direction: column; 
+    border: 1px solid #3d3d3d; 
+    border-radius: 8px; 
+    padding: 10px; 
+    margin-bottom: 10px; 
+}
+
+.user-info {
+    display: flex; 
+    align-items: flex-start; 
+    width: 100%;
+}
+
+.profile-pic {
+    width: 50px; 
+    height: 50px; 
+    border-radius: 50%; 
+    margin-right: 10px; 
+}
+
+.user-details {
+    flex-direction: row;
+    color: white; 
+}
+
+.user-name {
+    font-weight: bold; 
+    margin: 0; 
+    margin-right: 10px;
+    margin-bottom: 0; 
+   
+}
+
+.username-button {
+    display: flex; 
+    align-items: baseline; 
+    margin-left: 10px; 
+    justify-content: space-between; 
+    flex-grow: 1; 
+}
+
+.description {
+    margin-top: 10px;
+    font-size: 0.8em; 
+    color: #a0a0a0; 
+    width: 100%; 
+}
+
+.unfollow-button {
+    background-color: aquamarine; 
+    border: none; 
+    padding: 5px 10px; 
+    border-radius: 5px; 
+    cursor: pointer; 
+    color: black; 
+}

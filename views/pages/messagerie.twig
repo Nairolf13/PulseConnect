@@ -1,0 +1,45 @@
+{% extends "../layouts/base.twig" %}
+
+{% block style %}
+	<link rel="stylesheet" href="/../../assets/css/messagerie.css">
+{% endblock %}
+
+{% block title %}
+	<title>{{ title }}</title>
+{% endblock %}
+
+{% block main %}
+	{% include "../partials/header.twig" %}
+	<div id="titleSearch">
+		<h1>Messagerie</h1>
+		<input type="text" id="searchUser" placeholder="Rechercher un utilisateur...">
+	</div>
+	<div id="userList" style="display: none;"></div>
+	<div id="conversationList">
+		{% for user in users %}
+			<div class="user-item" data-user-id="{{ user.userId }}" onclick="window.location.href='/conversation/{{ user.userId }}'">
+				<img src="{{ user.profilePicture }}" alt="{{ user.username }}">
+				<div id="user-info">
+					<span class="username">{{ user.username }}</span>
+					<span class="last-message">{{ user.lastMessage }}</span>
+					<small class="message-date">{{ user.messageDate | date('l d F, H:i') }}</small>
+				</div>
+			</div>
+		{% else %}
+			<p>Aucun utilisateur trouvé.</p>
+		{% endfor %}
+	</div>
+	<div id="deleteConversationModal" class="modal">
+		<div class="modal-content">
+			<span class="close-button" id="closeModal">&times;</span>
+			<h3>Supprimer la conversation</h3>
+			<p>Êtes-vous sûr de vouloir supprimer cette conversation ?</p>
+			<button id="confirmDeleteButton">Supprimer</button>
+			<button id="cancelDeleteButton">Annuler</button>
+		</div>
+	</div>
+
+	{% block script %}
+		<script src="/../../assets/js/messagerie.js"></script>
+	{% endblock %}
+{% endblock %}

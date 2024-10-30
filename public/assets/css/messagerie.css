@@ -1,0 +1,181 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #000;
+    color: white;
+}
+
+#titleSearch{
+    border-bottom: 1px solid #242424;
+}
+
+h1 {
+    text-align: center;
+    color: aquamarine;
+    margin-bottom: 20px;
+}
+
+img {
+    height: 60px; 
+    width: 60px; 
+    border-radius: 50%; 
+}
+
+#searchUser {
+    width: 80%;
+    padding: 10px;
+    border: 1px solid #e1e8ed;
+    border-radius: 5px;
+    margin: 0 auto;
+    display: block;
+    background-color: #1e1e1e;
+    color: white;
+    font-size: 1rem;
+    margin-bottom: 10px;
+}
+
+#userList {
+    position: absolute;
+    top: 18%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 95%;
+    padding: 10px;
+    max-height: 300px;
+    overflow-y: auto;
+    background-color: #1e1e1e;
+    border-radius: 10px;
+    border: 1px solid #e1e8ed;
+    z-index: 1000;
+    display: none;
+}
+
+.user-item {
+    display: flex; /* Aligner les éléments horizontalement */
+    align-items: center; /* Centrer verticalement les éléments */
+    padding: 10px;
+    border-bottom: 1px solid #333;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.user-item:hover {
+    background-color: #333;
+}
+
+#user-info {
+    display: flex;
+    flex-direction: column; /* Affiche les éléments en colonne */
+    margin-left: 10px; /* Ajoute un espace à gauche de l'image */
+}
+
+.username {
+    font-weight: bold; /* Met le nom d'utilisateur en gras */
+}
+
+.last-message {
+    color: #a0a0a0; /* Couleur grise pour le dernier message */
+}
+
+.message-date {
+    font-size: 0.9rem; /* Taille de police légèrement plus petite */
+    color: #a0a0a0; /* Couleur grise pour la date */
+}
+
+.user-item:last-child {
+    border-bottom: none;
+}
+
+.user-item img {
+    height: 60px; /* Taille réduite */
+    width: 60px; /* Taille réduite */
+    border-radius: 50%;
+    margin-right: 10px; /* Espacement à droite de l'image */
+}
+
+.user-item span {
+    display: block; /* Permet d'afficher le texte sur plusieurs lignes */
+    text-align: left; /* Alignement à gauche */
+}
+
+.modal {
+    display: none; 
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8); 
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #1e1e1e;
+    padding: 30px;
+    border-radius: 15px;
+    width: 300px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    color: white; 
+    animation: modalFadeIn 0.4s ease-out; 
+}
+
+.modal-content h3 {
+    margin: 0 0 20px;
+    color: aquamarine;
+}
+
+.modal-content p {
+    margin-bottom: 20px;
+    color: #a0a0a0; 
+}
+
+#confirmDeleteButton, #cancelDeleteButton {
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+#confirmDeleteButton {
+    background-color: red;
+    color: white;
+}
+
+#confirmDeleteButton:hover {
+    background-color: darkred;
+}
+
+#cancelDeleteButton {
+    background-color: aquamarine;
+    color: black;
+    margin-top: 10px;
+}
+
+#cancelDeleteButton:hover {
+    background-color: #7fffd4; 
+}
+
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px); 
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0); 
+    }
+}
+
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    color: white;
+    cursor: pointer;
+}
+

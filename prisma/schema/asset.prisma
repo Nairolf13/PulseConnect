@@ -1,0 +1,98 @@
+model Assets {
+  id               Int                @id @default(autoincrement())
+  name             String             @unique @db.VarChar(255)
+  genre            Genre
+  description      String?            @db.VarChar(255)
+  likes            Likes[]
+  commentaire      Commentaires[]
+  id_user          Int?
+  id_project       Int?
+  isPublic         Boolean?           @default(true)
+  price            Decimal?           @db.Decimal(10, 2)
+  url              String?            @db.VarChar(255)
+  created_at       DateTime?          @default(now()) @db.DateTime(0)
+  Users            Users?             @relation(fields: [id_user], references: [id_user], onDelete: NoAction, onUpdate: NoAction, map: "Assets_ibfk_1")
+  Projects         Projects?          @relation(fields: [id_project], references: [id_project], onDelete: NoAction, onUpdate: NoAction, map: "Assets_ibfk_2")
+  AssetsToCommande AssetsToCommande[]
+
+  @@index([id_project], map: "id_project")
+  @@index([id_user], map: "id_user")
+}
+
+enum Genre {
+  Pop
+  Rock
+  HipHop
+  Rap
+  Jazz
+  Classical
+  Reggae
+  Country
+  Electronic
+  RnB
+  Metal
+  Alternative
+  Blues
+  Indie
+  Folk
+  Latin
+  Soul
+  Funk
+  Punk
+  Disco
+  House
+  Techno
+  Dubstep
+  Ambient
+  Ska
+  Grunge
+  Gospel
+  Bluegrass
+  Swing
+  Industrial
+  PostRock
+  Emo
+  KPop
+  JPop
+  Cumbia
+  Salsa
+  BossaNova
+  Tango
+  Afrobeat
+  Zydeco
+  Trap
+  LoFi
+  Experimental
+  ArtRock
+  Shoegaze
+  NewWave
+  Britpop
+  GothicRock
+  BaroquePop
+  SynthPop
+  HardRock
+  PowerPop
+  SurfRock
+  PostPunk
+  ChristianRock
+  Celtic
+  Cajun
+  NoiseRock
+  StonerRock
+  ProgressiveRock
+  MelodicPunk
+  SkaPunk
+  MathRock
+  TripHop
+  DreamPop
+  Grime
+  NuMetal
+  SouthernRock
+  DarkWave
+  Vaporwave
+  Chiptune
+  SeaShanty
+  MusicalTheatre
+  Soundtrack
+  Instrumental
+}

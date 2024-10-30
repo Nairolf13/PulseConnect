@@ -1,0 +1,52 @@
+{% extends "../layouts/base.twig" %}
+
+{% block style %}
+	<link rel="stylesheet" href="/../../assets/css/conversations.css">
+{% endblock %}
+
+{% block title %}
+	<title>{{title}}</title>
+{% endblock %}
+
+{% block main %}
+	{% include "../partials/header.twig" %}
+
+	<div class="user-info">
+		<a href="/messagerie" class="back-arrow"><img src="/../../assets/imgs/flecheBack.png" alt="arrowBack"></a>
+		<img src="{{ recipientUser.picture }}" alt="Photo de {{ recipientUser.userName }}" class="profile-pic">
+		<h1>{{ recipientUser.userName }}</h1>
+	</div>
+
+	<div id="messages">
+		{% for message in messages %}
+			<div class="{{ message.senderId == senderId ? 'received' : 'sent' }}" data-message-id="{{ message.id }}">
+				<p>{{ message.content }}</p>
+				<small>{{ message.created_at | date('l d F') }}
+					à
+					{{ message.created_at | date('H:i') }}</small>
+			</div>
+		{% endfor %}
+	</div>
+
+	<form action="/sendMessage" method="POST" id="sendMessageForm">
+		<input type="text" name="content" placeholder="Écrire un message..." required id="messageInput">
+		<input type="hidden" name="recipientId" value="{{ userId }}">
+		<button type="submit">Envoyer</button>
+	</form>
+	<div id="confirmationModal" class="modal">
+    <div class="modal-content">
+        <span class="close-button" id="closeModal">&times;</span>
+        <p>Que souhaitez-vous faire avec ce message ?</p>
+        <button id="editMessage">Modifier</button><br>
+		<button id="confirmDelete">Supprimer</button>
+        
+    </div>
+</div>
+
+
+
+	{% block script %}
+		<script src="/../../assets/js/conversations.js"></script>
+	{% endblock %}
+
+{% endblock %}

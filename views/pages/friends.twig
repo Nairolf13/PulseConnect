@@ -1,0 +1,52 @@
+{% extends "../layouts/base.twig" %}
+
+{% block style %}
+	<link rel="stylesheet" href="/../../assets/css/friends.css">
+{% endblock %}
+
+{% block title %}
+	<title>{{ title }}</title>
+{% endblock %}
+
+{% block main %}
+	{% include "../partials/header.twig" %}
+
+	<div class="header">
+		<li>
+			<a href="/home" class="back-arrow"><img src="/../../assets/imgs/flecheBack.png" alt="arrowBack"></a>
+		</li>
+		<div class="title">
+			<h1>Ami(e)s</h1>
+		</div>
+		<div>
+			<a href="/users-to-follow"><img src="/../../assets/imgs/addFriend.png" alt="logo ajouter un ami" class="addFriend"/></a>
+		</div>
+	</div>
+
+	<section>
+		<div class="container">
+			{% if followingUsers|length == 0 %}
+				<p>Vous ne suivez encore personne.</p>
+			{% else %}
+				<ul>
+					{% for user in followingUsers %}
+						<li class="user-card">
+							<div class="user-info">
+								<img src="{{ user.picture }}" alt="Photo de profil" class="profile-pic">
+								<div class="username-button">
+									<p class="user-name">{{ user.userName }}</p>
+									<form action="/unfollow/{{ user.id_user }}" method="POST">
+										<button type="submit" class="unfollow-button">Ne plus suivre</button>
+									</form>
+								</div>
+							</div>
+							<p class="description">{{ user.description }}</p>
+						</li>
+					{% endfor %}
+				</ul>
+			{% endif %}
+		</div>
+	</section>
+
+
+{% endblock %}

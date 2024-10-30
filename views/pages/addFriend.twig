@@ -1,0 +1,46 @@
+{% extends "../layouts/base.twig" %}
+
+{% block style %}
+    <link rel="stylesheet" href="/../../assets/css/addFriend.css">
+{% endblock %}
+
+{% block title %}
+    <title>{{ title }}</title>
+{% endblock %}
+
+{% block main %}
+    {% include "../partials/header.twig" %}
+        <div class="header">
+            <li>
+                <a href="/following" class="back-arrow"><img src="/../../assets/imgs/flecheBack.png" alt="arrowBack"></a>
+            </li>
+            <div class="title">
+                <h1>Suggestions d’ami</h1>
+            </div>
+            <div class="profile-picture">
+                <a href="/update"><img src="{{ users.picture }}" alt="Photo de profil"/></a>
+            </div>
+        </div>
+   <section>
+    <div class="container">
+        <ul>
+            {% for user in usersCo %}
+                <li class="user-card">
+                    <div class="user-info">
+                        <img src="{{ user.picture }}" alt="Photo de profil" class="profile-pic">
+                        <div class="user-details">
+                            <p class="user-name">{{ user.userName }}</p>
+                            <p class="full-name">{{ user.firstName }} {{ user.lastName }}</p>
+                            <p class="description">{{ user.description }}</p>
+                        </div>
+                    </div>
+                    <form action="/follow/{{ user.id_user }}" method="POST">
+                        <button type="submit" class="follow-button">Suivre</button>
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</section>
+
+{% endblock %}

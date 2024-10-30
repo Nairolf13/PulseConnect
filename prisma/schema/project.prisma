@@ -1,0 +1,14 @@
+model Projects {
+  id_project      Int               @id @default(autoincrement())
+  name            String            @db.VarChar(100)
+  image_url       String?           @db.VarChar(255)
+  music_url       String?           @db.VarChar(255)
+  video_url       String?           @db.VarChar(255)           
+  created_at      DateTime?         @default(now()) @db.DateTime(0)
+  Assets          Assets[]
+  Commentaires    Commentaires[]
+  Likes           Likes[]
+  UsersToProjects UsersToProjects[]
+}
+
+

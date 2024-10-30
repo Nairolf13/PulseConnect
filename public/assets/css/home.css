@@ -1,0 +1,367 @@
+body {
+    background-color: black;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.headerRes {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #0000007c;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.headerRes section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.profile-pic {
+    max-height: 50px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.logo {
+    height: 120px;
+    width: 120px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.logout-btn {
+    background-color: aquamarine;
+    text-decoration: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logout-btn img {
+    width: 100%;
+    height: auto;
+}
+
+.logout-btn:hover {
+    background-color: aqua;
+}
+
+main {
+    padding-top: 70px;
+}
+
+.container {
+    position: absolute;
+    top: 60px;
+    left: 0;
+    right: 0;
+    color: white;
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+    background-color: black; 
+}
+
+.container ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.container li {
+    background-color: #1e1e1e; 
+    border: 1px solid #3d3d3d; 
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 20px; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.container li h2 {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: aquamarine;
+}
+
+.container li p {
+    color: #a0a0a0;
+    margin-bottom: 10px;
+}
+
+.container audio,
+.container video {
+    width: 100%;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+
+.container li:hover {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+.user-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #3d3d3d;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #1e1e1e; }
+
+.user-info {
+    display: flex;
+    align-items: center;
+}
+
+.profile-pic {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.user-details {
+    color: white;
+}
+
+.user-name {
+    font-weight: bold;
+    margin: 0;
+}
+
+.full-name {
+    margin: 0;
+    font-size: 0.9em;
+    color: #a0a0a0;
+}
+
+.description {
+    font-size: 0.8em;
+    color: #a0a0a0;
+}
+
+.follow-button {
+    background-color: aquamarine;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    color: black;
+}
+
+h1 {
+    font-size: 1.2em;
+    color: aquamarine;
+    text-align: center;
+}
+
+.back-arrow img {
+    width: 16px;
+    height: auto;
+}
+
+.title {
+    color: aquamarine;
+    z-index: 1000;
+    margin-top: 5px;
+    text-align: center;
+}
+
+.interaction{
+    display: flex;
+    align-items: center; 
+    justify-content: space-around;
+    gap: 10px;
+}
+
+.like-button{
+    color: white;
+    font-weight: bold;
+}
+
+.like-section, .comment-section {
+    display: flex;
+}
+
+.like-button, .comment-toggle-btn {
+    padding: 5px 10px;
+    border: none;
+  
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.comments-container {
+    margin-top: 10px;
+    border-top: 1px solid #eee;
+    padding-top: 10px;
+}
+
+.comment-toggle-btn {
+   
+    color: rgb(255, 255, 255);
+    border: none;
+    margin-top: 9.5px;
+    padding: 5px 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+
+.comment {
+    border-bottom: 1px solid #eee;
+    padding: 10px 0;
+}
+
+.comment:last-child {
+    border-bottom: none;
+}
+
+.comment-form {
+    margin-top: 15px;
+}
+
+.comment-form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.comment-form button {
+    background-color: aquamarine;
+    color: #000;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.comment-form button:hover {
+    background-color: #0056b3;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 300px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.close-modal {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-modal:hover,
+.close-modal:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.like-button, .comment-toggle-btn, .share-button {
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+    background: none; 
+    color: white; 
+    font-weight: bold;
+    margin-top: 9.5px;
+    margin-bottom: 10px;
+}
+
+.like-button, .comment-toggle-btn, .share-button {
+    padding: 0;
+    margin: 0;
+}
+
+.like-button:focus, .comment-toggle-btn:focus, .share-button:focus {
+    outline: none;
+}
+
+.like-button:hover, .comment-toggle-btn:hover, .share-button:hover {
+    text-decoration: underline;
+    opacity: 0.8;
+}
+
+.share-button{
+    
+    border: none;
+    margin-top: 9.5px;
+    padding: 5px 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+ 
+}
+
+.share-options {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+}
+
+.share-options button {
+    background: none;
+    border: none;
+    
+    cursor: pointer;
+    padding: 5px;
+}
+
+.share-options img {
+    width: 40px;
+    height: 40px;
+}
+
+.share-modal{
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 25%;
+    width: 100%;
+    height: 100%;
+  }
+
+  .modal-content {
+    background-color: #424242;
+    margin: 15% auto;
+    padding: 5px;
+    border: 1px solid #888;
+    width: 300px;
+    text-align: center;
+  }
+  
+ 

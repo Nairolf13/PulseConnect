@@ -1,0 +1,57 @@
+{% extends "../layouts/base.twig" %}
+{% block style %}
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet"/>
+	<link rel="stylesheet" href="/../../assets/css/addContent.css">
+{% endblock %}
+
+{% block script %}
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+	<script>
+		$(document).ready(function () {
+$('#genre').select2({placeholder: 'Sélectionnez un genre', allowClear: true});
+});
+	</script>
+{% endblock %}
+
+{% block title %}
+	<title>Ajouter un projet</title>
+{% endblock %}
+
+{% block main %}
+	{% include "../partials/header.twig" %}
+	<div class="header">
+		<li>
+			<a href="/home" class="back-arrow"><img src="/../../assets/imgs/flecheBack.png" alt="arrowBack"></a>
+		</li>
+		<div class="title">
+			<h1>Ajouter un projet</h1>
+		</div>
+	</div>
+	<form action="/addContent" method="POST" enctype="multipart/form-data">
+		<div>
+			<label for="name">Titre :</label>
+			<input type="text" id="name" name="name" required>
+		</div>
+		<div>
+			<label for="description">Description :</label>
+			<input type="text" id="description" name="description" required>
+		</div>
+		<div>
+			<label for="genre">Genre :</label>
+			<select id="genre" name="genre" required>
+				<option value="" disabled selected>Sélectionnez un genre</option>
+				{% for genre in genres %}
+					<option value="{{ genre }}">{{ genre }}</option>
+				{% endfor %}
+			</select>
+		</div>
+		<div>
+			<label for="mediaFile">Ajouter un fichier (Musique ou Vidéo) :</label>
+			<input type="file" id="mediaFile" name="mediaFile" accept=".mp3, .mp4" required>
+		</div>
+		<button type="submit">Ajouter</button>
+	</form>
+
+
+{% endblock %}

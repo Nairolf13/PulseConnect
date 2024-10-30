@@ -1,0 +1,109 @@
+{% extends "../layouts/base.twig" %}
+
+{% block style %}
+	<link rel="stylesheet" href="/../../assets/css/account.css">
+{% endblock %}
+
+{% block title %}
+	<title>{{title}}</title>
+{% endblock %}
+
+{% block main %}
+	<form action="/update" method="POST" enctype="multipart/form-data">
+		<div class="header">
+			<li>
+				<a href="/home" class="back-arrow"><img src="/../../assets/imgs/flecheBack.png" alt="arrowBack"></a>
+			</li>
+			<div class="title">
+				<h1>Profil</h1>
+			</div>
+			<div>
+				<div class="profile-picture" onclick="document.getElementById('picture').click();">
+					<img src="{{ users.picture }}" alt="Photo de profil"/>
+				</div>
+				<input id="picture" type="file" name="picture" style="display: none;"/>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label for="userName">Pseudo</label>
+			<input id="userName" type="text" name="userName" value="{{users.userName}}">
+		</div>
+
+		<div class="form-group">
+			<label for="description">Description</label>
+			<textarea id="description" name="description" rows="3" placeholder="Ajouter une description...">{{users.description}}</textarea>
+		</div>
+
+		<div class="form-group">
+			<label for="lastName">Nom</label>
+			<input id="lastName" type="text" name="lastName" value="{{users.lastName}}">
+		</div>
+
+		<div class="form-group">
+			<label for="firstName">Prénom</label>
+			<input id="firstName" type="text" name="firstName" value="{{users.firstName}}">
+		</div>
+
+		<div class="form-group">
+			<label for="age">Age</label>
+			<input type="number" name="age" id="age" value="{{users.age}}">
+		</div>
+
+		<div class="form-group">
+			<label for="genre">Genre</label>
+			<select id="genre" name="genre" required>
+				<option value="">Sélectionnez votre genre</option>
+				<option value="Masculin">Masculin</option>
+				<option value="Feminin">Féminin</option>
+				<option value="Autre">Autre</option>
+			</select>
+		</div>
+
+		<div class="form-group">
+			<label for="mail">Adresse mail</label>
+			<input id="mail" type="email" name="mail" value="{{users.mail}}">
+			{% if error %}
+				<p>{{error.mail}}</p>
+			{% endif %}
+		</div>
+
+		<div class="form-group">
+			<label for="localisation">Localisation</label>
+			<textarea id="localisation" name="localisation" rows="2" placeholder="Votre localisation">{{users.localisation}}</textarea>
+		</div>
+
+		<div class="form-group">
+			<label for="password">Mot de passe</label>
+			<input id="password" type="password" name="password" placeholder="(12 caractères, majuscule, chiffre, spécial)">
+		</div>
+
+		<div class="form-group">
+			<label for="confirmPassword">Confirmer le mot de passe</label>
+			<input id="confirmPassword" type="password" name="confirmPassword" placeholder="Confirmer le mot de passe">
+			{% if error %}
+				<p>{{error.confirmPassword}}</p>
+			{% endif %}
+		</div>
+
+		<button type="submit">Enregistrer</button>
+		<a href="#" id="deleteAccountLink">Supprimer le compte</a>
+		<div id="deleteModal" class="modal">
+			<div class="modal-content">
+				<span class="close-button" id="closeModal">&times;</span>
+				<h2>Confirmer la suppression</h2>
+				<p>Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.</p>
+				<div class="btnModal">
+					<button id="confirmDelete">Confirmer</button>
+					<button id="cancelDelete">Annuler</button>
+				</div>
+			</div>
+		</div>
+	</form>
+
+	{% block script %}
+		<script src="/../../assets/js/account.js"></script>
+	{% endblock %}
+
+
+{% endblock %}

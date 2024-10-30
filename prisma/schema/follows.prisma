@@ -1,0 +1,11 @@
+model Follows {
+  id          Int      @id @default(autoincrement())
+  follower_id Int
+  followed_id Int
+  created_at  DateTime @default(now())
+
+  follower   Users @relation("Follows_follower_idToUsers", fields: [follower_id], references: [id_user])
+  followed   Users @relation("Follows_followed_idToUsers", fields: [followed_id], references: [id_user])
+
+  @@unique([follower_id, followed_id]) 
+}

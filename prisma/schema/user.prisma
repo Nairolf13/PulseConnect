@@ -1,0 +1,31 @@
+model Users {
+  id_user                               Int               @id @default(autoincrement())
+  userName                              String            @db.VarChar(50)
+  lastName                              String            @db.VarChar(50)
+  firstName                             String            @db.VarChar(50)
+  age                                   Int        
+  mail                                  String            @unique(map: "mail") @db.VarChar(100)
+  password                              String            @db.VarChar(255)
+  role                                  String?           @default("users")  @db.VarChar(20) 
+  localisation                          String            @db.VarChar(255)
+  picture                               String?           @db.VarChar(255)
+  description                           String?           @db.VarChar(255)
+  created_at                            DateTime?         @default(now()) @db.DateTime(0)
+  genre                                 genre           
+  Assets                                Assets[]
+  Commandes                             Commandes[]
+  Commentaires                          Commentaires[]
+  Follows_Follows_follower_idToUsers    Follows[]         @relation("Follows_follower_idToUsers")
+  Follows_Follows_followed_idToUsers    Follows[]         @relation("Follows_followed_idToUsers")
+  Likes                                 Likes[]
+  Messages_Messages_sender_idToUsers    Messages[]        @relation("Messages_sender_idToUsers")
+  Messages_Messages_recipient_idToUsers Messages[]        @relation("Messages_recipient_idToUsers")
+  UsersToProjects                       UsersToProjects[]
+}
+
+
+enum genre {
+  Masculin
+  Feminin
+  Autre
+}

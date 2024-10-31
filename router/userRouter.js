@@ -105,7 +105,7 @@ userRouter.get('/', async (req, res) => {
                     _count: 'desc',
                 },
             },
-            take: 5, 
+            take: 6, 
         });
         
         res.render('pages/welcome.twig', { topUsers, topLikedPosts });
@@ -315,7 +315,6 @@ userRouter.get("/home", authguard, async (req, res) => {
             }
         });
 
-        // Récupération séparée des commentaires
         const commentaires = await prisma.commentaires.findMany({
             where: {
                 id_asset: {

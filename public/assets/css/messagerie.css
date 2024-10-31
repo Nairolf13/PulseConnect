@@ -52,8 +52,8 @@ img {
 }
 
 .user-item {
-    display: flex; /* Aligner les éléments horizontalement */
-    align-items: center; /* Centrer verticalement les éléments */
+    display: flex;
+    align-items: center;
     padding: 10px;
     border-bottom: 1px solid #333;
     cursor: pointer;
@@ -66,21 +66,21 @@ img {
 
 #user-info {
     display: flex;
-    flex-direction: column; /* Affiche les éléments en colonne */
-    margin-left: 10px; /* Ajoute un espace à gauche de l'image */
+    flex-direction: column; 
+    margin-left: 10px;
 }
 
 .username {
-    font-weight: bold; /* Met le nom d'utilisateur en gras */
+    font-weight: bold;
 }
 
 .last-message {
-    color: #a0a0a0; /* Couleur grise pour le dernier message */
+    color: #a0a0a0; 
 }
 
 .message-date {
-    font-size: 0.9rem; /* Taille de police légèrement plus petite */
-    color: #a0a0a0; /* Couleur grise pour la date */
+    font-size: 0.9rem; 
+    color: #a0a0a0; 
 }
 
 .user-item:last-child {
@@ -88,15 +88,15 @@ img {
 }
 
 .user-item img {
-    height: 60px; /* Taille réduite */
-    width: 60px; /* Taille réduite */
+    height: 60px; 
+    width: 60px;
     border-radius: 50%;
-    margin-right: 10px; /* Espacement à droite de l'image */
+    margin-right: 10px; 
 }
 
 .user-item span {
-    display: block; /* Permet d'afficher le texte sur plusieurs lignes */
-    text-align: left; /* Alignement à gauche */
+    display: block; 
+    text-align: left; 
 }
 
 .modal {

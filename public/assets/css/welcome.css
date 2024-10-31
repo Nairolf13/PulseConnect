@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Mogra&display=swap');
+
 body {
     background-color: black;
     display: flex;
@@ -66,7 +68,6 @@ body {
 }
 
 section {
-    margin-top: 20px;
     color: white;
     text-align: center;
 }
@@ -124,47 +125,47 @@ section {
     margin: 0;
     font-size: 14px;
     line-height: 1.2;
-   
+
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
 .container {
-    max-width: 500px; 
-    margin: auto; 
-    padding: 20px; 
+    max-width: 500px;
+    margin: auto;
+    padding: 20px;
 }
 
 .container ul {
-    
+
     margin-right: 35px;
 }
 
 .container h3 {
-    font-size: 24px; 
-    color: aquamarine; 
+    font-size: 24px;
+    color: aquamarine;
 }
 
 .container li {
     font-size: 18px;
     font-weight: bold;
-    color: aquamarine; 
+    color: aquamarine;
 }
 
 .container li p {
-    color: #a0a0a0; 
+    color: #a0a0a0;
     margin-bottom: 10px;
 }
 
 .container audio,
 .container video {
-    width: 50%; 
-    border-radius: 10px; 
-    margin-top: 10px; 
+    width: 50%;
+    border-radius: 10px;
+    margin-top: 10px;
 }
 
 .container li:hover {
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); 
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     transition: box-shadow 0.3s ease-in-out;
 }
 
@@ -181,77 +182,134 @@ section {
 }
 
 .container video {
-    width: 100%; 
-    border-radius: 10px; 
-    margin-top: 10px; 
+    width: 100%;
+    border-radius: 10px;
+    margin-top: 10px;
 }
 
 .slider-container {
-    overflow: hidden; 
+    overflow: hidden;
     width: 100%;
-    position: relative; 
+    position: relative;
 }
 
 .slider {
-    display: flex; 
-    transition: transform 0.5s ease; 
+    display: flex;
+    transition: transform 0.5s ease;
 }
 
 .slider ul {
-    display: flex; 
-    padding: 0; 
-    margin: 0; 
-    list-style-type: none; 
+    display: flex;
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
 }
 
 .slider li {
-    flex: 0 0 auto; 
-    width: 300px; 
-    margin-right: 20px; 
-    background-color: #1e1e1e; 
-    border-radius: 10px; 
+    flex: 0 0 auto;
+    width: 300px;
+    margin-right: 20px;
+    background-color: #1e1e1e;
+    border-radius: 10px;
     padding: 15px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.slider h3, .slider p {
+.slider h3,
+.slider p {
     color: white;
-    margin: 0; 
+    margin: 0;
 }
 
 
-audio, video {
-    width: 80%; 
-    border-radius: 10px; 
-    margin-top: 10px; 
+audio,
+video {
+    width: 80%;
+    border-radius: 10px;
+    margin-top: 10px;
 }
 
 
-.prev, .next {
+.prev,
+.next {
     position: absolute;
     top: 50%;
-    transform: translateY(-50%); 
-    background-color: rgba(0, 0, 0, 0.5); 
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
     color: white;
-    border: none; 
-    border-radius: 50%; 
-    cursor: pointer; 
-    padding: 10px; 
-    z-index: 1; 
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    padding: 10px;
+    z-index: 1;
 }
 
 .prev {
-    left: 10px; 
+    left: 10px;
 }
 
 .next {
-    right: 10px; 
+    right: 10px;
 }
 
-.prev:hover, .next:hover {
+.prev:hover,
+.next:hover {
     background-color: rgba(0, 0, 0, 0.8);
 }
 
+@media (min-width: 768px) {
+    .logo {
+        width: 16%;
+        height: 200%;
+    }
+
+    #headWelcome {
+        height: 100px;
+    }
+
+    img {
+        width: 1900px;
+        height: 400px;
+    }
+
+    #nav-menu {
+        top: 1%;
+        right: 5%;
+    }
+
+    .burger-menu {
+        position: absolute;
+        top: 4.5%;
+        right: 0;
+    }
+
+    section{
+        margin-top: 50px;
+    }
+
+    .carousel-container {
+        width: 800px;
+        border-radius: 5px;
+    }
+
+    #clipWelcome {
+        margin-top: 50px;
+    }
+
+    .slider ul {
+        width: 950px;
+    }
+
+    h2,
+    h3 {
+        font-size: 2rem;
+        font-family: "Mogra", system-ui;
+        font-weight: 400;
+        font-style: normal;
+
+        margin-bottom: 40px;
+    }
+}
 
 @media (max-width: 768px) {
     .burger-menu {
@@ -324,38 +382,38 @@ audio, video {
     }
 
     .slider li {
-        width: 100%; 
-        margin-right: 0; 
+        width: 100%;
+        margin-right: 0;
     }
 
     .slider {
-        display: flex; 
+        display: flex;
     }
 
     .prev,
     .next {
-        width: 50px; 
-        height: 50px; 
+        width: 50px;
+        height: 50px;
     }
 
     .prev {
         left: 70px;
     }
-    
+
     .next {
-        right: 70px; 
+        right: 70px;
     }
 
     .slider-container {
         display: flex;
-        justify-content: center; 
-        align-items: center; 
-        position: relative; 
+        justify-content: center;
+        align-items: center;
+        position: relative;
     }
 
     .slider-container .prev,
     .slider-container .next {
-        display: block; 
+        display: block;
     }
-   
+
 }

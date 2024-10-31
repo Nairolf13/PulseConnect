@@ -23,6 +23,10 @@
 			</ul>
 		</nav>
 	</div>
+	<div>
+	<img src="/../../assets/imgs/background.png" alt="">
+	</div>
+	
 	<section>
 		<h2>Top Artiste</h2>
 		<div class="carousel-container">
@@ -47,7 +51,7 @@
 				<ul>
 					{% for post in topLikedPosts %}
 						<li>
-							<h3>{{ post.name }}</h3>
+							<h4>{{ post.name }}</h4>
 							<p>
 								{% if post.Users %}
 									{{ post.Users.userName }}{% else %}Utilisateur inconnu

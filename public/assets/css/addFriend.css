@@ -67,8 +67,8 @@ h1 {
 .container ul {
     list-style-type: none;
     padding: 0;
-    margin: 0 auto; /* Centrez la liste */
-    width: 100%; /* Assurez-vous que la liste prend toute la largeur */
+    margin: 0 auto; 
+    width: 100%; 
 }
 
 .user-card {

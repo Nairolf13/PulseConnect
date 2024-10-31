@@ -137,7 +137,6 @@ contentRouter.get("/personalContent", authguard, async (req, res) => {
             }
         });
 
-        // Récupération séparée des commentaires
         const commentaires = await prisma.commentaires.findMany({
             where: {
                 id_asset: {

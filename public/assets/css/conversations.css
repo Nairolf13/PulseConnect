@@ -20,7 +20,7 @@ body {
 }
 
 .keyboard-open #messages {
-    margin-bottom: 330px; /* Ajustez en fonction de la hauteur du clavier */
+    margin-bottom: 330px; 
 }
 
 form {
@@ -99,12 +99,11 @@ button:hover {
 }
 
 h1 {
-    font-size: 1.5rem; /* Ajuster la taille du titre */
-    color: aquamarine; /* Couleur du nom d'utilisateur */
-    margin: 0; /* Supprimer les marges par défaut */
+    font-size: 1.5rem; 
+    color: aquamarine;
+    margin: 0; 
 }
 
-/* Styles pour la suppression */
 .delete {
     position: relative;
     top: 0;
@@ -131,7 +130,6 @@ h1 {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
 }
 
-/* Styles pour la modal */
 .modal {
     display: none; 
     position: fixed;
@@ -140,30 +138,29 @@ h1 {
     top: 16%;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.8); /* Arrière-plan semi-transparent plus sombre */
+    background-color: rgba(0, 0, 0, 0.8);
     justify-content: center;
     align-items: center;
 }
 
 .modal-content {
-    background-color: #1e1e1e; /* Fond sombre comme le contenu de la page */
+    background-color: #1e1e1e;
     padding: 30px;
     border-radius: 15px;
     width: 300px;
     text-align: center;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Effet d'ombre élégant */
-    color: white; /* Texte blanc pour le contraste */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     margin-left: 45px;
 }
 
 .modal-content h2 {
     margin: 0 0 20px;
-    color: aquamarine; /* Titre en aquamarine pour correspondre au style global */
+    color: aquamarine; 
 }
 
 .modal-content p {
     margin-bottom: 20px;
-    color: #a0a0a0; /* Texte plus léger pour le contraste */
+    color: #a0a0a0; 
 }
 
 #confirmDelete, #cancelDelete {
@@ -171,7 +168,7 @@ h1 {
     border-radius: 5px;
     cursor: pointer;
     border: none;
-    transition: background-color 0.3s ease; /* Transition fluide au survol */
+    transition: background-color 0.3s ease;
 }
 
 input.edit-input[type="text"] {
@@ -206,7 +203,7 @@ input.edit-input[type="text"] {
 }
 
 #cancelDelete:hover {
-    background-color: #7fffd4; /* Un peu plus clair au survol */
+    background-color: #7fffd4; 
 }
 
 #closeModal{
@@ -214,15 +211,14 @@ margin-left: 220px;
 
 }
 
-/* Animation pour faire apparaître la modal en douceur */
 @keyframes modalFadeIn {
     from {
         opacity: 0;
-        transform: translateY(-20px); /* La modal démarre légèrement au-dessus */
+        transform: translateY(-20px); 
     }
     to {
         opacity: 1;
-        transform: translateY(0); /* Retour à la position d'origine */
+        transform: translateY(0); 
     }
 }
 

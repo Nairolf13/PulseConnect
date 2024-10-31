@@ -1,11 +1,11 @@
 body {
-    background-color: black; 
+    background-color: black;
     display: flex;
     justify-content: center;
-    align-items: center; 
-    min-height: 100vh; 
+    align-items: center;
+    min-height: 100vh;
     margin: 0;
-    font-family: Arial, sans-serif; 
+    font-family: Arial, sans-serif;
 }
 
 main {
@@ -26,15 +26,15 @@ main {
 
 img {
     margin-bottom: 30%;
-    width: 40vw; 
-    height: auto; 
+    width: 40vw;
+    height: auto;
 }
 
 h1 {
     color: aquamarine;
     text-align: center;
     font-size: 1.5em;
-    margin-bottom: 15px; 
+    margin-bottom: 15px;
 }
 
 label {
@@ -51,7 +51,7 @@ input[type="password"],
 select {
     width: 100%;
     padding: 10px;
-    margin-bottom: 10px; 
+    margin-bottom: 10px;
     border: 1px solid #444;
     border-radius: 5px;
     background-color: #000;
@@ -84,7 +84,7 @@ a {
     color: rgb(255, 255, 255);
     display: block;
     text-align: center;
-    margin-top: 10px; 
+    margin-top: 10px;
     text-decoration: none;
     transition: color 0.3s ease;
 }
@@ -93,8 +93,8 @@ a:hover {
     color: #2bc2d9;
 }
 
-span{
-    color:aquamarine
+span {
+    color: aquamarine
 }
 
 p {
@@ -169,6 +169,29 @@ p {
     background-color: aquamarine;
     color: black;
 }
+
+@media (min-width: 769px) {
+    img {
+        position: absolute;
+        top: 0;
+        left: 40%;
+        width: 20vw;
+        height: auto;
+    }
+
+    #form {
+        position: absolute;
+        bottom: 15%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 400px;
+        height: 400px;
+        padding: 1px;
+    }
+
+}
+
 
 @media (max-width: 768px) {
     #form {

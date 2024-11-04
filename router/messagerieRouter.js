@@ -88,34 +88,33 @@ messagerieRouter.delete("/messagerie/delete-conversation/:userId", authguard, as
 
 messagerieRouter.get("/searchUsers", authguard, async (req, res) => {
     const userId = req.session.users.id_user; 
-    const {query} = req.query; 
+    const { query } = req.query; 
 
     if (!query) {
         return res.json([]); 
     }
 
-    const lowerCaseQuery = query.toLowerCase();
-
     try {
+        const lowerCaseQuery = query.toLowerCase();
         const users = await prisma.users.findMany({
             where: {
                 id_user: {
-                    not: userId 
+                    not: userId
                 },
                 OR: [
                     {
                         lastName: {
-                            contains: lowerCaseQuery,
+                            contains: lowerCaseQuery
                         }
                     },
                     {
                         firstName: {
-                            contains: lowerCaseQuery,
+                            contains: lowerCaseQuery
                         }
                     },
                     {
                         userName: {
-                            contains: lowerCaseQuery,
+                            contains: lowerCaseQuery
                         }
                     }
                 ]
@@ -125,17 +124,16 @@ messagerieRouter.get("/searchUsers", authguard, async (req, res) => {
                 userName: true,
                 firstName: true,
                 lastName: true,
-                picture: true 
+                picture: true
             }
         });
-
-        res.json(users); 
+    
+        res.json(users);
     } catch (error) {
         console.error('Erreur lors de la recherche des utilisateurs :', error);
-        res.status(500).send('Erreur interne du serveur');f
+        res.status(500).send('Erreur interne du serveur');
     }
 });
-
 
 
 messagerieRouter.get("/conversation/:userId", authguard, async (req, res) => {

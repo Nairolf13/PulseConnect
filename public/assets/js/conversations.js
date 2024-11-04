@@ -4,9 +4,17 @@ $(document).ready(function () {
     let lastScrollTop = 0;
     let startX, currentMessage;
 
+    document.querySelectorAll('#messages > div .options-dots').forEach(dot => {
+        dot.addEventListener('click', function(e) {
+            e.stopPropagation();
+            showModal(dot.parentNode); 
+        });
+    });
+    
+
     function scrollToBottom() {
         const lastMessage = messagesContainer.lastElementChild;
-        if (lastMessage) lastMessage.scrollIntoView({ behavior: "smooth", block: "end" });
+        if (lastMessage) lastMessage.scrollIntoView({ behavior: "auto", block: "end" });
     }
 
     scrollToBottom();

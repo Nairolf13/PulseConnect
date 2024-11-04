@@ -4,35 +4,34 @@ body {
     color: white;
 }
 
-#titleSearch{
-    border-bottom: 1px solid #242424;
+#titleSearch {
+    border-bottom: 1px solid #3d3d3d;
 }
 
 h1 {
-
-    font-size: 1.2em; 
+    font-size: 1.2em;
     text-align: center;
     color: aquamarine;
-   
+
 }
 
 img {
-    height: 60px; 
-    width: 60px; 
-    border-radius: 50%; 
+    height: 60px;
+    width: 60px;
+    border-radius: 50%;
 }
 
 #searchUser {
     width: 80%;
     padding: 10px;
-    border: 1px solid #e1e8ed;
+    border: 1px solid #ffffff;
     border-radius: 5px;
     margin: 0 auto;
     display: block;
     background-color: #1e1e1e;
     color: white;
     font-size: 1rem;
-    margin-bottom: 10px;
+    margin-top: 10px;
 }
 
 #userList {
@@ -66,7 +65,7 @@ img {
 
 #user-info {
     display: flex;
-    flex-direction: column; 
+    flex-direction: column;
     margin-left: 10px;
 }
 
@@ -75,12 +74,12 @@ img {
 }
 
 .last-message {
-    color: #a0a0a0; 
+    color: #a0a0a0;
 }
 
 .message-date {
-    font-size: 0.9rem; 
-    color: #a0a0a0; 
+    font-size: 0.9rem;
+    color: #a0a0a0;
 }
 
 .user-item:last-child {
@@ -88,26 +87,26 @@ img {
 }
 
 .user-item img {
-    height: 60px; 
+    height: 60px;
     width: 60px;
     border-radius: 50%;
-    margin-right: 10px; 
+    margin-right: 10px;
 }
 
 .user-item span {
-    display: block; 
-    text-align: left; 
+    display: block;
+    text-align: left;
 }
 
 .modal {
-    display: none; 
+    display: none;
     position: fixed;
     z-index: 1000;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.8); 
+    background-color: rgba(0, 0, 0, 0.8);
     justify-content: center;
     align-items: center;
 }
@@ -119,8 +118,8 @@ img {
     width: 300px;
     text-align: center;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    color: white; 
-    animation: modalFadeIn 0.4s ease-out; 
+    color: white;
+    animation: modalFadeIn 0.4s ease-out;
 }
 
 .modal-content h3 {
@@ -130,10 +129,11 @@ img {
 
 .modal-content p {
     margin-bottom: 20px;
-    color: #a0a0a0; 
+    color: #a0a0a0;
 }
 
-#confirmDeleteButton, #cancelDeleteButton {
+#confirmDeleteButton,
+#cancelDeleteButton {
     padding: 10px 20px;
     border-radius: 5px;
     cursor: pointer;
@@ -157,18 +157,19 @@ img {
 }
 
 #cancelDeleteButton:hover {
-    background-color: #7fffd4; 
+    background-color: #7fffd4;
 }
 
 
 @keyframes modalFadeIn {
     from {
         opacity: 0;
-        transform: translateY(-20px); 
+        transform: translateY(-20px);
     }
+
     to {
         opacity: 1;
-        transform: translateY(0); 
+        transform: translateY(0);
     }
 }
 
@@ -181,3 +182,31 @@ img {
     cursor: pointer;
 }
 
+
+
+@media (min-width: 769px) {
+    header {
+        position: relative;
+        top: 7%;
+    }
+
+    #titleSearch {
+        height: 40px;
+    }
+
+    #conversationList {
+        width: 70%;
+        margin-left: 300px;
+    }
+
+}
+
+@media (max-width: 769px) {
+    h1{
+        margin-top: 10px;
+    }
+
+    #titleSearch {
+        height: 40px;
+    }
+}

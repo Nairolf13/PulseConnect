@@ -1,31 +1,32 @@
 {% extends "../layouts/base.twig" %}
 
 {% block style %}
-    <link rel="stylesheet" href="/../../assets/css/addFriend.css">
+	<link rel="stylesheet" href="/../../assets/css/addFriend.css">
 {% endblock %}
 
 {% block title %}
-    <title>{{ title }}</title>
+	<title>{{ title }}</title>
 {% endblock %}
 
 {% block main %}
-    {% include "../partials/header.twig" %}
-        <div class="header">
-            <li>
-                <a href="/following" class="back-arrow"><img src="/../../assets/imgs/flecheBack.png" alt="arrowBack"></a>
-            </li>
-            <div class="title">
-                <h1>Suggestions d’ami</h1>
-            </div>
-            <div class="profile-picture">
-                <a href="/update"><img src="{{ users.picture }}" alt="Photo de profil"/></a>
-            </div>
-        </div>
-   <section>
+	{% include "../partials/header.twig" %}
+	<div class="header">
+		<li>
+			<a href="/following" class="back-arrow"><img src="/../../assets/imgs/flecheBack.png" alt="arrowBack"></a>
+		</li>
+		<div class="title">
+			<h1>Suggestions d’ami</h1>
+		</div>
+		<div class="profile-picture">
+			<a href="/update"><img src="{{ users.picture }}" alt="Photo de profil"/></a>
+		</div>
+	</div>
+	<input type="text" id="searchUser" placeholder="Rechercher un utilisateur...">
+<section>
     <div class="container">
         <ul>
             {% for user in usersCo %}
-                <li class="user-card">
+                <li class="user-card" data-search="{{ user.userName | lower }}">
                     <div class="user-info">
                         <img src="{{ user.picture }}" alt="Photo de profil" class="profile-pic">
                         <div class="user-details">
@@ -42,5 +43,10 @@
         </ul>
     </div>
 </section>
+
+
+	{% block script %}
+		<script src="/../../assets/js/addFriend.js"></script>
+	{% endblock %}
 
 {% endblock %}

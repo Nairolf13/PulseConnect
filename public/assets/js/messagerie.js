@@ -1,57 +1,42 @@
-function toggleMenu() {
-    const navMenu = document.getElementById("nav-menu");
-    navMenu.style.display = navMenu.style.display === "flex" ? "none" : "flex";
-}
 
-const carousel = document.querySelector('.carousel');
-let isDragging = false;
-let startX;
-let scrollLeft;
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchUser');
+    const userList = document.createElement('div');
+    userList.id = 'userList';
+    searchInput.parentNode.insertBefore(userList, searchInput.nextSibling);
 
-let scrollSpeed = 1; 
-let autoScrollInterval;
-
-carousel.addEventListener('mousedown', (e) => {
-    clearInterval(autoScrollInterval); 
-    startX = e.pageX - carousel.offsetLeft;
-    scrollLeft = carousel.scrollLeft;
-});
-
-carousel.addEventListener('mouseleave', () => {
-    if (isDragging) resumeAutoScroll(); 
-    isDragging = false;
-});
-
-carousel.addEventListener('mouseup', () => {
-    isDragging = false;
-    resumeAutoScroll(); 
-});
-
-carousel.addEventListener('mousemove', (e) => {
-    if (!isDragging) return;
-    e.preventDefault();
-    const x = e.pageX - carousel.offsetLeft;
-    const walk = (x - startX) * 2;
-    carousel.scrollLeft = scrollLeft - walk;
-});
-
-function startAutoScroll() {
-    autoScrollInterval = setInterval(() => {
-        carousel.scrollLeft += scrollSpeed;
-
-        if (carousel.scrollLeft >= carousel.scrollWidth / 2) {
-            carousel.scrollLeft = 0; 
+    searchInput.addEventListener('input', function() {
+        const query = this.value.trim();
+        
+        if (query.length > 0) {
+            fetch(`/searchUsers?query=${encodeURIComponent(query)}`)
+                .then(response => response.json())
+                .then(users => {
+                    userList.innerHTML = '';
+                    users.forEach(user => {
+                        const userItem = document.createElement('div');
+                        userItem.className = 'user-item';
+                        userItem.innerHTML = `
+                            <img src="${user.picture}" alt="${user.userName}">
+                            <span>${user.userName}</span>
+                        `;
+                        userItem.addEventListener('click', () => {
+                            window.location.href = `/conversation/${user.id_user}`;
+                        });
+                        userList.appendChild(userItem);
+                    });
+                    userList.style.display = users.length > 0 ? 'block' : 'none';
+                })
+                .catch(error => console.error('Erreur:', error));
+        } else {
+            userList.style.display = 'none';
         }
-    }, 20); 
-}
+    });
 
-function resumeAutoScroll() {
-    if (!isDragging) {
-        startAutoScroll();
-    }
-}
-
-startAutoScroll();
-
-carousel.addEventListener('mouseenter', () => clearInterval(autoScrollInterval));
-carousel.addEventListener('mouseleave', resumeAutoScroll);
+    // Cacher la liste lorsqu'on clique en dehors
+    document.addEventListener('click', function(e) {
+        if (e.target !== searchInput && !userList.contains(e.target)) {
+            userList.style.display = 'none';
+        }
+    });
+});

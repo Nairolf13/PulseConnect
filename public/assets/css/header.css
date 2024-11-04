@@ -79,17 +79,62 @@ ul.nav-list li img {
 
 @media (min-width: 769px) {
     header {
-        position: relative;
-        bottom: auto;
-        top: 0;
+        position: fixed;
+        top: 10%;
+        left: 1.5%;
+        width: 60px;
+        transition: width 0.3s ease;
     }
 
     #containerHeader {
-        justify-content: flex-start;
+        width: 100%;
+        height: 60%;
     }
 
-    ul.nav-list {
-        justify-content: flex-start;
-        gap: 15px;
+    .nav-list {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .nav-list li {
+        margin-bottom: 15px;
+    }
+
+    .nav-list li a {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        color: white;
+        padding: 10px;
+        white-space: nowrap;
+    }
+
+    .nav-list li a img {
+        width: 30px;
+        height: 30px;
+        margin-right: 15px;
+    }
+
+    .nav-list li a span {
+        font-size: 2rem;
+       
+        transition: opacity 0.3s ease;
+        position: absolute;
+        left: 50px; 
+    }
+
+    ul.nav-list li a span {
+        display: block;
+        color: white;
+        font-size: 20px;
+        text-align: center;
+        margin-top: 2px;
+    }
+
+    header:hover .nav-list li a span {
+        opacity: 1;
     }
 }

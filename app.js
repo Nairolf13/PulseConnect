@@ -7,6 +7,7 @@ const friendRouter = require("./router/friendRouter");
 const contentRouter = require("./router/contentRouter");
 const messagerieRouter = require("./router/messagerieRouter");
 const bodyParser = require("body-parser");
+const collaborationRouter = require("./router/collaborationRouter");
 dotenv.config();
 const app = express();
 
@@ -26,6 +27,7 @@ app.use(session({
 app.use(userRouter);
 app.use(friendRouter);
 app.use(contentRouter);
+app.use(collaborationRouter)
 app.use(messagerieRouter);
 
 

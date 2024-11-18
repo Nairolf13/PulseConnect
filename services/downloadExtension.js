@@ -24,10 +24,10 @@ const fileFilter = (req, file, cb) => {
         allowedAudioTypes.test(file.mimetype) ||
         allowedVideoTypes.test(file.mimetype) ||
         file.mimetype === 'audio/mpeg' || // Pour mp3
-        file.mimetype === 'audio/wav' || // Pour wav
-        file.mimetype === 'audio/ogg' || // Pour ogg
-        file.mimetype === 'audio/flac' || // Pour flac
-        file.mimetype === 'video/mp4' || // Pour mp4
+        file.mimetype === 'audio/wav' ||
+        file.mimetype === 'audio/ogg' ||
+        file.mimetype === 'audio/flac' || 
+        file.mimetype === 'video/mp4' || 
         file.mimetype === 'video/x-msvideo' || // Pour avi
         file.mimetype === 'video/x-matroska' || // Pour mkv
         file.mimetype === 'video/quicktime'; // Pour mov

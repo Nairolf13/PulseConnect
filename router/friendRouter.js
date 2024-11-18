@@ -59,6 +59,7 @@ friendRouter.post('/follow/:id', authguard, async (req, res) => {
         res.status(500).send("Erreur lors de l'ajout du follow.");
     }
 });
+
 friendRouter.get('/following', authguard, async (req, res) => {
     try {
         const loggedUserId = req.session.users.id_user;

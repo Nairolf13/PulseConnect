@@ -180,6 +180,7 @@ p {
     }
 
     #form {
+        box-shadow:0px 0px 20px 3px aquamarine;
         position: absolute;
         bottom: 15%;
         display: flex;

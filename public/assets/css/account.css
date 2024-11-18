@@ -36,7 +36,6 @@ li {
     text-align: center;
     color: aquamarine;
     z-index: 1000;
-
     margin-top: 5px;
 }
 
@@ -50,8 +49,8 @@ h1 {
 }
 
 .profile-picture img {
-    width: 100%;
-    height: auto;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     border: none;
 }
@@ -135,11 +134,6 @@ button:hover {
         max-width: none;
     }
 
-    .profile-picture img {
-        width: 50px;
-        height: 50px;
-    }
-
     .back-arrow img {
         width: 16px;
     }
@@ -208,26 +202,34 @@ a {
 }
 
 @media (max-width: 768px) {
-header{
-    display: none;
-}
+    header {
+        display: none;
+    }
 }
 
 @media (min-width: 769px) {
     .header {
         position: absolute;
-        top: 5%;
+        top: 0;
         left: 0;
+        height: 50px;
         border-bottom: 1px solid #aaa;
     }
 
-    #containerHeader{background-color: none;}
+    .profile-picture img{
+        height:45 px;
+        width: 45 px;
+    }
 
-    h1{
+    #containerHeader {
+        background-color: none;
+    }
+
+    h1 {
         font-size: 1.5em;
     }
 
-    form{
+    form {
         width: 90%;
         margin-top: 130px;
         border: 1px solid white;

@@ -114,8 +114,6 @@ userRouter.get('/', async (req, res) => {
         res.status(500).send("Erreur interne du serveur");
     }
 });
-
-
   
 userRouter.get('/register', (req, res) => {  
     res.render('pages/register.twig')    

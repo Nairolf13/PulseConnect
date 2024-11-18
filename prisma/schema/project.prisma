@@ -1,6 +1,7 @@
 model Projects {
   id_project      Int               @id @default(autoincrement())
   name            String            @db.VarChar(100)
+  description     String? 
   image_url       String?           @db.VarChar(255)
   music_url       String?           @db.VarChar(255)
   video_url       String?           @db.VarChar(255)           

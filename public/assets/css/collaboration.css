@@ -1,0 +1,233 @@
+body {
+    background-color: black;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    box-shadow: 0px 0px 20px 3px aquamarine;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    top: 15%; 
+    max-width: 500px;
+    padding: 20px;
+    border: 1px solid #3d3d3d;
+    border-radius: 8px;
+    background-color: #1e1e1e;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    width: 100%;
+    left: 0;
+    background-color: #1e1e1e; 
+    z-index: 1000;
+}
+
+.header h1 {
+    align-items: center;
+    font-size: 1.5rem; 
+}
+
+.title{
+    position: absolute;
+    right: 40%;
+}
+
+.back-arrow {
+    margin-right: auto;
+}
+
+.back-arrow img {
+    width: 16px;
+    height: auto;
+}
+
+#searchUser {
+    position: absolute;
+    top: 63%;
+    left: 35%;
+    width: 63.5%;
+    padding: 5px;
+    border: 1px solid #ffffff;
+    border-radius: 5px;
+    margin: 0 auto;
+    display: block;
+    background-color: #1e1e1e;
+    color: white;
+    font-size: 1rem;
+    margin-top: 15px;
+    z-index: 10;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+#userList {
+    position: absolute;
+    top: 18%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 95%;
+    padding: 10px;
+    max-height: 300px;
+    overflow-y: auto;
+    background-color: #1e1e1e;
+    border-radius: 10px;
+    border: 1px solid #e1e8ed;
+    z-index: 1000;
+    display: none;
+}
+
+h1 {
+    flex-grow: 1;
+    text-align: center;
+    color: aquamarine;
+    z-index: 1000;
+    margin-top: 5px;
+    font-size: 1.2em;
+    color: aquamarine;
+}
+
+.follower-item {
+    padding: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    background-color: #1e1e1e;
+    border: 1px solid #3d3d3d;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+label{
+    color: white;
+}
+
+#followerList {
+    display: none; 
+    position: absolute;
+    top: calc(100% + 5px);
+    left: 0;
+    width: 100%;
+    background-color: #1e1e1e;
+    border-radius: 8px;
+    border: 1px solid #3d3d3d;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 10;
+}
+
+#followerList.visible {
+    display: block; 
+}
+
+
+.follower-item:hover {
+    background-color: #333333;
+}
+
+.follower-item img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+    object-fit: cover;
+}
+
+span {
+    color: aquamarine;
+}
+
+input{
+    border-radius: 5px;
+}
+
+textarea {
+    border-radius: 5px;
+}
+
+.user-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #3d3d3d;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #1e1e1e;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+}
+
+.profile-pic {
+    width: 70px;
+    height: 70px;
+    border-radius: 15%;
+    margin-right: 10px;
+    object-fit: cover;
+}
+
+.user-details {
+    color: white;
+}
+
+.user-name {
+    font-weight: bold;
+    margin: 0;
+}
+
+.full-name {
+    margin: 0;
+    font-size: 0.9em;
+    color: #a0a0a0;
+}
+
+.description {
+    font-size: 0.8em;
+    color: #a0a0a0;
+}
+
+.follow-button {
+    background-color: aquamarine;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    color: black;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    background-color: aquamarine;
+    color: black;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1rem;
+    text-align: center;
+}
+
+button:hover {
+    background-color: #78e6c0;
+}
+
+button, input {
+    width:100% ;
+}

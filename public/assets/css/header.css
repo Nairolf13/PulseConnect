@@ -4,7 +4,7 @@ header {
     left: 0;
     width: 100%;
     background-color: #000000a6; 
-    z-index: 999; 
+    z-index: 1001; 
 }
 
 #containerHeader {
@@ -106,12 +106,12 @@ ul.nav-list li img {
 }
 
 .close {
-    color: #aaa;
+    color: #000000;
     font-size: 28px;
     font-weight: bold;
     position: absolute;
-    right: 10px;
-    top: 10px;
+    right: -20px;
+    top: -30px;
 }
 
 .close:hover,
@@ -142,9 +142,9 @@ ul.nav-list li img {
 
     .modal {
         position: fixed; 
-        left: 20%;
-        top: 50%;
-        width: 60%;
+        left: 0;
+        top: 0;
+        width: 100%;
         height: 100%;
     }
 
@@ -159,7 +159,8 @@ ul.nav-list li img {
     }
 }
 
-@media (min-width: 769px) {
+  
+@media (min-width: 960px) {
     header {
         position: fixed;
         top: 10%;

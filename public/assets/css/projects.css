@@ -1,19 +1,18 @@
 body {
-    background-color: black; 
+    background-color: black;
     display: flex;
     justify-content: center;
-    align-items: flex-start; 
-    min-height: 100vh; 
+    align-items: flex-start;
+    min-height: 100vh;
     margin: 0;
     font-family: Arial, sans-serif;
     color: white;
 }
 
 .header {
-    display: flex;
     align-items: center;
     justify-content: space-between; 
-    padding: 10px 20px; 
+    padding: 5px; 
     width: 100%; 
     border-bottom: 1px solid #3d3d3d;
 }
@@ -27,32 +26,30 @@ body {
 }
 
 h1 {
-    position: absolute;
-    left: 48%;
     font-size: 1.2em;
     color: aquamarine;
+    text-align: center;
 }
 
 .back-arrow {
-    margin-right: auto; 
+    margin-right: auto;
 }
 
 .back-arrow img {
-    width: 16px; 
-    height: auto; 
+    width: 16px;
+    height: auto;
 }
 
 .projects-container {
     position: absolute;
-    top: 10%;
-    left: 27%;
-    width: 100%;
-    max-width: 900px;
-    margin: 20px auto;
-    padding: 20px;
-    background-color: #1e1e1e;
-    border-radius: 8px;
+    top: 70px;
+    left: 0;
+    right: 0;
     color: white;
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+    background-color: black; 
 }
 
 .projects-list {
@@ -69,27 +66,27 @@ h1 {
 
 .project-members {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); 
+    grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
     gap: 30px;
     padding: 0;
     margin: 10px 0;
-    list-style: none; 
+    list-style: none;
 }
 
 .project-members li {
     text-align: center;
-    color: #b0b0b0; 
+    color: #b0b0b0;
 }
 
 .profile-pic {
     width: 50px;
     height: 50px;
-    border-radius: 50%; 
+    border-radius: 50%;
     margin-bottom: 5px;
-    object-fit: cover; 
+    object-fit: cover;
 }
 
-img{
+img {
     height: 50px;
 }
 
@@ -114,7 +111,7 @@ img{
 
 .delete-form {
     display: inline;
-    margin-left: 10px;
+    margin-left: -20px;
 }
 
 .delete {
@@ -133,4 +130,22 @@ img{
 
 .delete:hover {
     color: darkred;
+}
+
+
+@media (max-width: 768px) {
+    .projects-container {
+        left: 0;
+        width: 100%;
+
+    }
+
+    h1 {
+        left: 39%;
+    }
+
+    .project-members {
+        display: grid;
+        
+    }
 }

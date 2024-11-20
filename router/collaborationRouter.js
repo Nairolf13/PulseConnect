@@ -1,6 +1,7 @@
 const collaborationRouter = require("express").Router();
 const { PrismaClient } = require("@prisma/client");
 const authguard = require("../services/authguard");
+const axios = require('axios');
 
 const prisma = new PrismaClient()
 
@@ -234,6 +235,45 @@ collaborationRouter.post('/project/delete/:id', authguard, async (req, res) => {
         res.status(500).send('Erreur lors de la suppression du projet.');
     }
 });
+
+
+collaborationRouter.get('/studio', authguard, async (req, res) => {
+    const bboxFrance = '41.3,-5.3,51.1,9.6'; 
+    const overpassQuery = `
+        [out:json];
+        node["amenity"="studio"](${bboxFrance});
+        out body;
+    `;
+
+    try {
+        const response = await axios.post(
+            'https://overpass.kumi.systems/api/interpreter', 
+            overpassQuery,
+            { headers: { 'Content-Type': 'text/plain' } }
+        );
+
+        const studios = response.data.elements.map(studio => {
+            return {
+                id: studio.id,
+                name: studio.tags.name || 'Studio inconnu',
+                latitude: studio.lat,
+                longitude: studio.lon,
+                address: studio.tags['addr:full'] || 
+                         (studio.tags['addr:street'] + ', ' + studio.tags['addr:city'] + ', ' + studio.tags['addr:postcode']) ||
+                         'Adresse non spécifiée',
+            };
+        });
+
+        res.render('pages/studio.twig', {
+            title: 'Studios d\'enregistrement en France',
+            studios, 
+        });
+    } catch (error) {
+        console.error('Erreur avec Overpass API:', error);
+        res.status(500).send('Erreur lors de la récupération des studios');
+    }
+});
+
 
 
 module.exports = collaborationRouter;

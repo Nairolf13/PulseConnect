@@ -184,12 +184,7 @@ img {
 
 
 
-@media (min-width: 769px) {
-    header {
-        position: relative;
-        top: 7%;
-    }
-
+@media (min-width: 960px) {
     #titleSearch {
         height: 40px;
     }
@@ -198,7 +193,6 @@ img {
         width: 70%;
         margin-left: 300px;
     }
-
 }
 
 @media (max-width: 769px) {

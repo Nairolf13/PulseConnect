@@ -2,12 +2,7 @@ const collaborationRouter = require("express").Router();
 const { PrismaClient } = require("@prisma/client");
 const authguard = require("../services/authguard");
 const axios = require('axios');
-const bboxFrance = '41.3,-5.3,51.1,9.6';
-const overpassQuery = `
-    [out:json];
-    node["amenity"="studio"](${bboxFrance});
-    out body;
-`;
+
 
 const prisma = new PrismaClient()
 
@@ -242,8 +237,20 @@ collaborationRouter.post('/project/delete/:id', authguard, async (req, res) => {
     }
 });
 
+collaborationRouter.get('/studio', authguard, (req, res) => {
+    res.render('pages/studio.twig', {
+        title: 'Studios d\'enregistrement',
+    });
+});
 
-collaborationRouter.get('/studio', authguard, async (req, res) => {
+collaborationRouter.get('/studio-data', authguard, async (req, res) => {
+    const bboxWorld = '-90,-180,90,180';
+    const overpassQuery = `
+    [out:json];
+    node["amenity"="studio"](${bboxWorld});
+    out body;
+    `;
+
     try {
         const response = await axios.post(
             'https://overpass.kumi.systems/api/interpreter',
@@ -259,17 +266,16 @@ collaborationRouter.get('/studio', authguard, async (req, res) => {
             address: studio.tags['addr:full'] ||
                 `${studio.tags['addr:street'] || ''}, ${studio.tags['addr:city'] || ''}, ${studio.tags['addr:postcode'] || ''}`.trim() ||
                 'Adresse non spécifiée',
+            phone: studio.tags['contact:phone'] || null,  // Passer à null si le numéro de téléphone n'est pas disponible
         }));
 
-        res.render('pages/studio.twig', {
-            title: 'Studios d\'enregistrement en France',
-            studios,
-        });
+        res.json(studios); 
     } catch (error) {
         console.error('Erreur avec Overpass API:', error);
-        res.status(500).send('Erreur lors de la récupération des studios');
+        res.status(500).json({ error: 'Erreur lors de la récupération des studios' });
     }
 });
+
 
 
 module.exports = collaborationRouter;

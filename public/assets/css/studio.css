@@ -14,6 +14,7 @@ main {
     max-width: 1200px;
     padding: 0 20px;
 }
+
 .header {
     display: flex;
     align-items: center;
@@ -29,6 +30,7 @@ main {
     color: aquamarine;
     z-index: 1000;
 }
+
 h1 {
     flex-grow: 1;
     text-align: center;
@@ -47,18 +49,18 @@ h1 {
 }
 
 #search-container {
-    display: flex; 
-    justify-content: center; 
+    display: flex;
+    justify-content: center;
     margin-top: 20px;
-    width: 80%; 
+    width: 80%;
 }
 
 #search-container input {
     border-radius: 5px;
     padding: 8px;
     font-size: 1em;
-    width: 60%; 
-    margin-right: 10px; 
+    width: 60%;
+    margin-right: 10px;
 }
 
 #search-container button {
@@ -71,9 +73,10 @@ h1 {
     cursor: pointer;
     transition: background-color 0.3s;
 }
+
 #map {
     width: 70%;
-    height: 500px;
+    height: 700px;
     margin-top: 20px;
 }
 
@@ -93,9 +96,9 @@ h1 {
 }
 
 .modal {
-    display: none; 
-    position: fixed; 
-    z-index: 1000; 
+    display: none;
+    position: fixed;
+    z-index: 1000;
     left: 0;
     top: 0;
     width: 100%;
@@ -133,13 +136,30 @@ h1 {
     cursor: pointer;
 }
 
+.loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 18px;
+    color: #555;
+    display: none;
+    z-index: 1001;
+}
+
+
 
 @media (max-width: 768px) {
     #map {
         z-index: 1000;
         position: absolute;
         top: 15%;
-        right: 15%;
-        height: 350px;
+        width: 95%;
+        height: 450px;
+    }
+
+    .loading{
+        left: 65%;
+        width: 300px;
     }
 }

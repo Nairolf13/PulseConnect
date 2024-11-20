@@ -1,6 +1,5 @@
 document.getElementById('search').addEventListener('input', debounce(searchStudio, 300));
 
-// Fonction de recherche
 function searchStudio() {
     const query = document.getElementById('search').value.toLowerCase().trim();
 
@@ -86,3 +85,57 @@ window.onclick = event => {
         document.getElementById('errorModal').style.display = "none";
     }
 };
+
+// Affichage immédiat de la carte
+// Initialisation de la carte (faite une seule fois)
+const map = L.map('map').setView([46.603354, 1.888334], 6);  // Vue par défaut
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '© OpenStreetMap contributors'
+}).addTo(map);
+
+// Cluster pour les marqueurs
+const markers = L.markerClusterGroup();
+map.addLayer(markers); // Ajoutez les marqueurs à la carte
+
+// Fonction pour ajouter les marqueurs un par un avec un délai
+async function loadStudios() {
+    document.getElementById('loading').style.display = 'block'; // Afficher le spinner
+
+    try {
+        const response = await fetch('/studio-data');
+        const studios = await response.json();
+
+        document.getElementById('loading').style.display = 'none'; // Cacher le spinner
+
+        // Fonction pour ajouter les studios un par un avec un délai
+        function addMarker(index) {
+            if (index >= studios.length) return; // Arrêter si tous les studios ont été ajoutés
+            
+            const studio = studios[index];
+            const marker = L.marker([studio.latitude, studio.longitude]);
+            const address = studio.address || 'Adresse non spécifiée';
+
+            marker.bindPopup(`
+                <b>${studio.name}</b><br>
+                ${address}
+            `);
+            markers.addLayer(marker);
+
+            // Ajouter un délai pour l'ajout du marqueur suivant
+            setTimeout(() => addMarker(index + 1), 5); // Délai de 5ms entre chaque ajout
+        }
+
+        // Commencer à ajouter les marqueurs à partir du premier studio
+        addMarker(0);
+
+    } catch (error) {
+        console.error("Erreur lors du chargement des studios :", error);
+        showModal("Erreur lors de la récupération des studios.");
+        document.getElementById('loading').style.display = 'none';
+    }
+}
+
+loadStudios(); // Charger les studios dès le début
+

@@ -20,10 +20,11 @@
 		<h1>Les studios</h1>
 	</div>
 	<div id="search-container">
-		<input type="text" id="search" placeholder="Rechercher un studio"/>
+		<input type="text" id="search" placeholder="Rechercher un studio (nom, ville, pays)"/>
 		<button onclick="searchStudio()">Rechercher</button>
 	</div>
-	<div id="map" style="height: 500px;"></div>
+	<div id="map"></div>
+	<div id="loading" class="loading">Chargement des studios...</div>
 	<div id="errorModal" class="modal">
 		<div class="modal-content">
 			<span id="closeModal" class="close">&times;</span>
@@ -32,35 +33,37 @@
 	</div>
 {% endblock %}
 
+
 {% block script %}
-	<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-	<script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
-	<script src="/../../assets/js/studio.js"></script>
-	<script>
-		// Initialisation de la carte
-		const studios = {{ studios|json_encode|raw }};
-		const map = L.map('map').setView([46.603354, 1.888334], 6);
-
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+<script src="/../../assets/js/studio.js"></script>
+<script>
+	// Initialisation de la carte
+				const studios = {{ studios|json_encode|raw }};
+		
 		L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-			maxZoom: 19,
-			attribution: '© OpenStreetMap contributors'
+		    maxZoom: 19,
+		    attribution: '© OpenStreetMap contributors'
 		}).addTo(map);
-
+		
 		// Initialiser un cluster pour les marqueurs
 		const markers = L.markerClusterGroup();
-
+		
 		studios.forEach(studio => {
-			const marker = L.marker([studio.latitude, studio.longitude]);
-			const address = studio.address || 'Adresse non spécifiée';
-
-			marker.bindPopup(`
-				<b>${studio.name}</b><br>
-				${address}
-			`);
-			markers.addLayer(marker);
-		});
-
-		// Ajouter les marqueurs regroupés à la carte
+	    const marker = L.marker([studio.latitude, studio.longitude]);
+	    const address = studio.address || 'Adresse non spécifiée';
+	    const phone = studio.phone ? `<a href="tel:${studio.phone}">Appeler ${studio.phone}</a>` : 'Numéro de téléphone non disponible';
+	
+	  let popupContent = `
+	    <b>${studio.name}</b><br>
+	    ${address}<br>
+	    ${phone ? `<a href="tel:${studio.phone}">Appeler ${studio.phone}</a>` : 'Numéro de téléphone non disponible'}
+	`;
+	    marker.bindPopup(popupContent);
+	    markers.addLayer(marker);
+	});
+		
 		map.addLayer(markers);
-	</script>
-{% endblock %}
+			</script>
+		{% endblock %}

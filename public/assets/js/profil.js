@@ -17,14 +17,12 @@ function closeModal() {
     modal.style.display = 'none'; 
 }
 
-
 window.onclick = function(event) {
     const modal = document.getElementById('deleteModal');
     if (event.target === modal) {
         modal.style.display = 'none'; 
     }
 }
-
 
 document.addEventListener('DOMContentLoaded', function() {
     const commentButtons = document.querySelectorAll('.comment-toggle-btn');

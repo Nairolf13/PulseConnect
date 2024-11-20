@@ -1,0 +1,49 @@
+{% extends "../layouts/base.twig" %}
+
+{% block style %}
+	<link rel="stylesheet" href="/../../assets/css/addCollaboration.css">
+{% endblock %}
+
+{% block title %}
+	<title>{{title}}</title>
+{% endblock %}
+
+{% block main %}
+	{% include "../partials/header.twig" %}
+	<div class="header">
+		<li>
+			<a href="/home" class="back-arrow"><img src="/../../assets/imgs/flecheBack.png" alt="arrowBack"></a>
+		</li>
+		<div class="title">
+			<h1>Créer un espace de collaboration</h1>
+		</div>
+	</div>
+	<div class="container">
+		<form action="/createProject" method="POST">
+			<div class="form-group">
+				<label for="projectName">Nom du projet :</label>
+				<input type="text" id="projectName" name="projectName" required>
+			</div>
+
+			<div class="form-group">
+				<label for="description">Description :</label>
+				<textarea id="description" name="description" rows="4" cols="50"></textarea>
+			</div>
+
+			<div class="form-group">
+				<label for="searchUser">Ajouter des membres :</label><br>
+				<input type="text" id="searchUser" placeholder="Rechercher ...">
+				<div id="followerList" class="follower-list"></div>
+				<input type="hidden" id="selectedFollowers" name="selectedFollowers">
+			</div>
+
+			<button type="submit">Créer le projet</button>
+		</form>
+	</div>
+
+
+	{% block script %}
+		<script src="/../../assets/js/addCollaboration.js"></script>
+	{% endblock %}
+
+{% endblock %}

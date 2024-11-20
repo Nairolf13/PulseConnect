@@ -21,7 +21,7 @@ collaborationRouter.get('/collaboration', authguard, async (req, res) => {
             },
         });
 
-        res.render('pages/collaboration.twig', { followers: followers || [] });
+        res.render('pages/addCollaboration.twig', { followers: followers || [] });
     } catch (err) {
         console.error(err);
         res.status(500).send('Erreur lors de la récupération des followers');
@@ -30,15 +30,15 @@ collaborationRouter.get('/collaboration', authguard, async (req, res) => {
 
 
 
-collaborationRouter.get('/searchFollowers', async (req, res) => {
-    const userId = req.session.userId;  // ID de l'utilisateur connecté
-    const query = req.query.query || '';  // Terme de recherche de l'utilisateur
+collaborationRouter.get('/searchFollowers', authguard, async (req, res) => {
+    const userId = req.session.userId; 
+    const query = req.query.query || ''; 
 
     try {
         const lowerCaseQuery = query.toLowerCase();
         const followers = await prisma.follows.findMany({
             where: {
-                followed_id: userId, // L'utilisateur auquel les followers appartiennent
+                followed_id: userId,
             },
             include: {
                 follower: {
@@ -50,14 +50,13 @@ collaborationRouter.get('/searchFollowers', async (req, res) => {
                 },
             },
         });
-        
-        // Filtrer les followers dans le code JavaScript
+
         const filteredFollowers = followers
-            .map(f => f.follower)  // Extraire seulement l'objet `follower`
+            .map(f => f.follower)
             .filter(follower =>
-                follower.userName.toLowerCase().includes(lowerCaseQuery)  // Recherche par nom d'utilisateur
+                follower.userName.toLowerCase().includes(lowerCaseQuery)
             );
-        
+
         res.json(filteredFollowers);
     } catch (error) {
         console.error(error);
@@ -67,15 +66,16 @@ collaborationRouter.get('/searchFollowers', async (req, res) => {
 
 
 
-collaborationRouter.post('/createProject', async (req, res) => {
+collaborationRouter.post('/createProject', authguard ,async (req, res) => {
     const { projectName, description, selectedFollowers } = req.body;
-    const userId = req.session.userId;
+    const userId = req.session.users.id_user;
 
     try {
-        // Vérifier si selectedFollowers est un tableau valide, sinon le définir comme un tableau vide
-        const followersArray = Array.isArray(selectedFollowers) ? selectedFollowers : [];
+        const followersArray = Array.isArray(selectedFollowers)
+            ? selectedFollowers
+            : JSON.parse(selectedFollowers || "[]");
 
-        // Créer le projet
+       
         const project = await prisma.projects.create({
             data: {
                 name: projectName,
@@ -84,7 +84,7 @@ collaborationRouter.post('/createProject', async (req, res) => {
                     create: [
                         { id_user: userId, role: 'owner' },
                         ...followersArray.map(followerId => ({
-                            id_user: Number(followerId),
+                            id_user: parseInt(followerId),
                             role: 'user',
                         })),
                     ],
@@ -92,10 +92,146 @@ collaborationRouter.post('/createProject', async (req, res) => {
             },
         });
 
-        res.redirect(`/project/${project.id_project}`); 
+        res.redirect(`/project/${project.id_project}`);
     } catch (err) {
         console.error(err);
         res.status(500).send('Erreur lors de la création du projet');
+    }
+});
+
+collaborationRouter.get("/project/:id_project", authguard, async (req, res) => {
+    const { id_project } = req.params;
+
+    try {
+        const project = await prisma.projects.findUnique({
+            where: { id_project: parseInt(id_project) },
+            include: {
+                UsersToProjects: {
+                    include: {
+                        Users: { 
+                            select: {
+                                id_user: true,
+                                userName: true,
+                                picture: true,
+                                role: true, 
+                            },
+                        },
+                    },
+                },
+            },
+        });
+
+        if (!project) {
+            return res.status(404).send("Projet non trouvé");
+        }
+
+        const projectDetails = {
+            name: project.name,
+            description: project.description,
+            members: project.UsersToProjects.map((utp) => ({
+                id_user: utp.Users?.id_user,
+                userName: utp.Users?.userName,
+                picture: utp.Users?.picture,
+                role: utp.role,
+            })),
+        };
+
+        res.render("pages/collaboration.twig", { project: projectDetails });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Erreur lors de la récupération du projet");
+    }
+});
+
+collaborationRouter.get('/myProjects', authguard, async (req, res) => {
+    const userId = req.session.users.id_user; 
+
+    try {
+        const projects = await prisma.projects.findMany({
+            where: {
+                UsersToProjects: {
+                    some: {
+                        id_user: userId, 
+                    },
+                },
+            },
+            include: {
+                UsersToProjects: {
+                    select: { 
+                        id_user: true,
+                        role: true,  
+                        Users: { 
+                            select: {
+                                userName: true,  
+                                picture: true,
+                            },
+                        },
+                    },
+                },
+            },
+        });
+
+        const projectDetails = projects.map(project => ({
+            id_project: project.id_project,
+            name: project.name,
+            description: project.description,
+            role: project.UsersToProjects.find(userProject => userProject.id_user === userId)?.role,
+            users: project.UsersToProjects.map(userProject => userProject.Users), 
+        }));
+        
+
+        res.render('pages/projects.twig', {
+            title: 'My Projects',
+            projects: projectDetails, 
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Erreur lors de la récupération des projets');
+    }
+});
+
+
+collaborationRouter.post('/project/delete/:id', authguard, async (req, res) => {
+    const userId = req.session.userId;  
+    const projectId = parseInt(req.params.id); 
+
+    try {
+        const project = await prisma.projects.findUnique({
+            where: {
+                id_project: projectId,
+            },
+            include: {
+                UsersToProjects: {
+                    where: {
+                        id_user: userId,
+                    },
+                    select: {
+                        role: true,
+                    },
+                },
+            },
+        });
+
+        if (!project || project.UsersToProjects[0]?.role !== 'owner') {
+            return res.status(403).send('Vous n\'êtes pas autorisé à supprimer ce projet.');
+        }
+
+        await prisma.usersToProjects.deleteMany({
+            where: {
+                id_project: projectId,
+            },
+        });
+      
+        await prisma.projects.delete({
+            where: {
+                id_project: projectId,
+            },
+        });
+
+        res.redirect('/myProjects');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Erreur lors de la suppression du projet.');
     }
 });
 

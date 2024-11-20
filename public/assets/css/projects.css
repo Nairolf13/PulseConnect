@@ -1,0 +1,136 @@
+body {
+    background-color: black; 
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; 
+    min-height: 100vh; 
+    margin: 0;
+    font-family: Arial, sans-serif;
+    color: white;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; 
+    padding: 10px 20px; 
+    width: 100%; 
+    border-bottom: 1px solid #3d3d3d;
+}
+
+.title {
+    flex-grow: 1;
+    text-align: center;
+    color: aquamarine;
+    z-index: 1000;
+    margin-top: 5px;
+}
+
+h1 {
+    position: absolute;
+    left: 48%;
+    font-size: 1.2em;
+    color: aquamarine;
+}
+
+.back-arrow {
+    margin-right: auto; 
+}
+
+.back-arrow img {
+    width: 16px; 
+    height: auto; 
+}
+
+.projects-container {
+    position: absolute;
+    top: 10%;
+    left: 27%;
+    width: 100%;
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #1e1e1e;
+    border-radius: 8px;
+    color: white;
+}
+
+.projects-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.project-item {
+    background-color: #2a2a2a;
+    margin-bottom: 15px;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.project-members {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); 
+    gap: 30px;
+    padding: 0;
+    margin: 10px 0;
+    list-style: none; 
+}
+
+.project-members li {
+    text-align: center;
+    color: #b0b0b0; 
+}
+
+.profile-pic {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%; 
+    margin-bottom: 5px;
+    object-fit: cover; 
+}
+
+img{
+    height: 50px;
+}
+
+.project-item h2 {
+    color: aquamarine;
+    font-size: 1.4em;
+}
+
+.project-item p {
+    color: #b0b0b0;
+}
+
+.project-item a {
+    color: aquamarine;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.project-item a:hover {
+    text-decoration: underline;
+}
+
+.delete-form {
+    display: inline;
+    margin-left: 10px;
+}
+
+.delete {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: red;
+    font-size: 20px;
+    display: inline;
+}
+
+.delete img {
+    width: 16px;
+    height: 16px;
+}
+
+.delete:hover {
+    color: darkred;
+}

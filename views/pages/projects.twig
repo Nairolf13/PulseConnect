@@ -1,0 +1,56 @@
+{% extends "../layouts/base.twig" %}
+
+{% block style %}
+	<link rel="stylesheet" href="/../../assets/css/projects.css">
+{% endblock %}
+
+{% block title %}
+	<title>{{ title }}</title>
+{% endblock %}
+
+{% block main %}
+	{% include "../partials/header.twig" %}
+
+	<div class="header">
+		<li>
+			<a href="/home" class="back-arrow"><img src="/../../assets/imgs/flecheBack.png" alt="arrowBack"></a>
+		</li>
+		<h1>Mes projets</h1>
+	</div>
+	<div class="projects-container">
+		{% if projects is empty %}
+			<p>You are not associated with any projects yet.</p>
+		{% else %}
+			<ul class="projects-list">
+				{% for project in projects %}
+					<li class="project-item">
+						<h2>{{ project.name }}</h2>
+						<p>{{ project.description }}</p>
+						<p>Role:{{ project.role }}</p>
+						<p>Participants:</p>
+						<ul class="project-members">
+							{% for user in project.users %}
+								<li>
+									<img src="{{ user.picture }}" alt="Photo de profil" class="profile-pic">
+									<span>{{ user.userName }}</span>
+								</li>
+							{% endfor %}
+						</ul>
+
+
+						{% if project.role == 'owner' %}
+							<form action="/project/delete/{{ project.id_project }}" method="POST" class="delete-form">
+								<button type="submit" class="delete">
+									<img src="/../../assets/imgs/remove.png" alt="Delete">
+								</button>
+							</form>
+						{% endif %}
+
+						<a href="/project/{{ project.id_project }}">Voir le projet</a>
+					</li>
+				{% endfor %}
+			</ul>
+		{% endif %}
+	</div>
+
+{% endblock %}

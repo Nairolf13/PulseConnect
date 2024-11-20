@@ -3,6 +3,8 @@
 {% block style %}
 	<link rel="stylesheet" href="/../../assets/css/studio.css">
 	<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+	<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css">
+	<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css">
 {% endblock %}
 
 {% block title %}
@@ -24,38 +26,41 @@
 	<div id="map" style="height: 500px;"></div>
 	<div id="errorModal" class="modal">
 		<div class="modal-content">
+			<span id="closeModal" class="close">&times;</span>
 			<p id="errorMessage"></p>
 		</div>
 	</div>
-
 {% endblock %}
 
 {% block script %}
-	<script src="/../../assets/js/studio.js"></script>
 	<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+	<script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+	<script src="/../../assets/js/studio.js"></script>
 	<script>
-
+		// Initialisation de la carte
 		const studios = {{ studios|json_encode|raw }};
-const map = L.map('map').setView([
-46.603354, 1.888334
-], 6);
+		const map = L.map('map').setView([46.603354, 1.888334], 6);
 
+		L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+			maxZoom: 19,
+			attribution: '© OpenStreetMap contributors'
+		}).addTo(map);
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-maxZoom: 19,
-attribution: '© OpenStreetMap contributors'
-}).addTo(map);
+		// Initialiser un cluster pour les marqueurs
+		const markers = L.markerClusterGroup();
 
-studios.forEach(studio => {
-const marker = L.marker([studio.latitude, studio.longitude]).addTo(map);
-const address = studio.address || 'Adresse non spécifiée';
+		studios.forEach(studio => {
+			const marker = L.marker([studio.latitude, studio.longitude]);
+			const address = studio.address || 'Adresse non spécifiée';
 
-marker.bindPopup(`
-                <b>${
-studio.name
-}</b><br>
-                ${address}
-            `);
-});
+			marker.bindPopup(`
+				<b>${studio.name}</b><br>
+				${address}
+			`);
+			markers.addLayer(marker);
+		});
+
+		// Ajouter les marqueurs regroupés à la carte
+		map.addLayer(markers);
 	</script>
 {% endblock %}

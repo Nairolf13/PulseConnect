@@ -2,6 +2,12 @@ const collaborationRouter = require("express").Router();
 const { PrismaClient } = require("@prisma/client");
 const authguard = require("../services/authguard");
 const axios = require('axios');
+const bboxFrance = '41.3,-5.3,51.1,9.6';
+const overpassQuery = `
+    [out:json];
+    node["amenity"="studio"](${bboxFrance});
+    out body;
+`;
 
 const prisma = new PrismaClient()
 
@@ -32,8 +38,8 @@ collaborationRouter.get('/collaboration', authguard, async (req, res) => {
 
 
 collaborationRouter.get('/searchFollowers', authguard, async (req, res) => {
-    const userId = req.session.userId; 
-    const query = req.query.query || ''; 
+    const userId = req.session.userId;
+    const query = req.query.query || '';
 
     try {
         const lowerCaseQuery = query.toLowerCase();
@@ -67,7 +73,7 @@ collaborationRouter.get('/searchFollowers', authguard, async (req, res) => {
 
 
 
-collaborationRouter.post('/createProject', authguard ,async (req, res) => {
+collaborationRouter.post('/createProject', authguard, async (req, res) => {
     const { projectName, description, selectedFollowers } = req.body;
     const userId = req.session.users.id_user;
 
@@ -76,7 +82,7 @@ collaborationRouter.post('/createProject', authguard ,async (req, res) => {
             ? selectedFollowers
             : JSON.parse(selectedFollowers || "[]");
 
-       
+
         const project = await prisma.projects.create({
             data: {
                 name: projectName,
@@ -109,12 +115,12 @@ collaborationRouter.get("/project/:id_project", authguard, async (req, res) => {
             include: {
                 UsersToProjects: {
                     include: {
-                        Users: { 
+                        Users: {
                             select: {
                                 id_user: true,
                                 userName: true,
                                 picture: true,
-                                role: true, 
+                                role: true,
                             },
                         },
                     },
@@ -145,25 +151,25 @@ collaborationRouter.get("/project/:id_project", authguard, async (req, res) => {
 });
 
 collaborationRouter.get('/myProjects', authguard, async (req, res) => {
-    const userId = req.session.users.id_user; 
+    const userId = req.session.users.id_user;
 
     try {
         const projects = await prisma.projects.findMany({
             where: {
                 UsersToProjects: {
                     some: {
-                        id_user: userId, 
+                        id_user: userId,
                     },
                 },
             },
             include: {
                 UsersToProjects: {
-                    select: { 
+                    select: {
                         id_user: true,
-                        role: true,  
-                        Users: { 
+                        role: true,
+                        Users: {
                             select: {
-                                userName: true,  
+                                userName: true,
                                 picture: true,
                             },
                         },
@@ -177,13 +183,13 @@ collaborationRouter.get('/myProjects', authguard, async (req, res) => {
             name: project.name,
             description: project.description,
             role: project.UsersToProjects.find(userProject => userProject.id_user === userId)?.role,
-            users: project.UsersToProjects.map(userProject => userProject.Users), 
+            users: project.UsersToProjects.map(userProject => userProject.Users),
         }));
-        
+
 
         res.render('pages/projects.twig', {
             title: 'My Projects',
-            projects: projectDetails, 
+            projects: projectDetails,
         });
     } catch (error) {
         console.error(error);
@@ -193,8 +199,8 @@ collaborationRouter.get('/myProjects', authguard, async (req, res) => {
 
 
 collaborationRouter.post('/project/delete/:id', authguard, async (req, res) => {
-    const userId = req.session.userId;  
-    const projectId = parseInt(req.params.id); 
+    const userId = req.session.userId;
+    const projectId = parseInt(req.params.id);
 
     try {
         const project = await prisma.projects.findUnique({
@@ -222,7 +228,7 @@ collaborationRouter.post('/project/delete/:id', authguard, async (req, res) => {
                 id_project: projectId,
             },
         });
-      
+
         await prisma.projects.delete({
             where: {
                 id_project: projectId,
@@ -238,42 +244,32 @@ collaborationRouter.post('/project/delete/:id', authguard, async (req, res) => {
 
 
 collaborationRouter.get('/studio', authguard, async (req, res) => {
-    const bboxFrance = '41.3,-5.3,51.1,9.6'; 
-    const overpassQuery = `
-        [out:json];
-        node["amenity"="studio"](${bboxFrance});
-        out body;
-    `;
-
     try {
         const response = await axios.post(
-            'https://overpass.kumi.systems/api/interpreter', 
+            'https://overpass.kumi.systems/api/interpreter',
             overpassQuery,
             { headers: { 'Content-Type': 'text/plain' } }
         );
 
-        const studios = response.data.elements.map(studio => {
-            return {
-                id: studio.id,
-                name: studio.tags.name || 'Studio inconnu',
-                latitude: studio.lat,
-                longitude: studio.lon,
-                address: studio.tags['addr:full'] || 
-                         (studio.tags['addr:street'] + ', ' + studio.tags['addr:city'] + ', ' + studio.tags['addr:postcode']) ||
-                         'Adresse non spécifiée',
-            };
-        });
+        const studios = response.data.elements.map(studio => ({
+            id: studio.id,
+            name: studio.tags.name || 'Studio inconnu',
+            latitude: studio.lat,
+            longitude: studio.lon,
+            address: studio.tags['addr:full'] ||
+                `${studio.tags['addr:street'] || ''}, ${studio.tags['addr:city'] || ''}, ${studio.tags['addr:postcode'] || ''}`.trim() ||
+                'Adresse non spécifiée',
+        }));
 
         res.render('pages/studio.twig', {
             title: 'Studios d\'enregistrement en France',
-            studios, 
+            studios,
         });
     } catch (error) {
         console.error('Erreur avec Overpass API:', error);
         res.status(500).send('Erreur lors de la récupération des studios');
     }
 });
-
 
 
 module.exports = collaborationRouter;

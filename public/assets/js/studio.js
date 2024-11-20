@@ -1,35 +1,75 @@
-document.getElementById('search').addEventListener('input', searchStudio);
+document.getElementById('search').addEventListener('input', debounce(searchStudio, 300));
 
+// Fonction de recherche
 function searchStudio() {
     const query = document.getElementById('search').value.toLowerCase().trim();
-    
+
     if (!query) {
-        resetMap();
+        resetMap(); // Réinitialiser la carte si aucune recherche
         return;
     }
 
-    const studio = studios.find(studio => 
+    const matchingStudios = studios.filter(studio =>
         studio.name.toLowerCase().includes(query) || 
-        (studio.address && studio.address.toLowerCase().includes(query))
+        (studio.address && studio.address.toLowerCase().includes(query)) ||
+        (studio.address && extractCityFromAddress(studio.address).toLowerCase().includes(query))
     );
 
-    if (studio) {
-        const lat = studio.latitude;
-        const lon = studio.longitude;
+    if (matchingStudios.length > 0) {
+        resetMap(); // Supprimer les anciens marqueurs
+        matchingStudios.forEach(studio => {
+            const lat = studio.latitude;
+            const lon = studio.longitude;
 
-        map.setView([lat, lon], 15);
-        L.marker([lat, lon]).addTo(map)
-            .bindPopup(`
+            const marker = L.marker([lat, lon]).bindPopup(`
                 <b>${studio.name}</b><br>
                 ${studio.address || 'Adresse non spécifiée'}
-            `)
-            .openPopup();
+            `);
+
+            markers.addLayer(marker);
+        });
+
+        const firstStudio = matchingStudios[0];
+        map.setView([firstStudio.latitude, firstStudio.longitude], 12);
     } else {
         showModal("Aucun studio trouvé.");
     }
 }
 
+// Définir une fonction debounce pour limiter la fréquence d'exécution
+function debounce(func, delay) {
+    let timeout;
+    return function (...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), delay);
+    };
+}
 
+// Extraire la ville d'une adresse
+function extractCityFromAddress(address) {
+    const parts = address.split(',');
+    return parts.length > 1 ? parts[1].trim() : '';
+}
+
+// Réinitialiser la carte
+function resetMap() {
+    map.setView([46.603354, 1.888334], 6);
+    markers.clearLayers();
+
+    // Réafficher tous les studios
+    studios.forEach(studio => {
+        const marker = L.marker([studio.latitude, studio.longitude]);
+        const address = studio.address || 'Adresse non spécifiée';
+
+        marker.bindPopup(`
+            <b>${studio.name}</b><br>
+            ${address}
+        `);
+        markers.addLayer(marker);
+    });
+}
+
+// Afficher une modal avec un message d'erreur
 function showModal(message) {
     const modal = document.getElementById('errorModal');
     const errorMessage = document.getElementById('errorMessage');
@@ -37,23 +77,12 @@ function showModal(message) {
     modal.style.display = "flex";
 }
 
-
-document.addEventListener('DOMContentLoaded', () => {
-
-    document.getElementById('closeModal').onclick = function() {
-        console.log("La croix a été cliquée");
-        const modal = document.getElementById('errorModal');
-        modal.style.display = "none";
-    };
-
-    window.onclick = function(event) {
-        const modal = document.getElementById('errorModal');
-        if (event.target == modal) {
-            modal.style.display = "none"; 
-        }
-    };
-});
-
-function resetMap() {
-    map.setView([46.603354, 1.888334], 6); 
-}
+// Fermer la modal lorsqu'on clique sur la croix ou en dehors
+document.getElementById('closeModal').onclick = () => {
+    document.getElementById('errorModal').style.display = "none";
+};
+window.onclick = event => {
+    if (event.target === document.getElementById('errorModal')) {
+        document.getElementById('errorModal').style.display = "none";
+    }
+};

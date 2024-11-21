@@ -244,38 +244,56 @@ collaborationRouter.get('/studio', authguard, (req, res) => {
 });
 
 collaborationRouter.get('/studio-data', authguard, async (req, res) => {
-    const bboxWorld = '-90,-180,90,180';
+    const { lat, lon, radius } = req.query;
+    let bboxQuery;
+
+    if (lat && lon && radius) {
+        const bbox = getBoundingBox(parseFloat(lat), parseFloat(lon), parseFloat(radius));
+        bboxQuery = `${bbox.south},${bbox.west},${bbox.north},${bbox.east}`;
+    } else {
+        bboxQuery = '-90,-180,90,180';
+    }
+
     const overpassQuery = `
-    [out:json];
-    node["amenity"="studio"](${bboxWorld});
-    out body;
+        [out:json];
+        node["amenity"="studio"](${bboxQuery});
+        out body;
     `;
 
     try {
-        const response = await axios.post(
-            'https://overpass.kumi.systems/api/interpreter',
-            overpassQuery,
-            { headers: { 'Content-Type': 'text/plain' } }
-        );
-
-        const studios = response.data.elements.map(studio => ({
-            id: studio.id,
-            name: studio.tags.name || 'Studio inconnu',
+        const response = await fetchOverpassData(overpassQuery);
+        const studios = response.elements.map(studio => ({
+            name: studio.tags.name || 'Nom non spécifié',
+            address: studio.tags['addr:street'] || studio.tags.address || 'Adresse non spécifiée',
+            phone: studio.tags.phone || studio.tags['contact:phone'] || 'Téléphone non spécifié',
+            image: studio.tags.image || studio.tags['wikimedia_commons'] || null,
             latitude: studio.lat,
-            longitude: studio.lon,
-            address: studio.tags['addr:full'] ||
-                `${studio.tags['addr:street'] || ''}, ${studio.tags['addr:city'] || ''}, ${studio.tags['addr:postcode'] || ''}`.trim() ||
-                'Adresse non spécifiée',
-            phone: studio.tags['contact:phone'] || null,  // Passer à null si le numéro de téléphone n'est pas disponible
+            longitude: studio.lon
         }));
-
-        res.json(studios); 
+        res.json(studios);
     } catch (error) {
-        console.error('Erreur avec Overpass API:', error);
-        res.status(500).json({ error: 'Erreur lors de la récupération des studios' });
+        console.error("Erreur lors de la récupération des données Overpass", error);
+        res.status(500).json({ message: "Erreur serveur lors de la récupération des studios" });
     }
 });
 
+function getBoundingBox(lat, lon, radiusKm) {
+    const earthRadiusKm = 6371;
+    const latDelta = (radiusKm / earthRadiusKm) * (180 / Math.PI);
+    const lonDelta = (radiusKm / earthRadiusKm) * (180 / Math.PI) / Math.cos(lat * Math.PI / 180);
 
+    return {
+        south: lat - latDelta,
+        west: lon - lonDelta,
+        north: lat + latDelta,
+        east: lon + lonDelta
+    };
+}
 
+// Exemple de fonction pour récupérer les données Overpass
+async function fetchOverpassData(query) {
+    const url = `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`;
+    const response = await fetch(url);
+    return await response.json();
+}
 module.exports = collaborationRouter;

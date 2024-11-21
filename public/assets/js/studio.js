@@ -1,41 +1,52 @@
-document.getElementById('search').addEventListener('input', debounce(searchStudio, 300));
+document.getElementById('search').addEventListener('input', debounce(() => {
+    if (studios.length > 0) {
+      searchStudio();
+    } else {
+      console.log("Les studios sont en cours de chargement...");
+    }
+  }, 300));
 
-function searchStudio() {
+  function searchStudio() {
     const query = document.getElementById('search').value.toLowerCase().trim();
 
     if (!query) {
-        resetMap(); // Réinitialiser la carte si aucune recherche
+        resetMap();
         return;
     }
 
     const matchingStudios = studios.filter(studio =>
         studio.name.toLowerCase().includes(query) || 
         (studio.address && studio.address.toLowerCase().includes(query)) ||
-        (studio.address && extractCityFromAddress(studio.address).toLowerCase().includes(query))
+        (studio.city && studio.city.toLowerCase().includes(query))
     );
 
     if (matchingStudios.length > 0) {
-        resetMap(); // Supprimer les anciens marqueurs
-        matchingStudios.forEach(studio => {
-            const lat = studio.latitude;
-            const lon = studio.longitude;
+        resetMap();
+        const cityCenter = getCityCenter(matchingStudios);
+        map.setView(cityCenter, 12);
 
-            const marker = L.marker([lat, lon]).bindPopup(`
-                <b>${studio.name}</b><br>
-                ${studio.address || 'Adresse non spécifiée'}
-            `);
+        const nearbyStudios = filterStudiosByDistance(matchingStudios, cityCenter, 20); // 20 km radius
 
-            markers.addLayer(marker);
+        nearbyStudios.forEach(studio => {
+            addMarker(studio);
         });
-
-        const firstStudio = matchingStudios[0];
-        map.setView([firstStudio.latitude, firstStudio.longitude], 12);
     } else {
         showModal("Aucun studio trouvé.");
     }
 }
 
-// Définir une fonction debounce pour limiter la fréquence d'exécution
+function getCityCenter(studios) {
+    const lat = studios.reduce((sum, studio) => sum + studio.latitude, 0) / studios.length;
+    const lon = studios.reduce((sum, studio) => sum + studio.longitude, 0) / studios.length;
+    return [lat, lon];
+}
+
+function filterStudiosByDistance(studios, center, maxDistance) {
+    return studios.filter(studio => {
+        const distance = L.latLng(center).distanceTo([studio.latitude, studio.longitude]) / 1000; // en km
+        return distance <= maxDistance;
+    });
+}
 function debounce(func, delay) {
     let timeout;
     return function (...args) {
@@ -44,18 +55,15 @@ function debounce(func, delay) {
     };
 }
 
-// Extraire la ville d'une adresse
 function extractCityFromAddress(address) {
     const parts = address.split(',');
     return parts.length > 1 ? parts[1].trim() : '';
 }
 
-// Réinitialiser la carte
 function resetMap() {
     map.setView([46.603354, 1.888334], 6);
     markers.clearLayers();
 
-    // Réafficher tous les studios
     studios.forEach(studio => {
         const marker = L.marker([studio.latitude, studio.longitude]);
         const address = studio.address || 'Adresse non spécifiée';
@@ -68,7 +76,6 @@ function resetMap() {
     });
 }
 
-// Afficher une modal avec un message d'erreur
 function showModal(message) {
     const modal = document.getElementById('errorModal');
     const errorMessage = document.getElementById('errorMessage');
@@ -76,7 +83,6 @@ function showModal(message) {
     modal.style.display = "flex";
 }
 
-// Fermer la modal lorsqu'on clique sur la croix ou en dehors
 document.getElementById('closeModal').onclick = () => {
     document.getElementById('errorModal').style.display = "none";
 };
@@ -86,56 +92,111 @@ window.onclick = event => {
     }
 };
 
-// Affichage immédiat de la carte
-// Initialisation de la carte (faite une seule fois)
-const map = L.map('map').setView([46.603354, 1.888334], 6);  // Vue par défaut
+const map = L.map('map').setView([46.603354, 1.888334], 6); 
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
     attribution: '© OpenStreetMap contributors'
 }).addTo(map);
 
-// Cluster pour les marqueurs
 const markers = L.markerClusterGroup();
 map.addLayer(markers); // Ajoutez les marqueurs à la carte
+studios = []
 
-// Fonction pour ajouter les marqueurs un par un avec un délai
 async function loadStudios() {
-    document.getElementById('loading').style.display = 'block'; // Afficher le spinner
+    document.getElementById('loading').style.display = 'block';
 
     try {
-        const response = await fetch('/studio-data');
-        const studios = await response.json();
+        const userLocation = await getUserLocation();
+        map.setView(userLocation, 12);
 
-        document.getElementById('loading').style.display = 'none'; // Cacher le spinner
+        // Charger et afficher les studios proches (20 km)
+        const responseClose = await fetch(`/studio-data?lat=${userLocation[0]}&lon=${userLocation[1]}&radius=20`);
+        const studiosClose = await responseClose.json();
+        addMarkers(studiosClose, studiosClose.length);
 
-        // Fonction pour ajouter les studios un par un avec un délai
-        function addMarker(index) {
-            if (index >= studios.length) return; // Arrêter si tous les studios ont été ajoutés
-            
-            const studio = studios[index];
-            const marker = L.marker([studio.latitude, studio.longitude]);
-            const address = studio.address || 'Adresse non spécifiée';
+        // Charger tous les studios du monde
+        const responseAll = await fetch('/studio-data');
+        const studiosAll = await responseAll.json();
 
-            marker.bindPopup(`
-                <b>${studio.name}</b><br>
-                ${address}
-            `);
-            markers.addLayer(marker);
+        // Filtrer pour exclure les studios déjà affichés
+        const studiosRemaining = studiosAll.filter(studio => 
+            !studiosClose.some(s => s.latitude === studio.latitude && s.longitude === studio.longitude)
+        );
 
-            // Ajouter un délai pour l'ajout du marqueur suivant
-            setTimeout(() => addMarker(index + 1), 5); // Délai de 5ms entre chaque ajout
-        }
+        // Afficher progressivement le reste des studios
+        setTimeout(() => {
+            addMarkersProgressively(studiosRemaining, 50);
+        }, 1000);
 
-        // Commencer à ajouter les marqueurs à partir du premier studio
-        addMarker(0);
-
+        document.getElementById('loading').style.display = 'none';
     } catch (error) {
         console.error("Erreur lors du chargement des studios :", error);
-        showModal("Erreur lors de la récupération des studios.");
+        showModal("Erreur lors de la récupération des studios ou de la géolocalisation.");
         document.getElementById('loading').style.display = 'none';
     }
 }
 
-loadStudios(); // Charger les studios dès le début
+function addMarkersProgressively(studios, batchSize) {
+    let index = 0;
+    function addBatch() {
+        const batch = studios.slice(index, index + batchSize);
+        addMarkers(batch, batch.length);
+        index += batchSize;
+        if (index < studios.length) {
+            setTimeout(addBatch, 100);
+        }
+    }
+    addBatch();
+}
 
+function addMarker(studio) {
+    const marker = L.marker([studio.latitude, studio.longitude]);
+    const phone = studio.phone ? `<a href="tel:${studio.phone}">Appeler ${studio.phone}</a>` : 'Numéro de téléphone non disponible';
+    
+    const popupContent = `
+        <b>${studio.name}</b><br>
+        Adresse: ${studio.address}<br>
+        Ville: ${studio.city}<br>
+        ${phone}
+        ${studio.image ? `<br><img src="${studio.image}" alt="${studio.name}" style="max-width:200px; max-height:150px;">` : ''}
+    `;
+
+    marker.bindPopup(popupContent);
+    markers.addLayer(marker);
+}
+
+function addMarkers(studios, limit) {
+    studios.slice(0, limit).forEach((studio, index) => {
+        setTimeout(() => addMarker(studio), index * 5);
+    });
+}
+
+function addMarkers(newStudios, limit) {
+    newStudios.slice(0, limit).forEach((studio, index) => {
+      setTimeout(() => {
+        if (!studios.some(s => s.latitude === studio.latitude && s.longitude === studio.longitude)) {
+          addMarker(studio);
+          studios.push(studio);
+        }
+      }, index * 5);
+    });
+  }
+
+  function getUserLocation() {
+    return new Promise((resolve, reject) => {
+      if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(
+          position => resolve([position.coords.latitude, position.coords.longitude]),
+          error => {
+            console.error("Erreur de géolocalisation:", error);
+            resolve([46.603354, 1.888334]); // Coordonnées par défaut
+          }
+        );
+      } else {
+        resolve([46.603354, 1.888334]); // Coordonnées par défaut
+      }
+    });
+  }
+
+loadStudios();

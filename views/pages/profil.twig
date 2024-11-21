@@ -30,8 +30,12 @@
 				<li>Aucun contenu disponible.</li>
 			{% else %}
 				{% for content in content %}
-					<li>
-						<button class="delete" onclick="openModal({{ content.id }})">X</button>
+					<li class="post-item">
+						<button class="delete" onclick="openModal({{ content.id }})">
+							<span class="dots">.</span>
+							<span class="dots">.</span>
+							<span class="dots">.</span>
+						</button>
 						<p>{{ content.Users.userName }}</p>
 						<h2>{{ content.name }}</h2>
 						<p>{{ content.description }}</p>

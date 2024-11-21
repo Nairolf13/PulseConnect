@@ -27,7 +27,7 @@
 	<div id="loading" class="loading">Chargement des studios...</div>
 	<div id="errorModal" class="modal">
 		<div class="modal-content">
-			<span id="closeModal" class="close">&times;</span>
+			
 			<p id="errorMessage"></p>
 		</div>
 	</div>
@@ -39,7 +39,6 @@
 <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
 <script src="/../../assets/js/studio.js"></script>
 <script>
-	// Initialisation de la carte
 				const studios = {{ studios|json_encode|raw }};
 		
 		L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -47,7 +46,6 @@
 		    attribution: '© OpenStreetMap contributors'
 		}).addTo(map);
 		
-		// Initialiser un cluster pour les marqueurs
 		const markers = L.markerClusterGroup();
 		
 		studios.forEach(studio => {

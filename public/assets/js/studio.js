@@ -42,11 +42,15 @@ function getCityCenter(studios) {
 }
 
 function filterStudiosByDistance(studios, center, maxDistance) {
+    // Tracer un cercle autour de la position actuelle
+    L.circle(center, { radius: maxDistance * 1000, color: 'red', fillOpacity: 0.1 }).addTo(map);
+
     return studios.filter(studio => {
         const distance = L.latLng(center).distanceTo([studio.latitude, studio.longitude]) / 1000; // en km
         return distance <= maxDistance;
     });
 }
+
 function debounce(func, delay) {
     let timeout;
     return function (...args) {
@@ -156,7 +160,9 @@ function addMarker(studio) {
     
     const popupContent = `
         <b>${studio.name}</b><br>
-        Adresse: ${studio.address}<br>
+        <a href="#" class="get-directions" data-lat="${studio.latitude}" data-lon="${studio.longitude}">
+            Adresse: ${studio.address}
+        </a><br>
         Ville: ${studio.city}<br>
         ${phone}
         ${studio.image ? `<br><img src="${studio.image}" alt="${studio.name}" style="max-width:200px; max-height:150px;">` : ''}
@@ -183,20 +189,78 @@ function addMarkers(newStudios, limit) {
     });
   }
 
-  function getUserLocation() {
+  async function getUserLocation() {
     return new Promise((resolve, reject) => {
-      if ("geolocation" in navigator) {
-        navigator.geolocation.getCurrentPosition(
-          position => resolve([position.coords.latitude, position.coords.longitude]),
-          error => {
-            console.error("Erreur de géolocalisation:", error);
-            resolve([46.603354, 1.888334]); // Coordonnées par défaut
-          }
-        );
-      } else {
-        resolve([46.603354, 1.888334]); // Coordonnées par défaut
-      }
+        if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(
+                position => {
+                    const userLat = position.coords.latitude;
+                    const userLon = position.coords.longitude;
+
+                    // Ajouter un ping rouge sur la carte
+                    const userMarker = L.marker([userLat, userLon], {
+                        icon: L.icon({
+                            iconUrl: '/../../assets/imgs/pieton.png', // Remplacez par le chemin de votre image
+                            iconSize: [25, 41],
+                            iconAnchor: [12, 41],
+                            popupAnchor: [1, -34],
+                            shadowSize: [41, 41]
+                        })
+                    }).addTo(map);
+
+                    userMarker.bindPopup("Vous êtes ici").openPopup();
+                    resolve([userLat, userLon]);
+                },
+                error => {
+                    console.error("Erreur de géolocalisation:", error);
+                    resolve([46.603354, 1.888334]); // Coordonnées par défaut
+                },
+                {
+                    enableHighAccuracy: true, // Haute précision activée
+                    timeout: 10000,          // Timeout augmenté (10 secondes)
+                    maximumAge: 0            // Pas de cache pour la position
+                }
+            );
+        } else {
+            resolve([46.603354, 1.888334]); // Coordonnées par défaut si la géolocalisation est indisponible
+        }
     });
-  }
+}
+
+  async function getDirections(start, end) {
+    const url = `https://router.project-osrm.org/route/v1/driving/${start[1]},${start[0]};${end[1]},${end[0]}?overview=full&geometries=geojson`;
+    const response = await fetch(url);
+    return await response.json();
+}
+
+map.on('popupopen', function(e) {
+    const directionLink = e.popup._contentNode.querySelector('.get-directions');
+    if (directionLink) {
+        directionLink.addEventListener('click', async function(event) {
+            event.preventDefault();
+            const userLocation = await getUserLocation();
+            const studioLocation = [this.dataset.lat, this.dataset.lon];
+            showDirections(userLocation, studioLocation);
+        });
+    }
+});
+
+async function showDirections(start, end) {
+    try {
+        const directions = await getDirections(start, end);
+        const route = L.geoJSON(directions.routes[0].geometry).addTo(map);
+        const duration = Math.round(directions.routes[0].duration / 60);
+        
+        map.fitBounds(route.getBounds());
+        
+        L.popup()
+            .setLatLng(end)
+            .setContent(`Temps estimé : ${duration} minutes`)
+            .openOn(map);
+    } catch (error) {
+        console.error("Erreur lors de l'obtention des directions :", error);
+        showModal("Impossible d'obtenir les directions.");
+    }
+}
 
 loadStudios();

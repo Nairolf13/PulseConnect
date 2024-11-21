@@ -290,10 +290,10 @@ function getBoundingBox(lat, lon, radiusKm) {
     };
 }
 
-// Exemple de fonction pour récupérer les données Overpass
 async function fetchOverpassData(query) {
     const url = `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`;
     const response = await fetch(url);
     return await response.json();
 }
+
 module.exports = collaborationRouter;

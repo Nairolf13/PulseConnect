@@ -25,43 +25,62 @@
 	</div>
 	<div id="map"></div>
 	<div id="loading" class="loading">Chargement des studios...</div>
+
+	<!-- Modal for Directions -->
+	<div id="destinationModal" class="modal">
+	    <div class="modal-content">
+	        <h2>Directions</h2>
+	        <p id="destinationMessage"></p>
+	        <div id="directionArrow"></div> <!-- Direction arrow -->
+	        <button id="closeDestinationModal">Fermer</button>
+	    </div>
+	</div>
+
+	<!-- Error Modal -->
 	<div id="errorModal" class="modal">
 		<div class="modal-content">
-			
 			<p id="errorMessage"></p>
 		</div>
 	</div>
-{% endblock %}
 
+	<!-- Voice Selection Dropdown -->
+	<div>
+		<select id="voiceSelect">
+		    <option value="">Sélectionnez une voix...</option>
+		</select>
+	</div>
+
+{% endblock %}
 
 {% block script %}
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
 <script src="/../../assets/js/studio.js"></script>
 <script>
-				const studios = {{ studios|json_encode|raw }};
-		
-		L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-		    maxZoom: 19,
-		    attribution: '© OpenStreetMap contributors'
-		}).addTo(map);
-		
-		const markers = L.markerClusterGroup();
-		
-		studios.forEach(studio => {
-	    const marker = L.marker([studio.latitude, studio.longitude]);
-	    const address = studio.address || 'Adresse non spécifiée';
-	    const phone = studio.phone ? `<a href="tel:${studio.phone}">Appeler ${studio.phone}</a>` : 'Numéro de téléphone non disponible';
-	
-	  let popupContent = `
-	    <b>${studio.name}</b><br>
-	    ${address}<br>
-	    ${phone ? `<a href="tel:${studio.phone}">Appeler ${studio.phone}</a>` : 'Numéro de téléphone non disponible'}
-	`;
-	    marker.bindPopup(popupContent);
-	    markers.addLayer(marker);
-	});
-		
-		map.addLayer(markers);
-			</script>
-		{% endblock %}
+    const studios = {{ studios|json_encode|raw }};
+    
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    const markers = L.markerClusterGroup();
+
+    studios.forEach(studio => {
+        const marker = L.marker([studio.latitude, studio.longitude]);
+        const address = studio.address || 'Adresse non spécifiée';
+        const phone = studio.phone ? `<a href="tel:${studio.phone}">Appeler ${studio.phone}</a>` : 'Numéro de téléphone non disponible';
+    
+        let popupContent = `
+            <b>${studio.name}</b><br>
+            ${address}<br>
+            ${phone}
+        `;
+        marker.bindPopup(popupContent);
+        markers.addLayer(marker);
+    });
+    
+    map.addLayer(markers);
+
+</script>
+{% endblock %}

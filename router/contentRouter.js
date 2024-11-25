@@ -6,6 +6,7 @@ const authguard = require("../services/authguard");
 const prisma = new PrismaClient();
 
 const genresEnum = [
+    "Texte",
     "Pop",
     "Rock",
     "HipHop",

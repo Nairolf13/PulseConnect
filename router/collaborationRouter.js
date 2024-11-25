@@ -1,10 +1,90 @@
 const collaborationRouter = require("express").Router();
 const { PrismaClient } = require("@prisma/client");
 const authguard = require("../services/authguard");
+const upload = require("../services/downloadExtension");
 const axios = require('axios');
 
 
 const prisma = new PrismaClient()
+
+const genresEnum = [
+    "Texte",
+    "Pop",
+    "Rock",
+    "HipHop",
+    "Rap",
+    "Jazz",
+    "Classical",
+    "Reggae",
+    "Country",
+    "Electronic",
+    "RnB",
+    "Metal",
+    "Alternative",
+    "Blues",
+    "Indie",
+    "Folk",
+    "Latin",
+    "Soul",
+    "Funk",
+    "Punk",
+    "Disco",
+    "House",
+    "Techno",
+    "Dubstep",
+    "Ambient",
+    "Ska",
+    "Grunge",
+    "Gospel",
+    "Bluegrass",
+    "Swing",
+    "Industrial",
+    "PostRock",
+    "Emo",
+    "KPop",
+    "JPop",
+    "Cumbia",
+    "Salsa",
+    "BossaNova",
+    "Tango",
+    "Afrobeat",
+    "Zydeco",
+    "Trap",
+    "LoFi",
+    "Experimental",
+    "ArtRock",
+    "Shoegaze",
+    "NewWave",
+    "Britpop",
+    "GothicRock",
+    "BaroquePop",
+    "SynthPop",
+    "HardRock",
+    "PowerPop",
+    "SurfRock",
+    "PostPunk",
+    "ChristianRock",
+    "Celtic",
+    "Cajun",
+    "NoiseRock",
+    "StonerRock",
+    "ProgressiveRock",
+    "MelodicPunk",
+    "SkaPunk",
+    "MathRock",
+    "TripHop",
+    "DreamPop",
+    "Grime",
+    "NuMetal",
+    "SouthernRock",
+    "DarkWave",
+    "Vaporwave",
+    "Chiptune",
+    "SeaShanty",
+    "MusicalTheatre",
+    "Soundtrack",
+    "Instrumental"
+];
 
 collaborationRouter.get('/collaboration', authguard, async (req, res) => {
     const userId = req.session.userId;
@@ -101,12 +181,126 @@ collaborationRouter.post('/createProject', authguard, async (req, res) => {
     }
 });
 
-collaborationRouter.get("/project/:id_project", authguard, async (req, res) => {
-    const { id_project } = req.params;
+collaborationRouter.post("/project/:id_project/upload", authguard, upload.single('file'), async (req, res) => {
+    try {
+        const { id_project } = req.params;  // Récupère l'ID du projet à partir de l'URL
+        const userId = req.session.users.id_user;  // Récupère l'ID de l'utilisateur connecté
+        const { genre, description, price } = req.body;  // Récupère les données envoyées avec la requête
+        const file_url = req.file ? req.file.path : null;  // Récupère le chemin du fichier
+    
+        
+        // Vérifie si l'ID du projet et le fichier sont présents
+        if (!id_project) {
+            return res.status(400).send('ID du projet manquant');
+        }
+
+        if (!file_url) {
+            return res.status(400).send('Aucun fichier uploadé.');
+        }
+
+        // Crée l'asset dans la base de données
+        await prisma.assets.create({
+            data: {
+                id_user: userId,
+                name: req.body.name, 
+                isPublic: false,
+                url: req.file.filename,
+                genre: req.body.genre || null,
+                description: req.body.description || null,
+                id_project: parseInt(id_project),  // ID du projet associé
+            },
+        });
+
+        // Redirige vers la page du projet
+        res.redirect(`/project/${id_project}`);
+    } catch (error) {
+        console.error("Erreur lors du téléversement du fichier :", error);
+        res.status(500).send("Erreur lors du téléversement du fichier.");
+    }
+});
+
+
+
+
+// Route : Supprimer un fichier
+collaborationRouter.post("/project/:id_project/file/:id_file/delete", authguard, async (req, res) => {
+    const { id_file } = req.params;
 
     try {
+        await prisma.files.delete({
+            where: { id_file: parseInt(id_file) },
+        });
+
+        res.json({ success: true });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Erreur lors de la suppression du fichier." });
+    }
+});
+
+// Route pour ajouter un commentaire à un fichier (asset)
+collaborationRouter.post("/project/:id_project/:id_asset/comment", authguard, async (req, res) => {
+    try {
+        const { id_project, id_asset } = req.params; // Récupérer l'id du projet et du fichier
+        const { commentContent } = req.body; // Contenu du commentaire
+        const userId = req.session.users.id_user; // ID de l'utilisateur connecté
+
+        const newComment = await prisma.commentaires.create({
+            data: {
+                id_user: userId,
+                id_project: parseInt(id_project), 
+                id_asset: parseInt(id_asset), // Associer le commentaire au fichier
+                content: commentContent,  // Le contenu du commentaire
+            },
+        });
+
+        // Rediriger vers la page du projet avec les commentaires
+        res.redirect(`/project/${id_project}`);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Erreur lors de l'ajout du commentaire");
+    }
+});
+
+// Route : Supprimer un commentaire
+collaborationRouter.post("/project/:id_project/comment/:id_comment/delete", authguard, async (req, res) => {
+    const { id_comment } = req.params;
+
+    try {
+        await prisma.comments.delete({
+            where: { id_comment: parseInt(id_comment) },
+        });
+
+        res.json({ success: true });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Erreur lors de la suppression du commentaire." });
+    }
+});
+
+// Route : Récupérer les fichiers et commentaires
+collaborationRouter.get("/project/:id_project", authguard, async (req, res) => {
+    const { id_project } = req.params; // Récupère l'ID du projet à partir de l'URL
+
+    try {
+        // Utilise l'ID dynamique pour récupérer les données du projet
         const project = await prisma.projects.findUnique({
             where: { id_project: parseInt(id_project) },
+            include: {
+                Assets: {
+                    include: {
+                        Commentaires: {
+                            include: {
+                                Users: {
+                                    select: {
+                                        userName: true, // Affichage du nom de l'utilisateur
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
             include: {
                 UsersToProjects: {
                     include: {
@@ -120,30 +314,70 @@ collaborationRouter.get("/project/:id_project", authguard, async (req, res) => {
                         },
                     },
                 },
+                Assets: true,
+                Commentaires: {
+                    include: {
+                        Users: {
+                            select: {
+                                id_user: true,
+                                userName: true,
+                            },
+                        },
+                    },
+                },
+                Likes: {
+                    include: {
+                        Users: {
+                            select: {
+                                id_user: true,
+                                userName: true,
+                            },
+                        },
+                    },
+                },
             },
-        });
+        })
 
         if (!project) {
             return res.status(404).send("Projet non trouvé");
         }
 
         const projectDetails = {
-            name: project.name,
-            description: project.description,
-            members: project.UsersToProjects.map((utp) => ({
-                id_user: utp.Users?.id_user,
-                userName: utp.Users?.userName,
-                picture: utp.Users?.picture,
-                role: utp.role,
-            })),
+            id_project: project.id_project, 
+            name: project?.name || "Nom non défini",
+            description: project?.description || "Description non définie",
+            members: Array.isArray(project?.UsersToProjects)
+                ? project.UsersToProjects.map((utp) => ({
+                      id_user: utp.Users?.id_user || null,
+                      userName: utp.Users?.userName || "Nom inconnu",
+                      picture: utp.Users?.picture || "Image non définie",
+                      role: utp.role || "Rôle inconnu",
+                  }))
+                : [], 
+                files: Array.isArray(project?.Assets)
+                ? project.Assets.map((file) => ({
+                      id: file.id || null,
+                      name: file.name || "Fichier sans nom",
+                      url: file.url || "URL non définie",
+                      comments: Array.isArray(file.Commentaires)  
+                          ? file.Commentaires.map((comment) => ({
+                                id: comment.id || null,
+                                content: comment.content || "Commentaire vide",
+                                userName: comment.Users?.userName || "Utilisateur inconnu",
+                                created_at: comment.created_at || null,
+                            }))
+                          : [], 
+                  }))
+                : [],
         };
 
-        res.render("pages/collaboration.twig", { project: projectDetails });
+        res.render("pages/collaboration.twig", { project: projectDetails, genres: genresEnum  });
     } catch (err) {
         console.error(err);
         res.status(500).send("Erreur lors de la récupération du projet");
     }
 });
+
 
 collaborationRouter.get('/myProjects', authguard, async (req, res) => {
     const userId = req.session.users.id_user;

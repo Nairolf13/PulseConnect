@@ -18,7 +18,11 @@ const fileFilter = (req, file, cb) => {
 
     const extname = allowedImageTypes.test(path.extname(file.originalname).toLowerCase()) ||
         allowedAudioTypes.test(path.extname(file.originalname).toLowerCase()) ||
-        allowedVideoTypes.test(path.extname(file.originalname).toLowerCase());
+        allowedVideoTypes.test(path.extname(file.originalname).toLowerCase()) ||
+        file.mimetype === 'text/plain' || // Pour txt
+        file.mimetype === 'application/vnd.oasis.opendocument.text' || // Pour odt
+        file.mimetype === 'application/msword' || // Pour doc
+        file.mimetype === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'; // Pour docx
 
     const mimetype = allowedImageTypes.test(file.mimetype) ||
         allowedAudioTypes.test(file.mimetype) ||
@@ -30,13 +34,16 @@ const fileFilter = (req, file, cb) => {
         file.mimetype === 'video/mp4' || 
         file.mimetype === 'video/x-msvideo' || // Pour avi
         file.mimetype === 'video/x-matroska' || // Pour mkv
-        file.mimetype === 'video/quicktime'; // Pour mov
-
+        file.mimetype === 'video/quicktime' || // Pour mov
+        file.mimetype === 'text/plain' || // Pour txt
+        file.mimetype === 'application/vnd.oasis.opendocument.text' || // Pour odt
+        file.mimetype === 'application/msword' || // Pour doc
+        file.mimetype === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'; // Pour docx
 
     if (extname && mimetype) {
         return cb(null, true);
     } else {
-        cb('Error: Seuls les fichiers images (jpeg, jpg, png, gif), audio (mp3, wav, ogg, flac) et vidéo (mp4, avi, mkv, mov) sont acceptés !');
+        cb('Error: Seuls les fichiers images (jpeg, jpg, png, gif), audio (mp3, wav, ogg, flac) et vidéo (mp4, avi, mkv, mov), ainsi que les fichiers texte (txt, odt, doc, docx) sont acceptés !');
     }
 };
 

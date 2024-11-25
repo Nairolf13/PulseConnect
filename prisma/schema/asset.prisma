@@ -5,7 +5,7 @@ model Assets {
   description      String?            @db.VarChar(255)
   likes            Likes[]
   commentaire      Commentaires[]
-  id_user          Int?
+  id_user          Int
   id_project       Int?
   isPublic         Boolean?           @default(true)
   price            Decimal?           @db.Decimal(10, 2)

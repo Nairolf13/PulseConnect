@@ -10,29 +10,94 @@
 
 {% block main %}
 	{% include "../partials/header.twig" %}
-
-	<div class="project-container">
-		<div class="project-details">
+	<section class="main-content">
+		<div class="feed-container">
 			<h1>{{ project.name }}</h1>
 			<p>{{ project.description }}</p>
+			<div class="file-feed">
+				{% for file in project.files %}
+					<div class="file-item">
+						{% if file.url %}
+							<div class="file-info">
+								<strong>{{ file.name }}</strong>
+								<p>{{ file.description }}</p>
+							</div>
+							{% if file.url ends with '.mp3' or file.url ends with '.wav' %}
+								<audio controls>
+									<source src="/uploads/{{ file.url }}" type="audio/mpeg">
+									Votre navigateur ne supporte pas l'élément audio.
+								</audio>
+							{% elseif file.url ends with '.mp4' or file.url ends with '.avi' %}
+								<video controls>
+									<source src="/uploads/{{ file.url }}" type="video/mp4">
+									Votre navigateur ne supporte pas l'élément vidéo.
+								</video>
+							{% else %}
+								<a href="/uploads/{{ file.url }}" target="_blank">{{ file.name }}</a>
+							{% endif %}
+							<div class="comments">
+								<h4>Commentaires</h4>
+								<ul>
+									{% if file.comments is not empty %}
+										{% for comment in file.comments %}
+											<li>
+												{{ comment.content }}
+												-
+												<strong>{{ comment.userName }}</strong>
+												<small>{{ comment.created_at|date("d/m/Y H:i") }}</small>
+											</li>
+										{% endfor %}
+									{% else %}
+										<p>Aucun commentaire</p>
+									{% endif %}
+								</ul>
+							</div>
+							<form id="formComment" action="/project/{{ project.id_project }}/{{ file.id }}/comment" method="POST">
+								<textarea id="textComment" name="commentContent" placeholder="Ajouter un commentaire" required></textarea><br>
+								<button type="submit">Commenter</button>
+							</form>
+						{% endif %}
+					</div>
+				{% endfor %}
+			</div>
 		</div>
 
-		<div class="members-list">
-			<h3>Participants</h3>
-			<ul>
-				{% for member in project.members %}
-					<li>
-						<img src="{{ member.picture }}" alt="Avatar">
-						<strong>{{ member.userName }}</strong>
-						({{ member.role }})
-					</li>
-				{% endfor %}
-			</ul>
+		<div class="sidebar-container">
+			<div class="members-list">
+				<h3>Participants</h3>
+				<ul>
+					{% for member in project.members %}
+						<li>
+							<img src="{{ member.picture }}" alt="Avatar">
+							<strong>{{ member.userName }}</strong>
+							({{ member.role }})
+						</li>
+					{% endfor %}
+				</ul>
+				<form action="/project/{{ project.id_project }}/upload" method="POST" enctype="multipart/form-data">
+					<h3>Ajouter un fichier</h3>
+					<div id="textTitle">
+						<label for="name"></label>
+						<input id="name" name="name" placeholder="Titre" required>
+					</div>
+					<div>
+						<label for="genre"></label>
+						<select id="genre" name="genre" required>
+							<option value="" disabled selected>Sélectionnez un genre</option>
+							{% for genre in genres %}
+								<option value="{{ genre }}">{{ genre }} </option>
+							{% endfor %}
+						</select>
+					</div>
+					<textarea type="text" name="description" placeholder="Description"></textarea><br>
+					<input type="file" name="file" required><br>
+					<button type="submit">Upload</button>
+				</form>
+			</div>
 		</div>
+
+
 	</div>
 
-	{% block script %}
-		<script src="/../../assets/js/collaboration.js"></script>
-	{% endblock %}
-
-{% endblock %}
+</section>{% endblock %}{% block script %}
+<script src="/../../assets/js/collaboration.js"></script>{% endblock %}

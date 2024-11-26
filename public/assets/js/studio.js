@@ -37,24 +37,52 @@ document.addEventListener('DOMContentLoaded', function () {
         };
     }
 
+    // Fonction pour calculer la distance entre deux points géographiques (en kilomètres)
+function calculateDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371; // Rayon de la Terre en kilomètres
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+              Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c; // Distance en kilomètres
+}
+
+
     // Charger les studios depuis l'API
     async function loadStudios() {
         try {
             const response = await fetch('/studio-data');
             const studios = await response.json();
-            
+
             // Vérification que studios est bien un tableau
             if (Array.isArray(studios)) {
-                addMarkers(studios); 
+                // Ajouter immédiatement tous les studios (proches et éloignés)
+                addMarkers(studios);  // Afficher immédiatement tous les studios
+                
+                // Une fois que la localisation de l'utilisateur est disponible, filtrer et afficher les studios proches
+                const userLocation = await getUserLocation(); // Obtenez la position de l'utilisateur
+                
+                // Filtrer les studios dans un rayon de 50 km
+                const nearbyStudios = studios.filter(studio => {
+                    const distance = calculateDistance(userLocation[0], userLocation[1], studio.latitude, studio.longitude);
+                    return distance <= 50; // Seuls les studios à moins de 50 km sont sélectionnés
+                });
+                
+                // Ajouter les marqueurs pour les studios proches
+                addMarkers(nearbyStudios);  // Afficher immédiatement les studios proches
+                showUserLocation(); // Afficher la position de l'utilisateur
             } else {
                 console.error("Les données de studios ne sont pas sous forme de tableau.");
             }
         } catch (error) {
             console.error("Erreur lors du chargement des studios :", error);
         } finally {
-            loadingElement.style.display = 'none'; // Masque le loader après le chargement
+            loadingElement.style.display = 'none'; // Masquer le loader après le chargement
         }
     }
+    
     
 
     // Ajouter les marqueurs des studios sur la carte
@@ -79,30 +107,84 @@ document.addEventListener('DOMContentLoaded', function () {
         return new Promise((resolve, reject) => {
             if ("geolocation" in navigator) {
                 navigator.geolocation.getCurrentPosition(
-                    position => resolve([position.coords.latitude, position.coords.longitude]),
-                    error => reject(error)
+                    position => {
+                        console.log('Précision de la géolocalisation: ' + position.coords.accuracy + ' mètres');
+                        resolve([position.coords.latitude, position.coords.longitude]);
+                    },
+                    error => reject(error),
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 5000,
+                        maximumAge: 0
+                    }
                 );
             } else {
                 reject(new Error("Géolocalisation non supportée"));
             }
         });
     }
+    
+    
+
+    async function showUserLocation() {
+        try {
+            const userLocation = await getUserLocation(); // Obtenez la position de l'utilisateur
+            const userMarker = L.marker(userLocation, {
+                icon: L.icon({
+                    iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png', 
+                    iconSize: [25, 41],
+                    iconAnchor: [12, 41],
+                    popupAnchor: [1, -34],
+                    shadowSize: [41, 41],
+                })
+            }).addTo(map);
+    
+            userMarker.bindPopup("<b>Votre Position</b>").openPopup();
+            userMarker.setIcon(L.icon({
+                iconUrl: 'https://upload.wikimedia.org/wikipedia/commons/a/a7/Green_circle_icon.svg', 
+                iconSize: [30, 30],
+                iconAnchor: [15, 15],
+            }));
+    
+            map.setView(userLocation, 14); // Centrer la carte sur la position de l'utilisateur
+        } catch (error) {
+            console.error("Erreur lors de la géolocalisation de l'utilisateur :", error);
+        }
+    }
+    
+
 
     // Fonction pour calculer et afficher l'itinéraire
     async function showDirections(start, end) {
         try {
-            const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${start[1]},${start[0]};${end[1]},${end[0]}?geometries=geojson&access_token=${MAPBOX_API_KEY}`;
+            const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${start[1]},${start[0]};${end[1]},${end[0]}?geometries=geojson&steps=true&access_token=${MAPBOX_API_KEY}`;
             const response = await fetch(url);
             const data = await response.json();
 
-            L.geoJSON(data.routes[0].geometry, {
+            const route = data.routes[0];
+            const geojson = L.geoJSON(route.geometry, {
                 style: { color: 'blue', weight: 4, opacity: 0.7 }
             }).addTo(map);
 
-            map.fitBounds(L.geoJSON(data.routes[0].geometry).getBounds());
+            map.fitBounds(geojson.getBounds());
+
+            // Afficher les étapes de l'itinéraire
+            showRouteSteps(route.legs[0].steps);
         } catch (error) {
             console.error("Erreur lors de la récupération des directions :", error);
         }
+    }
+
+    function showRouteSteps(steps) {
+        let stepsHtml = '<ul>';
+        steps.forEach(step => {
+            stepsHtml += `<li>${step.maneuver.instruction}</li>`;
+        });
+        stepsHtml += '</ul>';
+
+        const directionsContainer = document.getElementById('directions-container');
+        directionsContainer.innerHTML = stepsHtml;
+        directionsContainer.style.display = 'block';
     }
 
     // Gestion du bouton d'itinéraire dans le popup
@@ -126,6 +208,21 @@ document.addEventListener('DOMContentLoaded', function () {
         map.setView([46.603354, 1.888334], 6); // Par exemple, vue par défaut sur la France
         markers.clearLayers(); // Retirer tous les marqueurs
         loadStudios(); // Recharger les studios
+    }
+
+    // Fonction de recherche de ville et studio via géocodage
+    document.getElementById('search').addEventListener('input', debounce(async () => {
+        const query = document.getElementById('search').value.trim();
+        if (!query) {
+            resetMap();
+            return;
+        }
+        await searchStudio(query);  // Appeler searchStudio avec le query saisi
+    }, 300));
+
+    // Fonction pour afficher un modal
+    function showModal(message) {
+        alert(message); // Remplacer par un modal personnalisé si nécessaire
     }
 
     // Fonction de recherche de ville et studio via géocodage
@@ -161,21 +258,6 @@ document.addEventListener('DOMContentLoaded', function () {
         return data.features;
     }
 
-    // Fonction de recherche par texte (ville ou studio)
-    document.getElementById('search').addEventListener('input', debounce(async () => {
-        const query = document.getElementById('search').value.trim();
-        if (!query) {
-            resetMap();
-            return;
-        }
-        await searchStudio(query);  // Appeler searchStudio avec le query saisi
-    }, 300));
-    
-
-    // Fonction pour afficher un modal
-    function showModal(message) {
-        alert(message); // Remplacer par un modal personnalisé si nécessaire
-    }
 
     // Ajouter des isochrones pour les zones accessibles
     async function addIsochrone(center, minutes) {
@@ -226,5 +308,12 @@ document.addEventListener('DOMContentLoaded', function () {
         return data.matchings[0].geometry;
     }
 
+    showUserLocation();
     loadStudios();
 });
+  
+
+
+
+
+

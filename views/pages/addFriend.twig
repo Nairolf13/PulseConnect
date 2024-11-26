@@ -22,28 +22,29 @@
 		</div>
 	</div>
 	<input type="text" id="searchUser" placeholder="Rechercher un utilisateur...">
-<section>
-    <div class="container">
-        <ul>
-            {% for user in usersCo %}
-                <li class="user-card" data-search="{{ user.userName | lower }}">
-                    <div class="user-info">
-                        <img src="{{ user.picture }}" alt="Photo de profil" class="profile-pic">
-                        <div class="user-details">
-                            <p class="user-name">{{ user.userName }}</p>
-                            <p class="full-name">{{ user.firstName }} {{ user.lastName }}</p>
-                            <p class="description">{{ user.description }}</p>
-                        </div>
-                    </div>
-                    <form action="/follow/{{ user.id_user }}" method="POST">
-                        <button type="submit" class="follow-button">Suivre</button>
-                    </form>
-                </li>
-            {% endfor %}
-        </ul>
-    </div>
-</section>
-
+	<section>
+		<div class="container">
+			<ul>
+				{% for user in usersCo %}
+					<li class="user-card" data-search="{{ user.userName | lower }}">
+						<div class="user-info">
+							<img src="{{ user.picture }}" alt="Photo de profil" class="profile-pic">
+							<div class="user-details">
+								<p class="user-name">{{ user.userName }}</p>
+								<p class="full-name">{{ user.firstName }}
+									{{ user.lastName }}</p>
+								<p class="description">{{ user.description }}</p>
+							</div>
+						</div>
+						<form action="/follow/{{ user.id_user }}" method="POST">
+							<button type="submit" class="follow-button">Suivre</button>
+						</form>
+					</li>
+				{% endfor %}
+			</ul>
+		</div>
+	</section>
+	{% include "../partials/error.twig" %}
 
 	{% block script %}
 		<script src="/../../assets/js/addFriend.js"></script>

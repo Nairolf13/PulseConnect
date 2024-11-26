@@ -114,24 +114,21 @@ function toggleMenu() {
     navMenu.style.display = navMenu.style.display === "flex" ? "none" : "flex";
 }
 
-let currentIndex = 0; // Index de l'élément actuellement affiché
-const itemsToShow = 1; // Nombre d'éléments visibles à la fois
+let currentIndex = 0;
+const itemsToShow = 1; 
 const slider = document.querySelector('.slider');
 
 function moveSlider(direction) {
     const totalItems = document.querySelectorAll('.slider li').length;
     const maxIndex = totalItems - itemsToShow;
 
-    // Met à jour l'index actuel
     currentIndex += direction;
 
-    // S'assure que l'index reste dans les limites
     if (currentIndex < 0) {
         currentIndex = 0;
     } else if (currentIndex > maxIndex) {
         currentIndex = maxIndex;
     }
 
-    // Applique le décalage
     slider.style.transform = `translateX(-${currentIndex * (100 / itemsToShow)}%)`;
 }

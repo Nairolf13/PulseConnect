@@ -1,459 +1,230 @@
-document.getElementById('search').addEventListener('input', debounce(() => {
-    if (studios.length > 0) {
-      searchStudio();
-    } else {
-      console.log("Les studios sont en cours de chargement...");
-    }
-  }, 300));
-
-  function searchStudio() {
-    const query = document.getElementById('search').value.toLowerCase().trim();
-
-    if (!query) {
-        resetMap();
-        return;
-    }
-
-    const matchingStudios = studios.filter(studio =>
-        studio.name.toLowerCase().includes(query) || 
-        (studio.address && studio.address.toLowerCase().includes(query)) ||
-        (studio.city && studio.city.toLowerCase().includes(query))
-    );
-
-    if (matchingStudios.length > 0) {
-        resetMap();
-        const cityCenter = getCityCenter(matchingStudios);
-        map.setView(cityCenter, 12);
-
-        const nearbyStudios = filterStudiosByDistance(matchingStudios, cityCenter, 20); // 20 km radius
-
-        nearbyStudios.forEach(studio => {
-            addMarker(studio);
-        });
-    } else {
-        showModal("Aucun studio trouvé.");
-    }
-}
-
-function getCityCenter(studios) {
-    const lat = studios.reduce((sum, studio) => sum + studio.latitude, 0) / studios.length;
-    const lon = studios.reduce((sum, studio) => sum + studio.longitude, 0) / studios.length;
-    return [lat, lon];
-}
-
-function filterStudiosByDistance(studios, center, maxDistance) {
-    // Tracer un cercle autour de la position actuelle
-    L.circle(center, { radius: maxDistance * 1000, color: 'red', fillOpacity: 0.1 }).addTo(map);
-
-    return studios.filter(studio => {
-        const distance = L.latLng(center).distanceTo([studio.latitude, studio.longitude]) / 1000; // en km
-        return distance <= maxDistance;
+document.addEventListener('DOMContentLoaded', function () {
+    // Initialisation de la carte
+    const map = L.map('map', {
+        center: [46.603354, 1.888334],
+        zoom: 6,
+        maxZoom: 19,
     });
-}
+    const markers = L.markerClusterGroup(); // Utiliser le clustering
+    map.addLayer(markers);
 
-function debounce(func, delay) {
-    let timeout;
-    return function (...args) {
-        clearTimeout(timeout);
-        timeout = setTimeout(() => func.apply(this, args), delay);
-    };
-}
+    const loadingElement = document.getElementById('loading');
+    loadingElement.style.display = 'block';
 
-function extractCityFromAddress(address) {
-    const parts = address.split(',');
-    return parts.length > 1 ? parts[1].trim() : '';
-}
+    // Ajout des tuiles de carte Mapbox
+    L.tileLayer(`https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=${MAPBOX_API_KEY}`, {
+        maxZoom: 19,
+        id: 'mapbox/streets-v11',
+        attribution: '© Mapbox'
+    }).addTo(map);
 
-function resetMap() {
-    map.setView([46.603354, 1.888334], 6);
-    markers.clearLayers();
-
-    studios.forEach(studio => {
-        const marker = L.marker([studio.latitude, studio.longitude]);
-        const address = studio.address || 'Adresse non spécifiée';
-
-        marker.bindPopup(`
-            <b>${studio.name}</b><br>
-            ${address}
-        `);
-        markers.addLayer(marker);
-    });
-}
-
-function showModal(message) {
-    const modal = document.getElementById('errorModal');
-    const errorMessage = document.getElementById('errorMessage');
-    errorMessage.textContent = message;
-    modal.style.display = "flex";
-}
-
-document.getElementById('closeModal').onclick = () => {
-    document.getElementById('errorModal').style.display = "none";
-};
-window.onclick = event => {
-    if (event.target === document.getElementById('errorModal')) {
-        document.getElementById('errorModal').style.display = "none";
-    }
-};
-
-const map = L.map('map').setView([46.603354, 1.888334], 6);
-
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '© OpenStreetMap contributors'
-}).addTo(map);
-
-const markers = L.markerClusterGroup();
-map.addLayer(markers); // Ajoutez les marqueurs à la carte
-let magicstudios = []
-
-async function loadStudios() {
-    document.getElementById('loading').style.display = 'block';
-
-    try {
-        const userLocation = await getUserLocation();
-        map.setView(userLocation, 12);
-
-        // Charger et afficher les studios proches (20 km)
-        const responseClose = await fetch(`/studio-data?lat=${userLocation[0]}&lon=${userLocation[1]}&radius=20`);
-        const studiosClose = await responseClose.json();
-        addMarkers(studiosClose, studiosClose.length);
-
-        // Charger tous les studios du monde
-        const responseAll = await fetch('/studio-data');
-        const studiosAll = await responseAll.json();
-
-        // Filtrer pour exclure les studios déjà affichés
-        magicstudios = studiosAll.filter(studio =>
-            !studiosClose.some(s => s.latitude === studio.latitude && s.longitude === studio.longitude)
-        );
-
-        // Afficher progressivement le reste des studios
-        setTimeout(() => {
-            addMarkersProgressively(magicstudios, 50);
-        }, 1000);
-
-        document.getElementById('loading').style.display = 'none';
-    } catch (error) {
-        console.error("Erreur lors du chargement des studios :", error);
-        showModal("Erreur lors de la récupération des studios ou de la géolocalisation.");
-        document.getElementById('loading').style.display = 'none';
-    }
-}
-
-function addMarkersProgressively(studios, batchSize) {
-    let index = 0;
-    function addBatch() {
-        const batch = studios.slice(index, index + batchSize);
-        addMarkers(batch, batch.length);
-        index += batchSize;
-        if (index < studios.length) {
-            setTimeout(addBatch, 100);
-        }
-    }
-    addBatch();
-}
-
-function addMarker(studio) {
-    const marker = L.marker([studio.latitude, studio.longitude]);
-    const phone = studio.phone ? `<a href="tel:${studio.phone}">Appeler ${studio.phone}</a>` : 'Numéro de téléphone non disponible';
-
-    const popupContent = `
-        <b>${studio.name}</b><br>
-        <a href="#" class="get-directions" data-lat="${studio.latitude}" data-lon="${studio.longitude}">
-            Adresse: ${studio.address}
-        </a><br>
-        Ville: ${studio.city}<br>
-        ${phone}
-        ${studio.image ? `<br><img src="${studio.image}" alt="${studio.name}" style="max-width:200px; max-height:150px;">` : ''}
-    `;
-
-    marker.bindPopup(popupContent);
-    markers.addLayer(marker);
-}
-
-function addMarkers(studios, limit) {
-    studios.slice(0, limit).forEach((studio, index) => {
-        setTimeout(() => addMarker(studio), index * 5);
-    });
-}
-
-async function getUserLocation() {
-    return new Promise((resolve, reject) => {
-        if ("geolocation" in navigator) {
-            navigator.geolocation.getCurrentPosition(
-                position => {
-                    console.log("Position obtenue :", position.coords.latitude, position.coords.longitude);
-                    resolve([position.coords.latitude, position.coords.longitude]);
-
-                    const userLat = position.coords.latitude;
-                    const userLon = position.coords.longitude;
-                    const userMarker = L.marker([userLat, userLon], {
-                        icon: L.icon({
-                            iconUrl: '/../../assets/imgs/pieton.png',
-                            iconSize: [25, 41],
-                            iconAnchor: [12, 41],
-                            popupAnchor: [1, -34],
-                            shadowSize: [41, 41]
-                        })
-                    }).addTo(map);
-
-                    userMarker.bindPopup("Vous êtes ici").openPopup();
-                    resolve([userLat, userLon]);
-                },
-                error => {
-                    console.error("Erreur de géolocalisation:", error);
-                    resolve([46.603354, 1.888334]);
-                },
-                {
-                    enableHighAccuracy: true,
-                    timeout: 10000,
-                    maximumAge: 0
-                }
-            );
-        } else {
-            resolve([46.603354, 1.888334]);
-        }
-    });
-}
-
-async function getDirections(start, end) {
-    const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${start[1]},${start[0]};${end[1]},${end[0]}?steps=true&geometries=geojson&access_token=pk.eyJ1IjoibmFpcm9sZiIsImEiOiJjbTNzbG0zYTMwZjQyMmpvbzd4eXdlMDJ3In0.1y-ebbWqr3Hm_5Kwp8FgrA&language=fr`;
-    const response = await fetch(url);
-    return await response.json();
-}
-
-
-map.on('popupopen', function (e) {
-    const directionLink = e.popup._contentNode.querySelector('.get-directions');
-    if (directionLink) {
-        directionLink.addEventListener('click', async function (event) {
-            event.preventDefault();
-            const userLocation = await getUserLocation();
-            const studioLocation = [this.dataset.lat, this.dataset.lon];
-            showDirections(userLocation, studioLocation); // Lancer la navigation
-        });
-    }
-});
-
-let currentRoute = null;
-let updateInterval;
-let currentStep = 0;
-
-async function showDirections(start, end) {
-    currentStep = 0;
-
-    try {
-        // Si un itinéraire précédent existe, on le supprime et on annule les synthèses vocales
-        if (currentRoute) {
-            map.removeLayer(currentRoute);
-            window.speechSynthesis.cancel();
-            await new Promise(resolve => setTimeout(resolve, 200));
-        }
-
-        // Si une mise à jour des étapes est en cours, on l'arrête
-        if (updateInterval) {
-            clearInterval(updateInterval);
-        }
-
-        // Récupérer les directions via une API ou un service de routage (ici simulé par `getDirections`)
-        const directions = await getDirections(start, end);
-        const route = L.geoJSON(directions.routes[0].geometry).addTo(map);
-        currentRoute = route;
-        map.fitBounds(route.getBounds());
-
-        // Marquer la position de l'utilisateur (départ)
-        let userMarker = L.marker(start, {
-            icon: L.icon({
-                iconUrl: '/../../assets/imgs/pieton.png',
-                iconSize: [25, 41],
-                iconAnchor: [12, 41],
-                popupAnchor: [1, -34],
-                shadowSize: [41, 41]
-            })
-        }).addTo(map);
-        userMarker.bindPopup("Vous êtes ici").openPopup();
-
-        // Marquer la destination (studio)
-        let studioMarker = L.marker(end).addTo(map);
-        studioMarker.bindPopup("Studio").openPopup();
-
-        // Récupérer les étapes du trajet
-        const steps = directions.routes[0].legs[0].steps;
-
-        // Créer l'élément HTML pour afficher les instructions
-        const instructionElement = document.getElementById("instruction") || document.createElement("div");
-        instructionElement.id = "instruction";
-        document.body.appendChild(instructionElement);
-
-        // Fonction pour afficher une étape
-        function displayStep(stepIndex) {
-            if (stepIndex < steps.length) {
-                const step = steps[stepIndex];
-                instructionElement.textContent = step.maneuver.instruction;
-
-                // Mettre à jour le message dans la modal
-                const modalMessage = document.getElementById("destinationMessage");
-                if (modalMessage) {
-                    modalMessage.textContent = step.maneuver.instruction;
-                }
-
-                // Afficher la flèche de direction (à gauche ou à droite selon l'étape)
-                const directionArrow = document.getElementById("directionArrow");
-                if (directionArrow) {
-                    directionArrow.innerHTML = step.maneuver.type === "turn" ?
-                        (step.maneuver.instruction.includes('left') ? "←" : "→") : "";
-                }
-
-                // Prononcer l'instruction via la synthèse vocale
-                speakDirection(step.maneuver.instruction, stepIndex);
-                currentStep++;
-            } else {
-                // Si toutes les étapes ont été parcourues, on arrête la mise à jour
-                clearInterval(updateInterval);
-            }
-        }
-
-        // Afficher la première étape
-        displayStep(currentStep);
-
-        // Mettre à jour les instructions toutes les 10 secondes
-        updateInterval = setInterval(() => {
-            if (currentStep < steps.length) {
-                displayStep(currentStep);
-            } else {
-                clearInterval(updateInterval);
-            }
-        }, 10000);
-
-        // Afficher la modal avec les directions
-        const destinationModal = document.getElementById("destinationModal");
-        if (destinationModal) {
-            destinationModal.style.display = "block";
-        }
-
-        // Fermer la modal lorsqu'on clique sur le bouton de fermeture
-        const closeDestinationModal = document.getElementById('closeDestinationModal');
-        if (closeDestinationModal) {
-            closeDestinationModal.addEventListener('click', function () {
-                destinationModal.style.display = "none";
-            });
-        }
-
-    } catch (error) {
-        console.error("Erreur lors de la récupération des directions", error);
-        showModal("Erreur lors de la récupération des directions.");
-    }
-}
-
-// Fonction pour prononcer une direction spécifique via la synthèse vocale
-async function speakDirection(instruction, stepIndex) {
-    // Si l'index de l'étape a changé, on ne parle plus de l'ancienne étape
-    if (stepIndex !== currentStep) return;
-
-    // Annuler toute synthèse vocale en cours
-    window.speechSynthesis.cancel();
-    await new Promise(resolve => setTimeout(resolve, 100));
-
-    // Obtenir la meilleure voix française disponible
-    const voice = await getBestFrenchVoice();
-    const speech = new SpeechSynthesisUtterance(instruction);
-    speech.voice = voice;
-    speech.lang = 'fr-FR';
-    speech.volume = 1;
-    speech.rate = 0.8;
-    speech.pitch = 1;
-
-    // Prononcer l'instruction
-    window.speechSynthesis.speak(speech);
-}
-
-// Fonction pour charger les voix disponibles
-function loadVoices() {
-    return new Promise(resolve => {
-        let voices = speechSynthesis.getVoices();
-        if (voices.length) {
-            resolve(voices);
-        } else {
-            speechSynthesis.onvoiceschanged = () => {
-                voices = speechSynthesis.getVoices();
-                resolve(voices);
+    // Ajout des couches 3D (bâtiments)
+    const buildingsLayer = L.geoJSON(null, {
+        style: function () {
+            return {
+                color: "#ff7800",
+                weight: 1
             };
         }
-    });
-}
+    }).addTo(map);
 
-// Fonction pour obtenir la meilleure voix française (préférablement "Michel")
-async function getBestFrenchVoice() {
-    const voices = await loadVoices();
-    const michelVoice = voices.find(voice => voice.name === 'Michel' && voice.lang === 'fr-FR');
-
-    if (michelVoice) return michelVoice;
-
-    // Si "Michel" n'est pas trouvé, on prend la première voix française disponible
-    const frenchVoices = voices.filter(voice => voice.lang === 'fr-FR');
-    const localFrenchVoice = frenchVoices.find(voice => voice.localService);
-
-    return localFrenchVoice || frenchVoices[0] || voices[0];
-}
-
-
-function getSelectedVoice() {
-    const voiceSelect = document.getElementById('voiceSelect');
-    const selectedIndex = voiceSelect.selectedIndex;
-    if (selectedIndex !== 0) {
-        const selectedVoice = speechSynthesis.getVoices()[selectedIndex - 1]; // Ajuste l'index
-        return selectedVoice;
+    // Fonction debounce pour la recherche
+    function debounce(func, wait) {
+        let timeout;
+        return function (...args) {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(this, args), wait);
+        };
     }
-    return null; // Si aucune voix n'est sélectionnée
-}
 
-
-// Fonction pour charger uniquement les voix naturelles
-function populateVoiceList() {
-    const voiceSelect = document.getElementById('voiceSelect');
-    voiceSelect.innerHTML = '<option value="">Sélectionnez une voix...</option>'; // Réinitialiser la liste
-
-    // Récupérer toutes les voix disponibles
-    const voices = speechSynthesis.getVoices();
-
-    // Filtrer les voix naturelles
-    const naturalVoices = voices.filter(voice => {
-        return voice.localService && voice.lang.startsWith("fr"); // Filtre les voix locales en français
-    });
-
-    // Ajouter les voix filtrées à la liste déroulante
-    naturalVoices.forEach((voice, index) => {
-        const option = document.createElement('option');
-        option.value = index; // Index de la voix pour l'identification
-        option.textContent = `${voice.name} (${voice.lang})`;
-        if (voice.default) {
-            option.textContent += ' [Défaut]'; // Ajoute un indicateur pour la voix par défaut
-        }
-        voiceSelect.appendChild(option);
-    });
-
-    // Si aucune voix naturelle n'est trouvée, ajouter les voix par défaut disponibles
-    if (naturalVoices.length === 0) {
-        voices.forEach((voice, index) => {
-            const option = document.createElement('option');
-            option.value = index;
-            option.textContent = `${voice.name} (${voice.lang})`;
-            if (voice.default) {
-                option.textContent += ' [Défaut]';
+    // Charger les studios depuis l'API
+    async function loadStudios() {
+        try {
+            const response = await fetch('/studio-data');
+            const studios = await response.json();
+            
+            // Vérification que studios est bien un tableau
+            if (Array.isArray(studios)) {
+                addMarkers(studios); 
+            } else {
+                console.error("Les données de studios ne sont pas sous forme de tableau.");
             }
-            voiceSelect.appendChild(option);
+        } catch (error) {
+            console.error("Erreur lors du chargement des studios :", error);
+        } finally {
+            loadingElement.style.display = 'none'; // Masque le loader après le chargement
+        }
+    }
+    
+
+    // Ajouter les marqueurs des studios sur la carte
+    function addMarkers(studios) {
+        studios.forEach(studio => {
+            const marker = L.marker([studio.latitude, studio.longitude]);
+            const phone = studio.phone ? `<a href="tel:${studio.phone}">Appeler ${studio.phone}</a>` : 'Numéro de téléphone non disponible';
+            const popupContent = `
+                <b>${studio.name}</b><br>
+                Adresse: ${studio.address}<br>
+                ${phone}
+                ${studio.image ? `<br><img src="${studio.image}" alt="${studio.name}" style="max-width:200px; max-height:150px;">` : ''}
+                <br><button class="get-directions" data-lat="${studio.latitude}" data-lon="${studio.longitude}">Itinéraire</button>
+            `;
+            marker.bindPopup(popupContent);
+            markers.addLayer(marker);
         });
     }
-}
 
-// Charger les voix lorsque la page est prête
-if (speechSynthesis.onvoiceschanged !== undefined) {
-    speechSynthesis.onvoiceschanged = populateVoiceList;
-}
-populateVoiceList();
+    // Fonction pour obtenir la localisation de l'utilisateur
+    async function getUserLocation() {
+        return new Promise((resolve, reject) => {
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(
+                    position => resolve([position.coords.latitude, position.coords.longitude]),
+                    error => reject(error)
+                );
+            } else {
+                reject(new Error("Géolocalisation non supportée"));
+            }
+        });
+    }
 
+    // Fonction pour calculer et afficher l'itinéraire
+    async function showDirections(start, end) {
+        try {
+            const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${start[1]},${start[0]};${end[1]},${end[0]}?geometries=geojson&access_token=${MAPBOX_API_KEY}`;
+            const response = await fetch(url);
+            const data = await response.json();
 
+            L.geoJSON(data.routes[0].geometry, {
+                style: { color: 'blue', weight: 4, opacity: 0.7 }
+            }).addTo(map);
 
+            map.fitBounds(L.geoJSON(data.routes[0].geometry).getBounds());
+        } catch (error) {
+            console.error("Erreur lors de la récupération des directions :", error);
+        }
+    }
 
-loadStudios();
+    // Gestion du bouton d'itinéraire dans le popup
+    map.on('popupopen', function (e) {
+        const directionButton = e.popup._contentNode.querySelector('.get-directions');
+        if (directionButton) {
+            directionButton.addEventListener('click', async function () {
+                try {
+                    const userLocation = await getUserLocation();
+                    const studioLocation = [parseFloat(this.dataset.lat), parseFloat(this.dataset.lon)];
+                    showDirections(userLocation, studioLocation);
+                } catch (error) {
+                    console.error("Erreur lors de la géolocalisation :", error);
+                }
+            });
+        }
+    });
+
+    // Fonction de réinitialisation de la carte
+    function resetMap() {
+        map.setView([46.603354, 1.888334], 6); // Par exemple, vue par défaut sur la France
+        markers.clearLayers(); // Retirer tous les marqueurs
+        loadStudios(); // Recharger les studios
+    }
+
+    // Fonction de recherche de ville et studio via géocodage
+    async function searchStudio(query) {
+        try {
+            const results = await geocode(query); // Utiliser le géocodage pour la recherche
+            if (results.length) {
+                resetMap();  // Réinitialiser la carte avant d'afficher les résultats
+                const [firstResult] = results;
+                map.setView([firstResult.center[1], firstResult.center[0]], 12);  // Zoomer sur la première ville trouvée
+        
+                const studios = results.map(place => ({
+                    name: place.text,
+                    latitude: place.center[1],
+                    longitude: place.center[0],
+                    address: place.place_name
+                }));
+                addMarkers(studios); // Appeler addMarkers avec un tableau d'objets
+            } else {
+                showModal("Aucun résultat trouvé pour cette recherche.");
+            }
+        } catch (error) {
+            console.error("Erreur lors de la recherche du studio ou de la ville :", error);
+        }
+    }
+    
+
+    // Fonction de géocodage (ville ou adresse)
+    async function geocode(query) {
+        const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json?access_token=${MAPBOX_API_KEY}`;
+        const response = await fetch(url);
+        const data = await response.json();
+        return data.features;
+    }
+
+    // Fonction de recherche par texte (ville ou studio)
+    document.getElementById('search').addEventListener('input', debounce(async () => {
+        const query = document.getElementById('search').value.trim();
+        if (!query) {
+            resetMap();
+            return;
+        }
+        await searchStudio(query);  // Appeler searchStudio avec le query saisi
+    }, 300));
+    
+
+    // Fonction pour afficher un modal
+    function showModal(message) {
+        alert(message); // Remplacer par un modal personnalisé si nécessaire
+    }
+
+    // Ajouter des isochrones pour les zones accessibles
+    async function addIsochrone(center, minutes) {
+        const url = `https://api.mapbox.com/isochrone/v1/mapbox/walking/${center[1]},${center[0]}?contours_minutes=${minutes}&polygons=true&access_token=${MAPBOX_API_KEY}`;
+        const response = await fetch(url);
+        const data = await response.json();
+
+        L.geoJSON(data, {
+            style: {
+                color: 'purple',
+                fillOpacity: 0.3
+            }
+        }).addTo(map);
+    }
+
+    // Exemple d'utilisation d'isochrone pour la zone atteignable en 15 minutes
+    addIsochrone([46.603354, 1.888334], 15);
+
+    // Ajout de boutons pour changer les styles de carte
+    const baseMaps = {
+        "Streets": L.tileLayer(`https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=${MAPBOX_API_KEY}`, {
+            attribution: '© Mapbox',
+            tileSize: 512,
+            zoomOffset: -1,
+            maxZoom: 19
+        }),
+        "Satellite": L.tileLayer(`https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/{z}/{x}/{y}?access_token=${MAPBOX_API_KEY}`, {
+            attribution: '© Mapbox',
+            tileSize: 512,
+            zoomOffset: -1,
+            maxZoom: 19
+        }),
+        "Outdoors": L.tileLayer(`https://api.mapbox.com/styles/v1/mapbox/outdoors-v11/tiles/{z}/{x}/{y}?access_token=${MAPBOX_API_KEY}`, {
+            attribution: '© Mapbox',
+            tileSize: 512,
+            zoomOffset: -1,
+            maxZoom: 19
+        })
+    };
+
+    L.control.layers(baseMaps).addTo(map);
+
+    // Fonctionnalité Snap-to-Road (alignement sur les routes)
+    async function snapToRoad(latlng) {
+        const url = `https://api.mapbox.com/matching/v5/mapbox/driving/${latlng.lng},${latlng.lat}?access_token=${MAPBOX_API_KEY}`;
+        const response = await fetch(url);
+        const data = await response.json();
+        return data.matchings[0].geometry;
+    }
+
+    loadStudios();
+});

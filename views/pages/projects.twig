@@ -19,7 +19,7 @@
 	</div>
 	<div class="projects-container">
 		{% if projects is empty %}
-			<p>You are not associated with any projects yet.</p>
+			<p>Vous ne participez à aucun projet pour le moment !</p>
 		{% else %}
 			<ul class="projects-list">
 				{% for project in projects %}
@@ -51,6 +51,6 @@
 				{% endfor %}
 			</ul>
 		{% endif %}
-	</div>
+		{% include "../partials/error.twig" %}
 
-{% endblock %}
+	{% endblock %}

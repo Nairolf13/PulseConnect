@@ -4,8 +4,8 @@ model Messages {
   senderId                           Int?
   recipientId                        Int?
   created_at                         DateTime? @default(now()) @db.DateTime(0)
-  senderUsers    Users?    @relation("Messages_sender_idToUsers", fields: [senderId], references: [id_user], onDelete: NoAction, onUpdate: NoAction, map: "Messages_sender")
-  recipientUsers Users?    @relation("Messages_recipient_idToUsers", fields: [recipientId], references: [id_user], onDelete: NoAction, onUpdate: NoAction, map: "Messages_recipient")
+  senderUsers    Users?    @relation("Messages_sender_idToUsers", fields: [senderId], references: [id_user], onDelete: Cascade, onUpdate: NoAction, map: "Messages_sender")
+  recipientUsers Users?    @relation("Messages_recipient_idToUsers", fields: [recipientId], references: [id_user], onDelete: Cascade, onUpdate: NoAction, map: "Messages_recipient")
 
   @@index([recipientId], map: "recipient_id")
   @@index([senderId], map: "sender_id")

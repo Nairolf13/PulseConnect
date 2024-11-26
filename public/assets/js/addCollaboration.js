@@ -9,25 +9,21 @@ document.addEventListener('DOMContentLoaded', () => {
     searchInput.parentNode.appendChild(selectedFollowersContainer);
 
     const selectedFollowersInput = document.getElementById('selectedFollowers');
-    const selectedFollowers = new Map(); // Pour stocker les followers sélectionnés
+    const selectedFollowers = new Map(); 
 
-    // Fonction pour afficher/masquer la liste
     function toggleFollowerList(visible) {
         followerList.style.display = visible ? 'block' : 'none';
     }
 
-    // Fonction pour mettre à jour l'input caché
     function updateHiddenInput() {
         selectedFollowersInput.value = JSON.stringify([...selectedFollowers.keys()]);
     }
 
-    // Fonction pour ajouter un follower
     function addFollower(follower) {
-        if (selectedFollowers.has(follower.id_user)) return; // Ne pas ajouter deux fois
+        if (selectedFollowers.has(follower.id_user)) return; 
 
         selectedFollowers.set(follower.id_user, follower);
 
-        // Créer l'élément visuel
         const div = document.createElement('div');
         div.classList.add('selected-follower');
         div.dataset.id = follower.id_user;
@@ -37,7 +33,6 @@ document.addEventListener('DOMContentLoaded', () => {
             <button class="remove-follower">&times;</button>
         `;
 
-        // Gérer la suppression
         div.querySelector('.remove-follower').addEventListener('click', () => {
             selectedFollowers.delete(follower.id_user);
             div.remove();
@@ -48,7 +43,6 @@ document.addEventListener('DOMContentLoaded', () => {
         updateHiddenInput();
     }
 
-    // Écouteur pour la recherche
     searchInput.addEventListener('input', async (e) => {
         const query = e.target.value.trim();
 
@@ -57,7 +51,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const response = await fetch(`/searchFollowers?query=${encodeURIComponent(query)}`);
                 const followers = await response.json();
 
-                // Réinitialiser la liste
                 followerList.innerHTML = '';
                 if (followers.length > 0) {
                     toggleFollowerList(true);
@@ -70,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         `;
                         div.addEventListener('click', () => {
                             addFollower(follower);
-                            toggleFollowerList(false); // Cacher la liste après sélection
+                            toggleFollowerList(false);
                         });
                         followerList.appendChild(div);
                     });
@@ -86,7 +79,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Cacher la liste si on clique en dehors
     document.addEventListener('click', (e) => {
         if (!followerList.contains(e.target) && e.target !== searchInput) {
             toggleFollowerList(false);

@@ -12,9 +12,9 @@ model Users {
   description                           String?           @db.VarChar(255)
   created_at                            DateTime?         @default(now()) @db.DateTime(0)
   genre                                 genre           
-  Assets                                Assets[]
-  Commandes                             Commandes[]
-  Commentaires                          Commentaires[]
+  Assets                                Assets[]          
+  Commandes                             Commandes[]       
+  Commentaires                          Commentaires[]    
   Follows_Follows_follower_idToUsers    Follows[]         @relation("Follows_follower_idToUsers")
   Follows_Follows_followed_idToUsers    Follows[]         @relation("Follows_followed_idToUsers")
   Likes                                 Likes[]

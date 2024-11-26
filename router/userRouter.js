@@ -222,36 +222,42 @@ userRouter.get('/reset-password', (req, res) => {
 });
 
 userRouter.post('/reset-password', async (req, res) => { 
-    const { token, newPassword, confirmPassword } = req.body;
-
-    if (newPassword !== confirmPassword) {
-        return res.status(400).json({ error: "Les mots de passe ne correspondent pas." });
-    }
+    const { email } = req.body;
 
     try {
-        const tokenRecord = await prisma.passwordResetTokens.findFirst({
-            where: { token }
+        const existingToken = await prisma.passwordResetTokens.findUnique({
+            where: { email }
         });
 
-        if (!tokenRecord || tokenRecord.expiresAt < new Date()) {
-            throw new Error("Token invalide ou expiré.");
+        if (existingToken) {
+            return res.status(400).json({
+                error: "Un jeton de réinitialisation existe déjà pour cet email. Veuillez vérifier votre boîte de réception ou attendre un moment."
+            });
         }
 
-        await prisma.users.update({
-            where: { mail: tokenRecord.email },
-            data: { password: newPassword } 
+        const resetToken = crypto.randomBytes(32).toString('hex');
+        const expiresAt = new Date(Date.now() + 3600000);  
+        await prisma.passwordResetTokens.create({
+            data: {
+                email,
+                token: resetToken,
+                expiresAt
+            }
         });
 
-        await prisma.passwordResetTokens.delete({
-            where: { id: tokenRecord.id }
+        res.json({
+            success: true,
+            message: "Un jeton de réinitialisation a été envoyé à votre email."
         });
-
-        res.redirect('/login');
     } catch (error) {
-        console.error("Erreur lors de la réinitialisation du mot de passe :", error);
-        res.status(400).json({ error: "Erreur lors de la réinitialisation du mot de passe." });
+        console.error("Erreur lors de la création du jeton de réinitialisation :", error);
+        res.status(500).json({
+            error: "Une erreur est survenue. Veuillez réessayer plus tard."
+        });
     }
 });
+
+
 
 
 userRouter.get("/login", (req, res) => {
@@ -380,45 +386,58 @@ userRouter.get("/update", authguard, async (req, res) => {
     }
 });
 
-userRouter.post("/update",authguard,upload.single('picture'),async (req, res)=>{
-    try{
+userRouter.post("/update", authguard, upload.single('picture'), async (req, res) => {
+    try {
         const users = await prisma.users.findUnique({
             where: {
                 id_user: parseInt(req.session.users.id_user)
             }
-        })
-        if (req.body.password){
-            if(req.body.password !== req.body.confirmPassword){
-                throw new Error("Les mots de passe ne correspondent pas !")
-            }
-        }
-        let picturePath = users.picture
-        if(req.file){
-            picturePath = `/uploads/${req.file.filename}`
+        });
+
+        if (!users) {
+            throw new Error("Utilisateur non trouvé !");
         }
 
-        const updateUser = await prisma.users.update({
-            where: { id_user: users.id_user},
-            data:{
-                lastName:req.body.lastName,
-                firstName:req.body.firstName,
-                userName:req.body.userName,
-                age:parseInt(req.body.age),
-                mail:req.body.mail,
-                genre:req.body.genre,
-                localisation:req.body.localisation,
-                password:req.body.password,
-                role:"users",
-                description:req.body.description || null,
-                picture: picturePath
+        if (req.body.password) {
+            if (req.body.password !== req.body.confirmPassword) {
+                throw new Error("Les mots de passe ne correspondent pas !");
             }
-        })
-        res.redirect("/home")
-    }catch (error) {
+        }
+
+        let picturePath = users.picture;
+        if (req.file) {
+            picturePath = `/uploads/${req.file.filename}`;
+        }
+
+        const updateData = {
+            lastName: req.body.lastName,
+            firstName: req.body.firstName,
+            userName: req.body.userName,
+            age: parseInt(req.body.age),
+            mail: req.body.mail,
+            genre: req.body.genre,
+            localisation: req.body.localisation,
+            role: "users",
+            description: req.body.description || null,
+            picture: picturePath,
+        };
+
+        if (req.body.password && req.body.password.trim() !== "") {
+            updateData.password = req.body.password;
+        }
+
+        await prisma.users.update({
+            where: { id_user: users.id_user },
+            data: updateData,
+        });
+
+        res.redirect("/home");
+    } catch (error) {
         console.log(error);
-        res.redirect("/home")
+        res.redirect("/home");
     }
-})
+});
+
 
 userRouter.get("/delete", authguard, async (req, res) => {
     try {

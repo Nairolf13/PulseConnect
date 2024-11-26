@@ -3,6 +3,8 @@ const { PrismaClient } = require("@prisma/client");
 const authguard = require("../services/authguard");
 const upload = require("../services/downloadExtension");
 const axios = require('axios');
+require('dotenv').config();
+
 
 
 const prisma = new PrismaClient()
@@ -103,12 +105,45 @@ collaborationRouter.get('/collaboration', authguard, async (req, res) => {
             },
         });
 
-        res.render('pages/addCollaboration.twig', { followers: followers || [] });
+        const following = await prisma.follows.findMany({
+            where: { follower_id: userId },
+            include: {
+                followed: {
+                    select: {
+                        id_user: true,
+                        userName: true,
+                        picture: true,
+                    },
+                },
+            },
+        });
+
+        const userIds = new Set();
+        const uniqueUsers = [];
+
+        followers.forEach(f => {
+            if (f.follower.id_user !== userId && !userIds.has(f.follower.id_user)) {
+                userIds.add(f.follower.id_user);
+                uniqueUsers.push(f.follower);
+            }
+        });
+
+        following.forEach(f => {
+            if (f.followed.id_user !== userId && !userIds.has(f.followed.id_user)) {
+                userIds.add(f.followed.id_user);
+                uniqueUsers.push(f.followed);
+            }
+        });
+
+        res.render('pages/addCollaboration.twig', { users: uniqueUsers });
+
     } catch (err) {
         console.error(err);
         res.status(500).send('Erreur lors de la récupération des followers');
     }
 });
+
+
 
 
 
@@ -119,9 +154,7 @@ collaborationRouter.get('/searchFollowers', authguard, async (req, res) => {
     try {
         const lowerCaseQuery = query.toLowerCase();
         const followers = await prisma.follows.findMany({
-            where: {
-                followed_id: userId,
-            },
+            where: { followed_id: userId },
             include: {
                 follower: {
                     select: {
@@ -133,13 +166,42 @@ collaborationRouter.get('/searchFollowers', authguard, async (req, res) => {
             },
         });
 
-        const filteredFollowers = followers
-            .map(f => f.follower)
-            .filter(follower =>
-                follower.userName.toLowerCase().includes(lowerCaseQuery)
-            );
+        const following = await prisma.follows.findMany({
+            where: { follower_id: userId },
+            include: {
+                followed: {
+                    select: {
+                        id_user: true,
+                        userName: true,
+                        picture: true,
+                    },
+                },
+            },
+        });
+
+        const userIds = new Set();
+        const allUsers = [];
+
+        followers.forEach(f => {
+            if (f.follower.id_user !== userId && !userIds.has(f.follower.id_user)) {
+                userIds.add(f.follower.id_user);
+                allUsers.push(f.follower);
+            }
+        });
+
+        following.forEach(f => {
+            if (f.followed.id_user !== userId && !userIds.has(f.followed.id_user)) {
+                userIds.add(f.followed.id_user);
+                allUsers.push(f.followed);
+            }
+        });
+
+        const filteredFollowers = allUsers.filter(user => 
+            user.userName.toLowerCase().includes(lowerCaseQuery)
+        );
 
         res.json(filteredFollowers);
+
     } catch (error) {
         console.error(error);
         res.status(500).send('Erreur lors de la récupération des followers');
@@ -183,13 +245,11 @@ collaborationRouter.post('/createProject', authguard, async (req, res) => {
 
 collaborationRouter.post("/project/:id_project/upload", authguard, upload.single('file'), async (req, res) => {
     try {
-        const { id_project } = req.params;  // Récupère l'ID du projet à partir de l'URL
-        const userId = req.session.users.id_user;  // Récupère l'ID de l'utilisateur connecté
-        const { genre, description, price } = req.body;  // Récupère les données envoyées avec la requête
-        const file_url = req.file ? req.file.path : null;  // Récupère le chemin du fichier
-    
+        const { id_project } = req.params;  
+        const userId = req.session.users.id_user;  
+        const { genre, description, price } = req.body; 
+        const file_url = req.file ? req.file.path : null;  
         
-        // Vérifie si l'ID du projet et le fichier sont présents
         if (!id_project) {
             return res.status(400).send('ID du projet manquant');
         }
@@ -198,7 +258,6 @@ collaborationRouter.post("/project/:id_project/upload", authguard, upload.single
             return res.status(400).send('Aucun fichier uploadé.');
         }
 
-        // Crée l'asset dans la base de données
         await prisma.assets.create({
             data: {
                 id_user: userId,
@@ -207,11 +266,10 @@ collaborationRouter.post("/project/:id_project/upload", authguard, upload.single
                 url: req.file.filename,
                 genre: req.body.genre || null,
                 description: req.body.description || null,
-                id_project: parseInt(id_project),  // ID du projet associé
+                id_project: parseInt(id_project),  
             },
         });
 
-        // Redirige vers la page du projet
         res.redirect(`/project/${id_project}`);
     } catch (error) {
         console.error("Erreur lors du téléversement du fichier :", error);
@@ -222,7 +280,6 @@ collaborationRouter.post("/project/:id_project/upload", authguard, upload.single
 
 
 
-// Route : Supprimer un fichier
 collaborationRouter.post("/project/:id_project/file/:id_file/delete", authguard, async (req, res) => {
     const { id_file } = req.params;
 
@@ -238,23 +295,21 @@ collaborationRouter.post("/project/:id_project/file/:id_file/delete", authguard,
     }
 });
 
-// Route pour ajouter un commentaire à un fichier (asset)
 collaborationRouter.post("/project/:id_project/:id_asset/comment", authguard, async (req, res) => {
     try {
-        const { id_project, id_asset } = req.params; // Récupérer l'id du projet et du fichier
-        const { commentContent } = req.body; // Contenu du commentaire
-        const userId = req.session.users.id_user; // ID de l'utilisateur connecté
+        const { id_project, id_asset } = req.params;
+        const { commentContent } = req.body; 
+        const userId = req.session.users.id_user; 
 
         const newComment = await prisma.commentaires.create({
             data: {
                 id_user: userId,
                 id_project: parseInt(id_project), 
-                id_asset: parseInt(id_asset), // Associer le commentaire au fichier
-                content: commentContent,  // Le contenu du commentaire
+                id_asset: parseInt(id_asset), 
+                content: commentContent,  
             },
         });
 
-        // Rediriger vers la page du projet avec les commentaires
         res.redirect(`/project/${id_project}`);
     } catch (err) {
         console.error(err);
@@ -262,7 +317,6 @@ collaborationRouter.post("/project/:id_project/:id_asset/comment", authguard, as
     }
 });
 
-// Route : Supprimer un commentaire
 collaborationRouter.post("/project/:id_project/comment/:id_comment/delete", authguard, async (req, res) => {
     const { id_comment } = req.params;
 
@@ -278,12 +332,10 @@ collaborationRouter.post("/project/:id_project/comment/:id_comment/delete", auth
     }
 });
 
-// Route : Récupérer les fichiers et commentaires
 collaborationRouter.get("/project/:id_project", authguard, async (req, res) => {
-    const { id_project } = req.params; // Récupère l'ID du projet à partir de l'URL
+    const { id_project } = req.params; 
 
     try {
-        // Utilise l'ID dynamique pour récupérer les données du projet
         const project = await prisma.projects.findUnique({
             where: { id_project: parseInt(id_project) },
             include: {
@@ -293,7 +345,7 @@ collaborationRouter.get("/project/:id_project", authguard, async (req, res) => {
                             include: {
                                 Users: {
                                     select: {
-                                        userName: true, // Affichage du nom de l'utilisateur
+                                        userName: true, 
                                     },
                                 },
                             },
@@ -474,8 +526,10 @@ collaborationRouter.post('/project/delete/:id', authguard, async (req, res) => {
 collaborationRouter.get('/studio', authguard, (req, res) => {
     res.render('pages/studio.twig', {
         title: 'Studios d\'enregistrement',
+        mapboxApiKey: process.env.MAPBOX,
     });
 });
+
 
 collaborationRouter.get('/studio-data', authguard, async (req, res) => {
     const { lat, lon, radius } = req.query;
@@ -498,8 +552,8 @@ collaborationRouter.get('/studio-data', authguard, async (req, res) => {
         const response = await fetchOverpassData(overpassQuery);
         const studios = response.elements.map(studio => ({
             name: studio.tags.name || 'Nom non spécifié',
-            address: studio.tags['addr:street'] || studio.tags.address || 'Adresse non spécifiée',
-            phone: studio.tags.phone || studio.tags['contact:phone'] || 'Téléphone non spécifié',
+            address: studio.tags['addr:street'] || studio.tags.address || 'Adresse introuvable',
+            phone: studio.tags.phone || studio.tags['contact:phone'] || ': Téléphone introuvable',
             image: studio.tags.image || studio.tags['wikimedia_commons'] || null,
             latitude: studio.lat,
             longitude: studio.lon

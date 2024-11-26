@@ -6,7 +6,7 @@ model Commandes {
   platform_fee     Decimal?           @db.Decimal(5, 2)
   created_at       DateTime?          @default(now()) @db.DateTime(0)
   AssetsToCommande AssetsToCommande[]
-  Users            Users?             @relation(fields: [id_user], references: [id_user], onDelete: NoAction, onUpdate: NoAction, map: "Commandes_ibfk_1")
+  Users            Users?             @relation(fields: [id_user], references: [id_user], onDelete: Cascade, onUpdate: NoAction, map: "Commandes_ibfk_1")
 
   @@index([id_user], map: "id_user")
 }

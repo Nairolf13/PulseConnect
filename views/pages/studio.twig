@@ -20,67 +20,31 @@
 		<h1>Les studios</h1>
 	</div>
 	<div id="search-container">
-		<input type="text" id="search" placeholder="Rechercher un studio (nom, ville, pays)"/>
-		<button onclick="searchStudio()">Rechercher</button>
+		<input type="text" id="search" placeholder="Rechercher une ville ou un studio">
+		<button id="searchButton">Rechercher</button>
 	</div>
 	<div id="map"></div>
 	<div id="loading" class="loading">Chargement des studios...</div>
 
-	<!-- Modal for Directions -->
 	<div id="destinationModal" class="modal">
-	    <div class="modal-content">
-	        <h2>Directions</h2>
-	        <p id="destinationMessage"></p>
-	        <div id="directionArrow"></div> <!-- Direction arrow -->
-	        <button id="closeDestinationModal">Fermer</button>
-	    </div>
-	</div>
-
-	<!-- Error Modal -->
-	<div id="errorModal" class="modal">
 		<div class="modal-content">
-			<p id="errorMessage"></p>
+			<h2>Directions</h2>
+			<p id="destinationMessage"></p>
+			<div id="directionArrow"></div>
+			<button id="closeDestinationModal">Fermer</button>
 		</div>
 	</div>
 
-	<!-- Voice Selection Dropdown -->
-	<div>
-		<select id="voiceSelect">
-		    <option value="">Sélectionnez une voix...</option>
-		</select>
-	</div>
+	{% include "../partials/error.twig" %}
 
 {% endblock %}
 
 {% block script %}
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
-<script src="/../../assets/js/studio.js"></script>
-<script>
-    const studios = {{ studios|json_encode|raw }};
-    
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '© OpenStreetMap contributors'
-    }).addTo(map);
+	<script>
+		const MAPBOX_API_KEY = "{{ mapboxApiKey }}";
+	</script>
+	<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+	<script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+	<script src="/../../assets/js/studio.js"></script>
 
-    const markers = L.markerClusterGroup();
-
-    studios.forEach(studio => {
-        const marker = L.marker([studio.latitude, studio.longitude]);
-        const address = studio.address || 'Adresse non spécifiée';
-        const phone = studio.phone ? `<a href="tel:${studio.phone}">Appeler ${studio.phone}</a>` : 'Numéro de téléphone non disponible';
-    
-        let popupContent = `
-            <b>${studio.name}</b><br>
-            ${address}<br>
-            ${phone}
-        `;
-        marker.bindPopup(popupContent);
-        markers.addLayer(marker);
-    });
-    
-    map.addLayer(markers);
-
-</script>
 {% endblock %}

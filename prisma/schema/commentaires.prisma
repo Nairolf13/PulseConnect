@@ -5,9 +5,9 @@ model Commentaires {
   id_asset   Int?   
   content    String    @db.Text
   created_at DateTime? @default(now()) @db.DateTime(0)
-  Users      Users?    @relation(fields: [id_user], references: [id_user], onDelete: NoAction, onUpdate: NoAction, map: "Commentaires_ibfk_1")
-  Projects   Projects? @relation(fields: [id_project], references: [id_project], onDelete: NoAction, onUpdate: NoAction, map: "Commentaires_ibfk_2")
-  Assets     Assets?   @relation(fields: [id_asset], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Commentaires_ibfk_3")
+  Users      Users?    @relation(fields: [id_user], references: [id_user], onDelete: Cascade, onUpdate: NoAction, map: "Commentaires_ibfk_1")
+  Projects   Projects? @relation(fields: [id_project], references: [id_project], onDelete: Cascade, onUpdate: NoAction, map: "Commentaires_ibfk_2")
+  Assets     Assets?   @relation(fields: [id_asset], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "Commentaires_ibfk_3")
 
   @@index([id_project], map: "id_project")
   @@index([id_user], map: "id_user")

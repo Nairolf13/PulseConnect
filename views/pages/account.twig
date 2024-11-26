@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% block main %}
-{% include "../partials/header.twig" %}
+	{% include "../partials/header.twig" %}
 
 	<form action="/update" method="POST" enctype="multipart/form-data">
 		<div class="header">
@@ -29,7 +29,7 @@
 
 		<div class="form-group">
 			<label for="userName">Pseudo</label>
-			<input id="userName" type="text" name="userName" value="{{users.userName}}">
+			<input id="userName" type="text" name="userName" value="{{users.userName}}" required>
 		</div>
 
 		<div class="form-group">
@@ -55,16 +55,16 @@
 		<div class="form-group">
 			<label for="genre">Genre</label>
 			<select id="genre" name="genre" required>
-				<option value="">Sélectionnez votre genre</option>
-				<option value="Masculin">Masculin</option>
-				<option value="Feminin">Féminin</option>
-				<option value="Autre">Autre</option>
+				<option value="Masculin" {{ users.genre == 'Masculin' ? 'selected' : '' }}>Masculin</option>
+				<option value="Feminin" {{ users.genre == 'Feminin' ? 'selected' : '' }}>Féminin</option>
+				<option value="Autre" {{ users.genre == 'Autre' ? 'selected' : '' }}>Autre</option>
 			</select>
 		</div>
 
+
 		<div class="form-group">
 			<label for="mail">Adresse mail</label>
-			<input id="mail" type="email" name="mail" value="{{users.mail}}">
+			<input id="mail" type="email" name="mail" value="{{users.mail}}" required>
 			{% if error %}
 				<p>{{error.mail}}</p>
 			{% endif %}
@@ -105,6 +105,27 @@
 
 	{% block script %}
 		<script src="/../../assets/js/account.js"></script>
+		<script src="/../../assets/js/error.js"></script>
+
+		<script>
+			document.getElementById('resetPasswordForm').addEventListener('submit', (event) => {
+				event.preventDefault();  
+
+				const email = document.getElementById('mail').value;
+
+				handleFetch('/update', {
+					email,
+					userName: document.getElementById('userName').value,
+					description: document.getElementById('description').value,
+					lastName: document.getElementById('lastName').value,
+					firstName: document.getElementById('firstName').value,
+					age: document.getElementById('age').value,
+					genre: document.getElementById('genre').value,
+					password: document.getElementById('password').value,
+					confirmPassword: document.getElementById('confirmPassword').value
+				});
+			});
+		</script>
 	{% endblock %}
 
 

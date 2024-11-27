@@ -38,52 +38,72 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Fonction pour calculer la distance entre deux points géographiques (en kilomètres)
-function calculateDistance(lat1, lon1, lat2, lon2) {
-    const R = 6371; // Rayon de la Terre en kilomètres
-    const dLat = (lat2 - lat1) * Math.PI / 180;
-    const dLon = (lon2 - lon1) * Math.PI / 180;
-    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-              Math.sin(dLon / 2) * Math.sin(dLon / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c; // Distance en kilomètres
-}
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+        const R = 6371; // Rayon de la Terre en kilomètres
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLon = (lon2 - lon1) * Math.PI / 180;
+        const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                  Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                  Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c; // Distance en kilomètres
+    }
+
 
 
     // Charger les studios depuis l'API
     async function loadStudios() {
+        document.getElementById('loading').style.display = 'block';
         try {
-            const response = await fetch('/studio-data');
-            const studios = await response.json();
-
-            // Vérification que studios est bien un tableau
-            if (Array.isArray(studios)) {
-                // Ajouter immédiatement tous les studios (proches et éloignés)
-                addMarkers(studios);  // Afficher immédiatement tous les studios
+            const userLocation = await getUserLocation();
+            showUserLocation(userLocation);
+            
+            const responseClose = await fetch(`/studio-data?lat=${userLocation[0]}&lon=${userLocation[1]}&radius=50`);
+            const studiosClose = await responseClose.json();
+    
+            if (Array.isArray(studiosClose)) {
+                // Afficher d'abord les studios proches
+                addMarkers(studiosClose, studiosClose.length);
                 
-                // Une fois que la localisation de l'utilisateur est disponible, filtrer et afficher les studios proches
-                const userLocation = await getUserLocation(); // Obtenez la position de l'utilisateur
+                // Centrer la carte sur l'utilisateur avec un zoom approprié
+                map.setView(userLocation, 12);
                 
-                // Filtrer les studios dans un rayon de 50 km
-                const nearbyStudios = studios.filter(studio => {
-                    const distance = calculateDistance(userLocation[0], userLocation[1], studio.latitude, studio.longitude);
-                    return distance <= 50; // Seuls les studios à moins de 50 km sont sélectionnés
-                });
+                // Charger tous les studios
+                const responseAll = await fetch('/studio-data');
+                const studiosAll = await responseAll.json();
                 
-                // Ajouter les marqueurs pour les studios proches
-                addMarkers(nearbyStudios);  // Afficher immédiatement les studios proches
-                showUserLocation(); // Afficher la position de l'utilisateur
+                // Filtrer les studios éloignés
+                const farStudios = studiosAll.filter(studio => 
+                    !studiosClose.some(s => s.latitude === studio.latitude && s.longitude === studio.longitude)
+                );
+                
+                // Afficher le reste des studios de manière progressive
+                setTimeout(() => {
+                    addMarkersProgressively(farStudios, 50);
+                }, 3000);
             } else {
                 console.error("Les données de studios ne sont pas sous forme de tableau.");
             }
         } catch (error) {
             console.error("Erreur lors du chargement des studios :", error);
+            showModal("Erreur lors de la récupération des studios ou de la géolocalisation.");
         } finally {
-            loadingElement.style.display = 'none'; // Masquer le loader après le chargement
+            document.getElementById('loading').style.display = 'none';
         }
     }
     
-    
+    function addMarkersProgressively(studios, batchSize) {
+        let index = 0;
+        function addBatch() {
+            const batch = studios.slice(index, index + batchSize);
+            addMarkers(batch);
+            index += batchSize;
+            if (index < studios.length) {
+                setTimeout(addBatch, 100);
+            }
+        }
+        addBatch();
+    }
 
     // Ajouter les marqueurs des studios sur la carte
     function addMarkers(studios) {
@@ -102,13 +122,11 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
         });
     }
 
-    // Fonction pour obtenir la localisation de l'utilisateur
     async function getUserLocation() {
         return new Promise((resolve, reject) => {
             if ("geolocation" in navigator) {
                 navigator.geolocation.getCurrentPosition(
                     position => {
-                        console.log('Précision de la géolocalisation: ' + position.coords.accuracy + ' mètres');
                         resolve([position.coords.latitude, position.coords.longitude]);
                     },
                     error => reject(error),
@@ -125,30 +143,41 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
     }
     
     
-
     async function showUserLocation() {
         try {
-            const userLocation = await getUserLocation(); // Obtenez la position de l'utilisateur
+            const userLocation = await getUserLocation();
             const userMarker = L.marker(userLocation, {
                 icon: L.icon({
-                    iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png', 
-                    iconSize: [25, 41],
-                    iconAnchor: [12, 41],
-                    popupAnchor: [1, -34],
-                    shadowSize: [41, 41],
+                    iconUrl: 'https://upload.wikimedia.org/wikipedia/commons/a/a7/Green_circle_icon.svg',
+                    iconSize: [30, 30],
+                    iconAnchor: [15, 15],
                 })
             }).addTo(map);
     
             userMarker.bindPopup("<b>Votre Position</b>").openPopup();
-            userMarker.setIcon(L.icon({
-                iconUrl: 'https://upload.wikimedia.org/wikipedia/commons/a/a7/Green_circle_icon.svg', 
-                iconSize: [30, 30],
-                iconAnchor: [15, 15],
-            }));
+            map.setView(userLocation, 14);
     
-            map.setView(userLocation, 14); // Centrer la carte sur la position de l'utilisateur
+            // Charger et afficher les studios proches
+            const response = await fetch('/studio-data');
+            const studios = await response.json();
+    
+            if (Array.isArray(studios)) {
+                const nearbyStudios = studios.filter(studio => {
+                    const distance = calculateDistance(userLocation[0], userLocation[1], studio.latitude, studio.longitude);
+                    return distance <= 50;
+                });
+                addMarkers(nearbyStudios);
+    
+                // Afficher le reste des studios progressivement
+                setTimeout(() => {
+                    const farStudios = studios.filter(studio => !nearbyStudios.includes(studio));
+                    addMarkersProgressively(farStudios, 50);
+                }, 3000);
+            }
         } catch (error) {
-            console.error("Erreur lors de la géolocalisation de l'utilisateur :", error);
+            console.error("Erreur lors de la géolocalisation ou du chargement des studios :", error);
+        } finally {
+            loadingElement.style.display = 'none';
         }
     }
     

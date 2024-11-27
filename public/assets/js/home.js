@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const commentButtons = document.querySelectorAll('.comment-toggle-btn');
     const shareButtons = document.querySelectorAll('.share-button');
 
+    // Gestion des commentaires
     commentButtons.forEach(button => {
         button.addEventListener('click', function () {
             const assetId = this.getAttribute('data-asset-id');
@@ -29,23 +30,30 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    // Gestion des boutons de partage
     shareButtons.forEach(button => {
         button.addEventListener('click', function(event) {
             event.preventDefault();
             const contentId = this.id.split('-')[1];
             const modal = document.getElementById(`shareModal-${contentId}`);
-            modal.style.display = 'block';
 
-        
+            // Basculer l'affichage du modal (ouvrir ou fermer)
+            if (modal.style.display === 'block') {
+                modal.style.display = 'none';
+            } else {
+                modal.style.display = 'block';
+            }
 
+            // Fermer le modal si on clique en dehors
             window.onclick = function(event) {
                 if (event.target == modal) {
                     modal.style.display = 'none';
                 }
-            }
+            };
         });
     });
 });
+
 
 function shareOnFacebook(contentId) {
     const postUrl = encodeURIComponent(`${window.location.origin}/uploads/${contentId}`);

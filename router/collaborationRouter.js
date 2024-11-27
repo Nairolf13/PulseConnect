@@ -334,24 +334,10 @@ collaborationRouter.post("/project/:id_project/comment/:id_comment/delete", auth
 
 collaborationRouter.get("/project/:id_project", authguard, async (req, res) => {
     const { id_project } = req.params; 
-
     try {
         const project = await prisma.projects.findUnique({
-            where: { id_project: parseInt(id_project) },
-            include: {
-                Assets: {
-                    include: {
-                        Commentaires: {
-                            include: {
-                                Users: {
-                                    select: {
-                                        userName: true, 
-                                    },
-                                },
-                            },
-                        },
-                    },
-                },
+            where: {
+                id_project: parseInt(id_project)
             },
             include: {
                 UsersToProjects: {
@@ -361,41 +347,34 @@ collaborationRouter.get("/project/:id_project", authguard, async (req, res) => {
                                 id_user: true,
                                 userName: true,
                                 picture: true,
-                                role: true,
-                            },
-                        },
-                    },
+                                role: true
+                            }
+                        }
+                    }
                 },
-                Assets: true,
-                Commentaires: {
+                Assets: {
                     include: {
-                        Users: {
-                            select: {
-                                id_user: true,
-                                userName: true,
-                            },
-                        },
-                    },
-                },
-                Likes: {
-                    include: {
-                        Users: {
-                            select: {
-                                id_user: true,
-                                userName: true,
-                            },
-                        },
-                    },
-                },
-            },
-        })
+                        commentaire: {
+                            include: {
+                                Users: {
+                                    select: {
+                                        userName: true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
 
         if (!project) {
             return res.status(404).send("Projet non trouvé");
         }
 
+        // Construction de l'objet projet avec les détails des fichiers et des commentaires
         const projectDetails = {
-            id_project: project.id_project, 
+            id_project: project.id_project,
             name: project?.name || "Nom non défini",
             description: project?.description || "Description non définie",
             members: Array.isArray(project?.UsersToProjects)
@@ -405,25 +384,26 @@ collaborationRouter.get("/project/:id_project", authguard, async (req, res) => {
                       picture: utp.Users?.picture || "Image non définie",
                       role: utp.role || "Rôle inconnu",
                   }))
-                : [], 
-                files: Array.isArray(project?.Assets)
+                : [],
+            files: Array.isArray(project?.Assets)
                 ? project.Assets.map((file) => ({
                       id: file.id || null,
                       name: file.name || "Fichier sans nom",
                       url: file.url || "URL non définie",
-                      comments: Array.isArray(file.Commentaires)  
-                          ? file.Commentaires.map((comment) => ({
+                      description: file.description || "Description non définie",
+                      comments: Array.isArray(file.commentaire)
+                          ? file.commentaire.map((comment) => ({
                                 id: comment.id || null,
                                 content: comment.content || "Commentaire vide",
                                 userName: comment.Users?.userName || "Utilisateur inconnu",
                                 created_at: comment.created_at || null,
                             }))
-                          : [], 
+                          : [],
                   }))
                 : [],
         };
 
-        res.render("pages/collaboration.twig", { project: projectDetails, genres: genresEnum  });
+        res.render("pages/collaboration.twig", { project: projectDetails, genres: genresEnum });
     } catch (err) {
         console.error(err);
         res.status(500).send("Erreur lors de la récupération du projet");

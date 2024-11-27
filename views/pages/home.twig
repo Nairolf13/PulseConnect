@@ -86,10 +86,9 @@
 							</div>
 							<div class="share-section">
 
-								<div id="shareModal-{{ content.id }}" class="share-modal" style="display: none;">
-									<div class="modal-content">
-										<h3>Partager le post</h3>
-										<div class="share-options">
+								<div id="shareModal-{{ content.id }}"  style="display: none;">
+									<div class="btn-share" id="shareModal">
+										<div class="share-options" >
 											<button onclick="shareOnFacebook('{{ content.id }}')"><img src="/../../assets/imgs/Facebook.png" alt="Facebook"></button>
 											<button onclick="shareOnTwitter('{{ content.id }}')"><img src="/../../assets/imgs/X.png" alt="Twitter"></button>
 											<button onclick="shareOnLinkedIn('{{ content.id }}')"><img src="/../../assets/imgs/linkedin.png" alt="LinkedIn"></button>

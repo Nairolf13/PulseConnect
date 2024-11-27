@@ -238,16 +238,16 @@ video {
     border: none;
     border-radius: 50%;
     cursor: pointer;
-    padding: 10px;
+    padding: 4px;
     z-index: 1;
 }
 
 .prev {
-    left: 10px;
+    left: 4px;
 }
 
 .next {
-    right: 10px;
+    right: 4px;
 }
 
 .prev:hover,
@@ -294,7 +294,7 @@ video {
 
     #clipWelcome {
         width: 900px;
-        margin-top: 50px;
+        margin-bottom: 100px;
     }
 
     .slider ul {
@@ -313,6 +313,10 @@ video {
 }
 
 @media (max-width: 768px) {
+    body {
+        overflow-x: hidden;
+    }
+
     .burger-menu {
         display: flex;
         z-index: 2000;
@@ -394,6 +398,7 @@ video {
         width: 100%;
 
     }
+
     .slider {
         width: 100%;
     }

@@ -10,7 +10,7 @@
 
 {% block main %}
 	<div id="headWelcome">
-		<img src="/../../assets/imgs/LogoWhiteRemoveBg.png" alt="logo Pulse connect" class="logo">
+		{# <img src="/../../assets/imgs/LogoWhiteRemoveBg.png" alt="logo Pulse connect" class="logo"> #}
 		<div class="burger-menu" onclick="toggleMenu()">
 			<span></span>
 			<span></span>
@@ -45,7 +45,7 @@
 
 	<section id="clipWelcome">
 
-		<h3>Top clip</h3>
+		<h2>Top clip</h2>
 		<div class="slider-container">
 			<div class="slider">
 				<ul>
@@ -53,8 +53,8 @@
 						<li>
 							<h4>{{ post.name }}</h4>
 							<p>
-								{% if post.Users %}
-									{{ post.Users.userName }}{% else %}Utilisateur inconnu
+								{% if post.description %}
+									{{ post.description }}{% else %}Utilisateur inconnu
 								{% endif %}
 							</p>
 							{% if post.url and (post.url ends with '.mp3' or post.url ends with '.wav' or post.url ends with '.ogg' or post.url ends with '.flac') %}

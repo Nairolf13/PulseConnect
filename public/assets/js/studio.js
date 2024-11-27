@@ -142,13 +142,12 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
     
-    
     async function showUserLocation() {
         try {
             const userLocation = await getUserLocation();
             const userMarker = L.marker(userLocation, {
                 icon: L.icon({
-                    iconUrl: 'https://upload.wikimedia.org/wikipedia/commons/a/a7/Green_circle_icon.svg',
+                    iconUrl: '/../../assets/imgs/pieton.png',
                     iconSize: [30, 30],
                     iconAnchor: [15, 15],
                 })
@@ -178,8 +177,12 @@ document.addEventListener('DOMContentLoaded', function () {
             console.error("Erreur lors de la géolocalisation ou du chargement des studios :", error);
         } finally {
             loadingElement.style.display = 'none';
+    
+            // Charger les studios même si la géolocalisation a échoué
+            loadStudios();
         }
     }
+    
     
 
 
@@ -216,21 +219,57 @@ document.addEventListener('DOMContentLoaded', function () {
         directionsContainer.style.display = 'block';
     }
 
-    // Gestion du bouton d'itinéraire dans le popup
-    map.on('popupopen', function (e) {
-        const directionButton = e.popup._contentNode.querySelector('.get-directions');
-        if (directionButton) {
-            directionButton.addEventListener('click', async function () {
-                try {
-                    const userLocation = await getUserLocation();
-                    const studioLocation = [parseFloat(this.dataset.lat), parseFloat(this.dataset.lon)];
-                    showDirections(userLocation, studioLocation);
-                } catch (error) {
-                    console.error("Erreur lors de la géolocalisation :", error);
-                }
-            });
+ // Gestion du bouton d'itinéraire dans le popup
+map.on('popupopen', function (e) {
+    const directionButton = e.popup._contentNode.querySelector('.get-directions');
+    if (directionButton) {
+        const lat = parseFloat(directionButton.dataset.lat);
+        const lon = parseFloat(directionButton.dataset.lon);
+
+        calculateRouteEstimation(lat, lon, directionButton);
+
+        // Ajouter l'événement au bouton pour afficher l'itinéraire
+        directionButton.addEventListener('click', async function () {
+            try {
+                const userLocation = await getUserLocation();
+                const studioLocation = [lat, lon];
+                showDirections(userLocation, studioLocation);
+            } catch (error) {
+                console.error("Erreur lors de la géolocalisation :", error);
+            }
+        });
+    }
+});
+
+// Fonction pour calculer et afficher la distance et le temps estimés
+async function calculateRouteEstimation(lat, lon, buttonElement) {
+    try {
+        const userLocation = await getUserLocation();
+        const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${userLocation[1]},${userLocation[0]};${lon},${lat}?geometries=geojson&access_token=${MAPBOX_API_KEY}`;
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.routes && data.routes.length > 0) {
+            const route = data.routes[0];
+            const distanceKm = (route.distance / 1000).toFixed(2); // Distance en km
+            const durationMinutes = Math.ceil(route.duration / 60); // Durée en minutes
+
+            // Ajouter l'estimation à côté du bouton
+            const estimationElement = document.createElement('div');
+            estimationElement.innerHTML = `
+                <p><b>Distance :</b> ${distanceKm} km<br>
+                <b>Durée :</b> ${durationMinutes} min</p>
+            `;
+            estimationElement.style.marginTop = "10px";
+            buttonElement.parentNode.appendChild(estimationElement);
+        } else {
+            console.error("Aucune route trouvée.");
         }
-    });
+    } catch (error) {
+        console.error("Erreur lors du calcul de l'estimation :", error);
+    }
+}
+
 
     // Fonction de réinitialisation de la carte
     function resetMap() {
@@ -328,14 +367,6 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     L.control.layers(baseMaps).addTo(map);
-
-    // Fonctionnalité Snap-to-Road (alignement sur les routes)
-    async function snapToRoad(latlng) {
-        const url = `https://api.mapbox.com/matching/v5/mapbox/driving/${latlng.lng},${latlng.lat}?access_token=${MAPBOX_API_KEY}`;
-        const response = await fetch(url);
-        const data = await response.json();
-        return data.matchings[0].geometry;
-    }
 
     showUserLocation();
     loadStudios();

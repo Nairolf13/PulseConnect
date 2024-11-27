@@ -33,29 +33,33 @@
 									Votre navigateur ne supporte pas l'élément vidéo.
 								</video>
 							{% else %}
-								<a href="/uploads/{{ file.url }}" target="_blank">{{ file.name }}</a>
+								<div id="picture">
+									<img src="/uploads/{{ file.url }}" target="_blank" alt="image partagé">
+								</div><br>
 							{% endif %}
-							<div class="comments">
+
+							<div class="comments" id="comments-{{ file.id }}" style="display: none;">
 								<h4>Commentaires</h4>
-								<ul>
-									{% if file.comments is not empty %}
+								{% if file.comments is defined and file.comments is not empty %}
+									<ul>
 										{% for comment in file.comments %}
-											<li>
-												{{ comment.content }}
-												-
+											<li class="commentaire">
 												<strong>{{ comment.userName }}</strong>
-												<small>{{ comment.created_at|date("d/m/Y H:i") }}</small>
+												<p>{{ comment.content }}</p>
+												{{ comment.created_at | date("d/m/Y") }}
 											</li>
 										{% endfor %}
-									{% else %}
-										<p>Aucun commentaire</p>
-									{% endif %}
-								</ul>
+									</ul>
+								{% else %}
+									<p>Aucun commentaire pour ce fichier.</p>
+								{% endif %}
+								<form id="formComment" action="/project/{{ project.id_project }}/{{ file.id }}/comment" method="POST">
+									<textarea id="textComment" name="commentContent" placeholder="Ajouter un commentaire" required></textarea><br>
+									<button type="submit">Commenter</button>
+								</form>
 							</div>
-							<form id="formComment" action="/project/{{ project.id_project }}/{{ file.id }}/comment" method="POST">
-								<textarea id="textComment" name="commentContent" placeholder="Ajouter un commentaire" required></textarea><br>
-								<button type="submit">Commenter</button>
-							</form>
+							<button class="toggle-comments-btn" id="btn-toggle-{{ file.id }}" onclick="toggleComments({{ file.id }})">Afficher les commentaires</button>
+
 						{% endif %}
 					</div>
 				{% endfor %}
@@ -92,10 +96,11 @@
 					</div>
 					<textarea type="text" name="description" placeholder="Description"></textarea><br>
 					<input type="file" name="file" required><br>
-					<button type="submit">Upload</button>
+					<button type="submit">Ajouter</button>
 				</form>
 			</div>
 		</div>
+		<button id="toggle-sidebar-btn" class="toggle-sidebar-btn" onclick="toggleSidebar()">...</button>
 	</section>
 	{% include "../partials/error.twig" %}
 {% endblock %}

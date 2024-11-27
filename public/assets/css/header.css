@@ -106,12 +106,12 @@ ul.nav-list li img {
 }
 
 .close {
-    color: #000000;
+    color: #ffffff;
     font-size: 28px;
     font-weight: bold;
     position: absolute;
-    right: -20px;
-    top: -30px;
+    right: 5%;
+    top: 1%;
 }
 
 .close:hover,

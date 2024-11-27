@@ -326,6 +326,11 @@ h1 {
  
 }
 
+.btn-share{
+    background-color: #1e1e1e00;
+    background: none;
+}
+
 .share-options {
     display: flex;
     justify-content: space-around;

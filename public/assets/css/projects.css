@@ -43,7 +43,7 @@ h1 {
 .projects-container {
     position: absolute;
     top: 70px;
-    left: 11%;
+    left: 0;
     right: 0;
     color: white;
     max-width: 600px;
@@ -132,6 +132,46 @@ img {
     color: darkred;
 }
 
+.menu-dropdown {
+    display: none; /* Assurez-vous que c'est correctement manipulé par le JS */
+}
+
+.menu-btn {
+    cursor: pointer;
+}
+
+/* Exemple de style pour le bouton Modifier */
+.edit-project {
+    display: block; /* Changez cela si nécessaire */
+}
+
+
+.menu-btn:hover + .menu-dropdown {
+    display: block;
+}
+
+.editable-title[contenteditable="true"],
+.editable-description[contenteditable="true"] {
+    border: 1px solid #ccc;
+    padding: 5px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.save-changes,
+.cancel-changes {
+    margin-top: 10px;
+    display: inline-block;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.cancel-changes {
+    background-color: red;
+}
 
 @media (max-width: 768px) {
     .projects-container {

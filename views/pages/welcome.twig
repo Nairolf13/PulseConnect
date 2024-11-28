@@ -9,7 +9,8 @@
 {% endblock %}
 
 {% block main %}
-	<div id="headWelcome">
+	<div
+		id="headWelcome">
 		{# <img src="/../../assets/imgs/LogoWhiteRemoveBg.png" alt="logo Pulse connect" class="logo"> #}
 		<div class="burger-menu" onclick="toggleMenu()">
 			<span></span>
@@ -78,7 +79,7 @@
 			<button class="next" onclick="moveSlider(1)">&#10095;</button>
 		</div>
 	</section>
-
+	{% include "../partials/footer.twig" %}
 
 	{% block script %}
 		<script src="/../../assets/js/welcome.js"></script>

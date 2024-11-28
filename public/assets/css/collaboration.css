@@ -95,6 +95,7 @@ body {
     padding: 20px;
     flex: 3;
     margin-left: 250px;
+    width: 800px;
 }
 
 .feed-container h1 {
@@ -217,7 +218,6 @@ body {
     word-wrap: break-word;
 }
 
-/* Section des fichiers */
 .files-section {
     margin-top: 30px;
 }
@@ -272,10 +272,9 @@ body {
 }
 
 video {
-    max-width: 600px;
+    width: 100%;
 }
 
-/* Commentaires */
 .comments {
     margin-top: 15px;
     border-top: 1px solid #3d3d3d;
@@ -360,13 +359,11 @@ form {
 form h3 {
     text-align: center;
     color: #fff;
-    /* Changer la couleur pour un meilleur contraste */
     margin-bottom: 20px;
 }
 
 form div {
     margin-bottom: 15px;
-    /* Espacement uniforme entre les champs */
 }
 
 form input[type="text"],
@@ -376,7 +373,6 @@ form button[type="submit"] {
     width: 100%;
     padding: 10px;
     margin-bottom: 15px;
-    /* Espacement uniforme entre les éléments */
     border: 1px solid #ddd;
     border-radius: 4px;
     font-size: 14px;
@@ -410,11 +406,6 @@ form button[type="submit"] {
     transition: background-color 0.3s;
 }
 
-form button[type="submit"]:hover {
-    background-color: #2bc2d9;
-    /* Couleur de fond au survol */
-}
-
 .comment-form {
     margin-top: 15px;
     display: flex;
@@ -440,12 +431,8 @@ form button[type="submit"]:hover {
     cursor: pointer;
 }
 
-.comment-form button:hover {
-    background-color: #8cf2d1;
-}
-
 .toggle-sidebar-btn {
-    display: none; 
+    display: none;
     position: fixed;
     top: 10px;
     right: 10px;
@@ -457,6 +444,73 @@ form button[type="submit"]:hover {
     cursor: pointer;
     z-index: 1001;
 }
+
+.file-actions {
+    position: absolute;
+    top: 18%;
+    left: 62%;
+}
+
+.toggle-actions-btn {
+    border: none;
+    background: none;
+    color: white;
+}
+
+.actions-menu {
+    display: flex;
+    position: absolute;
+    right: 500%;
+    top: 500%;
+    align-items: center;
+    flex-direction: column;
+    gap: 10px;
+    border: 1px solid white;
+    border-radius: 8px;
+    background-color: #3d3d3d;
+    width: 200px;
+    padding: 20px;
+    z-index: 1000;
+}
+
+.edit-file-btn ,.delete-file-btn{
+    background-color: aquamarine;
+    border-radius: 5px;
+    border: 1px solid black;
+}
+
+.close-actions-btn{
+    position: absolute;
+    bottom: 60%;
+    left: 82%;
+    border: none;
+    background: none;
+    color: gray;
+    font-size: xx-large;
+}
+
+.edit-actions{
+    display: flex;
+    position: absolute;
+    right: 45%;
+    top: 35%;
+    align-items: center;
+    flex-direction: column;
+    gap: 10px;
+    border: 1px solid white;
+    border-radius: 8px;
+    background-color: #3d3d3d;
+    width: 200px;
+    padding: 20px;
+    z-index: 1000;
+}
+
+.save-edit-btn,.cancel-edit-btn{
+    background-color: aquamarine;
+    border-radius: 5px;
+    border: 1px solid black;
+}
+
 
 @media (max-width: 768px) {
     .main-content {
@@ -472,13 +526,15 @@ form button[type="submit"]:hover {
     }
 
     .sidebar-container {
-        display: none; /* Masquer par défaut sur mobile */
+        display: none;
+        /* Masquer par défaut sur mobile */
         width: 90%;
         margin: 10px 0;
     }
 
     .show-sidebar {
-        display: block !important; /* Afficher la sidebar quand elle est activée */
+        display: block !important;
+        /* Afficher la sidebar quand elle est activée */
     }
 
     .toggle-sidebar-btn {
@@ -490,11 +546,13 @@ form button[type="submit"]:hover {
     }
 
     .sidebar-container {
-        display: none; /* Masquer la barre latérale par défaut */
+        display: none;
+        /* Masquer la barre latérale par défaut */
         position: fixed;
         top: 0;
         right: 0;
-        width: 80%; /* Occupe une bonne partie de l'écran */
+        width: 80%;
+        /* Occupe une bonne partie de l'écran */
         height: 100%;
         background-color: #1e1e1e;
         z-index: 1000;
@@ -504,11 +562,12 @@ form button[type="submit"]:hover {
     }
 
     .sidebar-container.visible {
-        display: block; 
+        display: block;
         width: 100%;
     }
 
-    #picture img ,video{
+    #picture img,
+    video {
         max-width: 280px;
         width: 350px;
         height: 350px;

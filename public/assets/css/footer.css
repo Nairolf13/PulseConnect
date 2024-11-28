@@ -1,0 +1,27 @@
+.footer-container {
+    display: flex;
+    justify-content: space-between;
+    width: 98%;
+    padding: 10px 20px;
+}
+
+.footer-left {
+    flex: 1;
+}
+
+.footer-right {
+    display: flex;
+    gap: 15px; /* Espacement entre les icônes */
+}
+
+.footer-right img {
+    width: 30px; /* Ajustez la taille des images selon vos besoins */
+    height: auto;
+}
+
+@media (max-width: 769px){
+    .footer-container{
+        flex-direction: column;
+        align-items: center;
+    }
+}

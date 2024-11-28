@@ -31,12 +31,8 @@
 			{% else %}
 				{% for content in content %}
 					<li class="post-item">
-						<button class="delete" onclick="openModal({{ content.id }})">
-							<span class="dots">.</span>
-							<span class="dots">.</span>
-							<span class="dots">.</span>
-						</button>
-						<p>{{ content.Users.userName }}</p>
+						<button class="delete" onclick="openModal({{ content.id }})">...</button>
+						
 						<h2>{{ content.name }}</h2>
 						<p>{{ content.description }}</p>
 						{% if content.url and (content.url ends with '.mp3' or content.url ends with '.wav' or content.url ends with '.ogg' or content.url ends with '.flac') %}

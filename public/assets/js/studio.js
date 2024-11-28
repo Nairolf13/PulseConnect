@@ -43,8 +43,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const dLat = (lat2 - lat1) * Math.PI / 180;
         const dLon = (lon2 - lon1) * Math.PI / 180;
         const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                  Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-                  Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
         const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         return R * c; // Distance en kilomètres
     }
@@ -52,32 +52,32 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     // Charger les studios depuis l'API
+    let isLoadingStudios = false; // Ajouter un indicateur global
+
     async function loadStudios() {
+        if (isLoadingStudios) return; // Sortir si une requête est déjà en cours
+        isLoadingStudios = true;
+    
         document.getElementById('loading').style.display = 'block';
         try {
             const userLocation = await getUserLocation();
             showUserLocation(userLocation);
-            
+    
             const responseClose = await fetch(`/studio-data?lat=${userLocation[0]}&lon=${userLocation[1]}&radius=50`);
             const studiosClose = await responseClose.json();
     
             if (Array.isArray(studiosClose)) {
-                // Afficher d'abord les studios proches
-                addMarkers(studiosClose, studiosClose.length);
-                
-                // Centrer la carte sur l'utilisateur avec un zoom approprié
+                addMarkers(studiosClose);
+    
                 map.setView(userLocation, 12);
-                
-                // Charger tous les studios
+    
                 const responseAll = await fetch('/studio-data');
                 const studiosAll = await responseAll.json();
-                
-                // Filtrer les studios éloignés
-                const farStudios = studiosAll.filter(studio => 
+    
+                const farStudios = studiosAll.filter(studio =>
                     !studiosClose.some(s => s.latitude === studio.latitude && s.longitude === studio.longitude)
                 );
-                
-                // Afficher le reste des studios de manière progressive
+    
                 setTimeout(() => {
                     addMarkersProgressively(farStudios, 50);
                 }, 3000);
@@ -88,14 +88,17 @@ document.addEventListener('DOMContentLoaded', function () {
             console.error("Erreur lors du chargement des studios :", error);
             showModal("Erreur lors de la récupération des studios ou de la géolocalisation.");
         } finally {
+            isLoadingStudios = false; // Libérer le verrou
             document.getElementById('loading').style.display = 'none';
         }
     }
-    
+
     function addMarkersProgressively(studios, batchSize) {
         let index = 0;
         function addBatch() {
-            const batch = studios.slice(index, index + batchSize);
+            const batch = studios
+                .slice(index, index + batchSize)
+                .filter(studio => !addedStudios.has(`${studio.latitude},${studio.longitude}`)); // Ne garder que les studios non ajoutés
             addMarkers(batch);
             index += batchSize;
             if (index < studios.length) {
@@ -106,21 +109,28 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Ajouter les marqueurs des studios sur la carte
+    const addedStudios = new Set(); // Conserver les studios déjà ajoutés
+
     function addMarkers(studios) {
         studios.forEach(studio => {
-            const marker = L.marker([studio.latitude, studio.longitude]);
-            const phone = studio.phone ? `<a href="tel:${studio.phone}">Appeler ${studio.phone}</a>` : 'Numéro de téléphone non disponible';
-            const popupContent = `
-                <b>${studio.name}</b><br>
-                Adresse: ${studio.address}<br>
-                ${phone}
-                ${studio.image ? `<br><img src="${studio.image}" alt="${studio.name}" style="max-width:200px; max-height:150px;">` : ''}
-                <br><button class="get-directions" data-lat="${studio.latitude}" data-lon="${studio.longitude}">Itinéraire</button>
-            `;
-            marker.bindPopup(popupContent);
-            markers.addLayer(marker);
+            const studioKey = `${studio.latitude},${studio.longitude}`; // Utiliser une clé unique basée sur les coordonnées
+            if (!addedStudios.has(studioKey)) { // Ajouter uniquement si le studio n'existe pas encore
+                addedStudios.add(studioKey);
+                const marker = L.marker([studio.latitude, studio.longitude]);
+                const phone = studio.phone ? `<a href="tel:${studio.phone}">Appeler ${studio.phone}</a>` : 'Numéro de téléphone non disponible';
+                const popupContent = `
+                    <b>${studio.name}</b><br>
+                    Adresse: ${studio.address}<br>
+                    ${phone}
+                    ${studio.image ? `<br><img src="${studio.image}" alt="${studio.name}" style="max-width:200px; max-height:150px;">` : ''}
+                    <br><button class="get-directions" data-lat="${studio.latitude}" data-lon="${studio.longitude}">Itinéraire</button>
+                `;
+                marker.bindPopup(popupContent);
+                markers.addLayer(marker);
+            }
         });
     }
+    
 
     async function getUserLocation() {
         return new Promise((resolve, reject) => {
@@ -141,7 +151,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     }
-    
+
     async function showUserLocation() {
         try {
             const userLocation = await getUserLocation();
@@ -152,21 +162,21 @@ document.addEventListener('DOMContentLoaded', function () {
                     iconAnchor: [15, 15],
                 })
             }).addTo(map);
-    
+
             userMarker.bindPopup("<b>Votre Position</b>").openPopup();
             map.setView(userLocation, 14);
-    
+
             // Charger et afficher les studios proches
             const response = await fetch('/studio-data');
             const studios = await response.json();
-    
+
             if (Array.isArray(studios)) {
                 const nearbyStudios = studios.filter(studio => {
                     const distance = calculateDistance(userLocation[0], userLocation[1], studio.latitude, studio.longitude);
                     return distance <= 50;
                 });
                 addMarkers(nearbyStudios);
-    
+
                 // Afficher le reste des studios progressivement
                 setTimeout(() => {
                     const farStudios = studios.filter(studio => !nearbyStudios.includes(studio));
@@ -177,28 +187,33 @@ document.addEventListener('DOMContentLoaded', function () {
             console.error("Erreur lors de la géolocalisation ou du chargement des studios :", error);
         } finally {
             loadingElement.style.display = 'none';
-    
-            // Charger les studios même si la géolocalisation a échoué
-            loadStudios();
         }
     }
-    
-    
 
 
-    // Fonction pour calculer et afficher l'itinéraire
+
+
+    let currentRouteLayer = null; // Variable globale pour stocker l'itinéraire actuel
+
     async function showDirections(start, end) {
         try {
-            const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${start[1]},${start[0]};${end[1]},${end[0]}?geometries=geojson&steps=true&access_token=${MAPBOX_API_KEY}`;
+            const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${start[1]},${start[0]};${end[1]},${end[0]}?geometries=geojson&steps=true&language=fr&access_token=${MAPBOX_API_KEY}`;
             const response = await fetch(url);
             const data = await response.json();
 
             const route = data.routes[0];
-            const geojson = L.geoJSON(route.geometry, {
+
+            // Supprimer l'ancien itinéraire s'il existe
+            if (currentRouteLayer) {
+                map.removeLayer(currentRouteLayer);
+            }
+
+            // Ajouter le nouvel itinéraire
+            currentRouteLayer = L.geoJSON(route.geometry, {
                 style: { color: 'blue', weight: 4, opacity: 0.7 }
             }).addTo(map);
 
-            map.fitBounds(geojson.getBounds());
+            map.fitBounds(currentRouteLayer.getBounds());
 
             // Afficher les étapes de l'itinéraire
             showRouteSteps(route.legs[0].steps);
@@ -206,7 +221,6 @@ document.addEventListener('DOMContentLoaded', function () {
             console.error("Erreur lors de la récupération des directions :", error);
         }
     }
-
     function showRouteSteps(steps) {
         let stepsHtml = '<ul>';
         steps.forEach(step => {
@@ -219,56 +233,56 @@ document.addEventListener('DOMContentLoaded', function () {
         directionsContainer.style.display = 'block';
     }
 
- // Gestion du bouton d'itinéraire dans le popup
-map.on('popupopen', function (e) {
-    const directionButton = e.popup._contentNode.querySelector('.get-directions');
-    if (directionButton) {
-        const lat = parseFloat(directionButton.dataset.lat);
-        const lon = parseFloat(directionButton.dataset.lon);
+    // Gestion du bouton d'itinéraire dans le popup
+    map.on('popupopen', function (e) {
+        const directionButton = e.popup._contentNode.querySelector('.get-directions');
+        if (directionButton) {
+            const lat = parseFloat(directionButton.dataset.lat);
+            const lon = parseFloat(directionButton.dataset.lon);
 
-        calculateRouteEstimation(lat, lon, directionButton);
+            calculateRouteEstimation(lat, lon, directionButton);
 
-        // Ajouter l'événement au bouton pour afficher l'itinéraire
-        directionButton.addEventListener('click', async function () {
-            try {
-                const userLocation = await getUserLocation();
-                const studioLocation = [lat, lon];
-                showDirections(userLocation, studioLocation);
-            } catch (error) {
-                console.error("Erreur lors de la géolocalisation :", error);
-            }
-        });
-    }
-});
+            // Ajouter l'événement au bouton pour afficher l'itinéraire
+            directionButton.addEventListener('click', async function () {
+                try {
+                    const userLocation = await getUserLocation();
+                    const studioLocation = [lat, lon];
+                    showDirections(userLocation, studioLocation);
+                } catch (error) {
+                    console.error("Erreur lors de la géolocalisation :", error);
+                }
+            });
+        }
+    });
 
-// Fonction pour calculer et afficher la distance et le temps estimés
-async function calculateRouteEstimation(lat, lon, buttonElement) {
-    try {
-        const userLocation = await getUserLocation();
-        const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${userLocation[1]},${userLocation[0]};${lon},${lat}?geometries=geojson&access_token=${MAPBOX_API_KEY}`;
-        const response = await fetch(url);
-        const data = await response.json();
+    // Fonction pour calculer et afficher la distance et le temps estimés
+    async function calculateRouteEstimation(lat, lon, buttonElement) {
+        try {
+            const userLocation = await getUserLocation();
+            const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${userLocation[1]},${userLocation[0]};${lon},${lat}?geometries=geojson&access_token=${MAPBOX_API_KEY}`;
+            const response = await fetch(url);
+            const data = await response.json();
 
-        if (data.routes && data.routes.length > 0) {
-            const route = data.routes[0];
-            const distanceKm = (route.distance / 1000).toFixed(2); // Distance en km
-            const durationMinutes = Math.ceil(route.duration / 60); // Durée en minutes
+            if (data.routes && data.routes.length > 0) {
+                const route = data.routes[0];
+                const distanceKm = (route.distance / 1000).toFixed(2); // Distance en km
+                const durationMinutes = Math.ceil(route.duration / 60); // Durée en minutes
 
-            // Ajouter l'estimation à côté du bouton
-            const estimationElement = document.createElement('div');
-            estimationElement.innerHTML = `
+                // Ajouter l'estimation à côté du bouton
+                const estimationElement = document.createElement('div');
+                estimationElement.innerHTML = `
                 <p><b>Distance :</b> ${distanceKm} km<br>
                 <b>Durée :</b> ${durationMinutes} min</p>
             `;
-            estimationElement.style.marginTop = "10px";
-            buttonElement.parentNode.appendChild(estimationElement);
-        } else {
-            console.error("Aucune route trouvée.");
+                estimationElement.style.marginTop = "10px";
+                buttonElement.parentNode.appendChild(estimationElement);
+            } else {
+                console.error("Aucune route trouvée.");
+            }
+        } catch (error) {
+            console.error("Erreur lors du calcul de l'estimation :", error);
         }
-    } catch (error) {
-        console.error("Erreur lors du calcul de l'estimation :", error);
     }
-}
 
 
     // Fonction de réinitialisation de la carte
@@ -301,7 +315,7 @@ async function calculateRouteEstimation(lat, lon, buttonElement) {
                 resetMap();  // Réinitialiser la carte avant d'afficher les résultats
                 const [firstResult] = results;
                 map.setView([firstResult.center[1], firstResult.center[0]], 12);  // Zoomer sur la première ville trouvée
-        
+
                 const studios = results.map(place => ({
                     name: place.text,
                     latitude: place.center[1],
@@ -316,7 +330,7 @@ async function calculateRouteEstimation(lat, lon, buttonElement) {
             console.error("Erreur lors de la recherche du studio ou de la ville :", error);
         }
     }
-    
+
 
     // Fonction de géocodage (ville ou adresse)
     async function geocode(query) {
@@ -371,7 +385,7 @@ async function calculateRouteEstimation(lat, lon, buttonElement) {
     showUserLocation();
     loadStudios();
 });
-  
+
 
 
 

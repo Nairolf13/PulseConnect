@@ -115,12 +115,13 @@ img {
 }
 
 .delete {
-    background: none;
     border: none;
+    background: none;
     cursor: pointer;
-    color: red;
+    color: rgb(255, 255, 255);
     font-size: 20px;
     display: inline;
+    border-radius: 8px;
 }
 
 .delete img {
@@ -129,18 +130,39 @@ img {
 }
 
 .delete:hover {
-    color: darkred;
+    color: rgb(255, 255, 255);
 }
 
 .menu-dropdown {
-    display: none; /* Assurez-vous que c'est correctement manipulé par le JS */
+    position: fixed; /* Permet de centrer sur l'écran */
+    top: 50%; /* Alignement vertical */
+    left: 50%; /* Alignement horizontal */
+    transform: translate(-50%, -50%); /* Centre précisément en ajustant les axes X et Y */
+    z-index: 1000; /* Assure que la modal est au-dessus des autres éléments */
+    background-color: #1e1e1e; /* Fond blanc pour le menu */
+    border-radius: 8px; /* Coins arrondis pour un look moderne */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Légère ombre pour un effet de profondeur */
+    padding: 20px; /* Espace intérieur */
+    display: none; /* Masqué par défaut */
+    min-width: 300px; /* Largeur minimale */
+    text-align: center; /* Centre les éléments */
+}
+
+/* Animation d'apparition */
+.menu-dropdown.show {
+    display: block;
+    animation: fadeIn 0.3s ease-out; /* Transition douce */
 }
 
 .menu-btn {
+    
+    background: none;
+    border: none;
+    color: white;
     cursor: pointer;
 }
 
-/* Exemple de style pour le bouton Modifier */
+
 .edit-project {
     display: block; /* Changez cela si nécessaire */
 }

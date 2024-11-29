@@ -1,64 +1,71 @@
 {% extends "../layouts/base.twig" %}
 
 {% block style %}
-    <link rel="stylesheet" href="/../../assets/css/projects.css">
+	<link rel="stylesheet" href="/../../assets/css/projects.css">
 {% endblock %}
 
 {% block title %}
-    <title>{{ title }}</title>
+	<title>{{ title }}</title>
 {% endblock %}
 
 {% block main %}
-    {% include "../partials/header.twig" %}
+	{% include "../partials/header.twig" %}
 
-    <div class="header">
-        <li>
-            <a href="/home" class="back-arrow"><img src="/../../assets/imgs/flecheBack.png" alt="arrowBack"></a>
-        </li>
-        <h1>Mes projets</h1>
-    </div>
-    <div class="projects-container" data-project-id="{{ project.id_project }}">
-        {% if projects is empty %}
-            <p>Vous ne participez à aucun projet pour le moment !</p>
-        {% else %}
-            <ul class="projects-list">
-                {% for project in projects %}
-                    <li class="project-item" data-project-id="{{ project.id_project }}">
-                        <div class="project-header">
-                            <h2 class="editable-title" contenteditable="{{ project.role == 'owner' ? 'false' : 'false' }}">{{ project.name }}</h2>
-                            <button class="menu-btn" id="menu-btn-{{ project.id_project }}">...</button>
-                            <div class="menu-dropdown" id="menu-dropdown-{{ project.id_project }}" style="display: none;">
-                                {% if project.role == 'owner' %}
-                                    <button class="edit-project">Modifier</button>
-                                    <div class="edit-controls" style="display: none;">
-                                        <input type="text" class="add-participant-input" placeholder="Ajouter un participant">
-                                        <ul class="search-results"></ul>
-                                    </div>
-                                {% endif %}
-                            </div>
-                        </div>
+	<div class="header">
+		<li>
+			<a href="/home" class="back-arrow"><img src="/../../assets/imgs/flecheBack.png" alt="arrowBack"></a>
+		</li>
+		<h1>Mes projets</h1>
+	</div>
+	<div class="projects-container" data-project-id="{{ project.id_project }}">
+		{% if projects is empty %}
+			<p>Vous ne participez à aucun projet pour le moment !</p>
+		{% else %}
+			<ul class="projects-list">
+				{% for project in projects %}
+					<li class="project-item" data-project-id="{{ project.id_project }}">
+						<div class="project-header">
+							<h2 class="editable-title" contenteditable="false">{{ project.name }}</h2>
+							<button class="menu-btn" id="menu-btn-{{ project.id_project }}">...</button>
+							<div class="menu-dropdown" id="menu-dropdown-{{ project.id_project }}" style="display: none;">
+								{% if project.role == 'owner' %}
+									<button class="edit-project" data-dropdown-id="{{ project.id_project }}">Modifier</button>
+									<form action="/project/delete/{{ project.id_project }}" method="POST" class="delete-form" style="display: none;">
+										<button type="submit" class="delete">
+											<img src="/../../assets/imgs/remove.png" alt="Delete">
+										</button>
+									</form>
+								{% endif %}
+							</div>
 
-                        <p class="editable-description" contenteditable="{{ project.role == 'owner' ? 'false' : 'false' }}">{{ project.description }}</p>
-                        <h3>Participants:</h3>
-                        <ul class="participant-list">
-                            {% for user in project.users %}
-                                <li>
-                                    <img src="{{ user.picture }}" alt="Photo de profil" class="profile-pic">
-                                    <span>{{ user.userName }}</span>
-                                    {% if project.role == 'owner' %}
-                                        <button class="remove-participant" data-user-id="{{ user.id }}" style="display: none;">Supprimer</button>
-                                    {% endif %}
-                                </li>
-                            {% endfor %}
-                        </ul>
+						</div>
 
-                        {% if project.role == 'owner' %}
-                            <input type="text" class="add-participant-input" placeholder="Ajouter un participant">
-                            <ul class="search-results"></ul>
-                        {% endif %}
+						<p class="editable-description" contenteditable="false">{{ project.description }}</p>
+						<h3>Participants:</h3>
+						<ul class="participant-list">
+							{% for user in project.users %}
+								<li>
+									<img src="{{ user.picture }}" alt="Photo de profil" class="profile-pic">
+									<span>{{ user.userName }}</span>
+									{% if project.role == 'owner' %}
+										<button class="remove-participant" data-user-id="{{ user.id_user }}" style="display:none;">Supprimer</button>
+									{% endif %}
+								</li>
+							{% endfor %}
+						</ul>
 
-                        <button class="save-changes" style="display: none;">Enregistrer</button>
-                        <button class="cancel-changes" style="display: none;">Annuler</button>
+						{% if project.role == 'owner' %}
+							<div class="form-group hidden" id="searchContainer-{{ project.id_project }}">
+								<label for="searchUser-{{ project.id_project }}"></label><br>
+								<input type="text" id="searchUser-{{ project.id_project }}" placeholder="Ajouter un participant" style="display: none;">
+								<div id="followerList-{{ project.id_project }}" class="follower-list"></div>
+								<input type="hidden" id="selectedFollowers-{{ project.id_project }}" name="selectedFollowers">
+							</div>
+
+
+						{% endif %}
+						<button class="save-changes" style="display: none;">Enregistrer</button>
+						<button class="cancel-changes" style="display: none;">Annuler</button>
 
 						{% if project.role == 'owner' %}
 							<form action="/project/delete/{{ project.id_project }}" method="POST" class="delete-form">
@@ -69,13 +76,13 @@
 						{% endif %}
 
 						<a href="/project/{{ project.id_project }}">Voir le projet</a>
-                    </li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-    </div>
-    {% include "../partials/error.twig" %}
+					</li>
+				{% endfor %}
+			</ul>
+		{% endif %}
+	</div>
+	{% include "../partials/error.twig" %}
 {% endblock %}
 {% block script %}
-    <script src="/../../assets/js/project.js"></script>
+	<script src="/../../assets/js/project.js"></script>
 {% endblock %}

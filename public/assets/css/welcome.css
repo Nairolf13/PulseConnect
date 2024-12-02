@@ -68,6 +68,7 @@ body {
 }
 
 section {
+    width: 100%;
     color: white;
     text-align: center;
 }
@@ -131,9 +132,9 @@ section {
 }
 
 .container {
-    max-width: 500px;
+    max-width: 650px;
     margin: auto;
-    padding: 20px;
+    padding: 15px;
 }
 
 .container ul {
@@ -222,11 +223,10 @@ section {
 
 audio,
 video {
-    width: 80%;
+    width: 100%;
     border-radius: 10px;
     margin-top: 10px;
 }
-
 
 .prev,
 .next {
@@ -254,6 +254,19 @@ video {
 .next:hover {
     background-color: rgba(0, 0, 0, 0.8);
 }
+
+#lottieAnimationRight{
+    position: absolute;
+    top: 65%;
+    left: 75%;
+}
+
+#lottieAnimationLeft{
+    position: absolute;
+    top: 65%;
+    left: 5%;
+}
+
 
 @media (min-width: 769px) {
     .logo {
@@ -310,6 +323,8 @@ video {
 
         margin-bottom: 40px;
     }
+
+  
 }
 
 @media (max-width: 768px) {
@@ -395,7 +410,7 @@ video {
 
     .slider li {
         display: block;
-        width: 100%;
+        width: 92%;
 
     }
 
@@ -429,4 +444,126 @@ video {
         display: block;
     }
 
+    #lottieAnimationLeft,#lottieAnimationRight{
+        display: none;
+    }
+}
+
+
+
+@import url('https://fonts.googleapis.com/css?family=Quicksand:300,400,500,700&display=swap');
+
+
+
+.container {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.items {
+    display: flex;
+    align-items: center;
+    animation: infiniteCarousel 30s linear infinite;
+    width: 200%; /* Double la largeur du conteneur */
+    user-select: none; /* Empêche la sélection de texte */
+}
+
+  
+  .items > * {
+    flex-shrink: 0;
+    width: 50%; /* Chaque ensemble d'éléments occupe la moitié de la largeur */
+  }
+
+.item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 200px; /* Taille fixe pour uniformité */
+    height: 250px; /* Taille fixe pour uniformité */
+    margin: 1em;
+    border-radius: 1em;
+    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.7);
+  
+}
+
+.img-resp {
+    width: 100%;
+    height: 180px; /* Limite la taille de l’image */
+    object-fit: cover; /* Adapte l'image sans déformation */
+    border-top-left-radius: 1em;
+    border-top-right-radius: 1em;
+    pointer-events: none;
+}
+
+.name {
+    text-align: center;
+    font-size: 1.2em;
+    font-weight: 700;
+    margin-top: 0.5em;
+    color: #ffffff;
+}
+
+.faders {
+    width: 100%;
+    position: absolute;
+    height: 100%;
+    pointer-events: none;
+}
+
+.left,
+.right {
+    width: 20%;
+    height: 100%;
+    position: absolute;
+    z-index: 200;
+}
+
+.left {
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));
+    left: 0;
+}
+
+.right {
+    background: linear-gradient(to left, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));
+    right: 0;
+}
+
+.items {
+    cursor: grab; /* Affiche une icône de main pour indiquer le glissement */
+}
+
+.items.grabbing {
+    cursor: grabbing; /* Affiche une icône de main saisissante pendant le glissement */
+}
+
+
+@keyframes infiniteCarousel {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
+.items::after {
+    content: "";
+    display: block;
+    width: 100%; /* Largeur permettant une boucle infinie */
+}
+
+/* Animation ajustée pour les petits écrans */
+@media only screen and (max-width: 768px) {
+    @keyframes infiniteCarousel {
+        0% {
+            transform: translateX(0);
+        }
+        100% {
+            transform: translateX(-100%);
+        }
+    }
 }

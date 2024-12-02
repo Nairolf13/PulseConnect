@@ -37,14 +37,6 @@ body {
     margin-right: 10px;
 }
 
-.logo {
-    height: 120px;
-    width: 120px;
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-}
-
 .logout-btn {
     background-color: aquamarine;
     text-decoration: none;

@@ -1,113 +1,71 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const carousel = document.querySelector('.carousel');
-    const cards = carousel.querySelectorAll('.user-card');
-    const cardWidth = cards[0].offsetWidth;
-    let currentIndex = 0;
-    let autoScroll;
-    let startX, startScrollLeft, isDragging = false;
-    let animationFrameId = null;
-
-    function duplicateCards() {
-        cards.forEach(card => {
-            const clone = card.cloneNode(true);
-            carousel.appendChild(clone);
-        });
+    const carousel = document.querySelector('.items');
+    if (!carousel) {
+        console.error('L\'élément .items n\'a pas été trouvé.');
+        return;
     }
 
-    function initCarousel() {
-        duplicateCards();
-        updateCarouselPosition();
-        startAutoScroll();
-    }
+    let isMouseDown = false;
+    let startX;
+    let scrollLeft;
 
-    function startAutoScroll() {
-        stopAutoScroll();
-        autoScroll = setInterval(() => {
-            currentIndex++;
-            updateCarouselPosition(true);
-        }, 3000);
-    }
+    // Écouteur d'événements pour le clic de souris
+    carousel.addEventListener('mousedown', (e) => {
+        isMouseDown = true;
+        startX = e.clientX; // Utilisez clientX pour obtenir la position relative à la fenêtre
+        scrollLeft = carousel.scrollLeft;
+        carousel.style.cursor = 'grabbing';
+        e.preventDefault(); // Empêche la sélection de texte
+    });
 
-    function stopAutoScroll() {
-        if (autoScroll) {
-            clearInterval(autoScroll);
+    // Écouteur d'événements pour le mouvement de la souris
+    carousel.addEventListener('mousemove', (e) => {
+        if (!isMouseDown) return;
+        e.preventDefault(); // Empêche la sélection de texte
+        const x = e.clientX; // Utilisez clientX pour la position de la souris
+        const walk = (x - startX) * 2; // Multipliez par 2 pour augmenter la vitesse de défilement
+        carousel.scrollLeft = scrollLeft - walk;
+    });
+
+    // Écouteur d'événements pour relâcher le clic de souris
+    carousel.addEventListener('mouseup', () => {
+        isMouseDown = false;
+        carousel.style.cursor = 'grab';
+    });
+
+    // Écouteur d'événements pour quitter le carrousel (si la souris quitte la zone)
+    carousel.addEventListener('mouseleave', () => {
+        if (isMouseDown) {
+            isMouseDown = false;
+            carousel.style.cursor = 'grab';
         }
-    }
+    });
 
-    function updateCarouselPosition(smooth = false) {
-        if (smooth) {
-            carousel.style.transition = 'transform 0.5s ease';
-        } else {
-            carousel.style.transition = 'none';
-        }
-        carousel.style.transform = `translateX(-${currentIndex * cardWidth}px)`;
+    // Événements tactiles pour les appareils mobiles
+    let isTouchStart = false;
+    let touchStartX;
+    let touchScrollLeft;
 
-        if (currentIndex >= cards.length) {
-            setTimeout(() => {
-                carousel.style.transition = 'none';
-                currentIndex = 0;
-                carousel.style.transform = `translateX(0)`;
-            }, smooth ? 500 : 0);
-        }
-    }
-
-    function startDragging(e) {
-        isDragging = true;
-        startX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
-        startScrollLeft = currentIndex * cardWidth;
-        stopAutoScroll();
-        cancelAnimationFrame(animationFrameId);
-    }
-
-    function stopDragging() {
-        isDragging = false;
-        const movedBy = (currentIndex * cardWidth) - startScrollLeft;
-        
-        if (Math.abs(movedBy) > cardWidth / 4) {
-            currentIndex += movedBy > 0 ? 1 : -1;
-        }
-        
-        updateCarouselPosition(true);
-        startAutoScroll();
-    }
-
-    function drag(e) {
-        if (!isDragging) return;
-        e.preventDefault();
-        const x = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
-        const walk = startX - x;
-        
-        currentIndex = Math.round((startScrollLeft + walk) / cardWidth);
-        
-        animationFrameId = requestAnimationFrame(() => {
-            updateCarouselPosition();
-        });
-    }
     carousel.addEventListener('touchstart', (e) => {
-  
-        stopAutoScroll();
+        isTouchStart = true;
+        touchStartX = e.touches[0].clientX; // Utilisez clientX pour la position du toucher
+        touchScrollLeft = carousel.scrollLeft;
+        e.preventDefault(); // Empêche la sélection de texte
     });
-    
+
+    carousel.addEventListener('touchmove', (e) => {
+        if (!isTouchStart) return;
+        e.preventDefault(); // Empêche la sélection de texte
+        const x = e.touches[0].clientX; // Utilisez clientX pour la position du toucher
+        const walk = (x - touchStartX) * 2; // Multipliez par 2 pour augmenter la vitesse de défilement
+        carousel.scrollLeft = touchScrollLeft - walk;
+    });
+
     carousel.addEventListener('touchend', () => {
-    
-        startAutoScroll();
+        isTouchStart = false;
     });
-    carousel.addEventListener('touchstart', startDragging, { passive: true });
-    carousel.addEventListener('touchmove', drag, { passive: false });
-    carousel.addEventListener('touchend', stopDragging);
-
-    carousel.addEventListener('mousedown', startDragging);
-    carousel.addEventListener('touchstart', startDragging);
-
-    carousel.addEventListener('mousemove', drag);
-    carousel.addEventListener('touchmove', drag);
-
-    carousel.addEventListener('mouseup', stopDragging);
-    carousel.addEventListener('mouseleave', stopDragging);
-    carousel.addEventListener('touchend', stopDragging);
-
-    initCarousel();
 });
+
 
 function toggleMenu() {
     const navMenu = document.getElementById("nav-menu");
@@ -132,3 +90,4 @@ function moveSlider(direction) {
 
     slider.style.transform = `translateX(-${currentIndex * (100 / itemsToShow)}%)`;
 }
+

@@ -17,6 +17,7 @@
 		</li>
 		<h1>Mes projets</h1>
 	</div>
+
 	<div class="projects-container" data-project-id="{{ project.id_project }}">
 		{% if projects is empty %}
 			<p>Vous ne participez à aucun projet pour le moment !</p>
@@ -25,8 +26,8 @@
 				{% for project in projects %}
 					<li class="project-item" data-project-id="{{ project.id_project }}">
 						<div class="project-header">
-							<h2 class="editable-title" contenteditable="false">{{ project.name }}</h2>
 							<button class="menu-btn" id="menu-btn-{{ project.id_project }}">...</button>
+							<h2 class="editable-title" contenteditable="false">{{ project.name }}</h2>
 							<div class="menu-dropdown" id="menu-dropdown-{{ project.id_project }}" style="display: none;">
 								{% if project.role == 'owner' %}
 									<button class="edit-project" data-dropdown-id="{{ project.id_project }}">Modifier</button>
@@ -37,7 +38,6 @@
 									</form>
 								{% endif %}
 							</div>
-
 						</div>
 
 						<p class="editable-description" contenteditable="false">{{ project.description }}</p>
@@ -45,14 +45,24 @@
 						<ul class="participant-list">
 							{% for user in project.users %}
 								<li>
-									<img src="{{ user.picture }}" alt="Photo de profil" class="profile-pic">
-									<span>{{ user.userName }}</span>
+									<div class="participant-info">
+										<img src="{{ user.picture }}" alt="Photo de profil" class="profile-pic">
+										<span>{{ user.userName }}</span>
+									</div>
 									{% if project.role == 'owner' %}
-										<button class="remove-participant" data-user-id="{{ user.id_user }}" style="display:none;">Supprimer</button>
+										<button id="btn-remove" class="Btn remove-participant" data-user-id="{{ user.id_user }}" style="display:none;">
+											<div class="sign">
+												<svg viewbox="0 0 16 16" class="bi bi-trash3-fill" fill="currentColor" height="18" width="18" xmlns="http://www.w3.org/2000/svg">
+													<path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5.5 0 0 0 .5v-1M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5"></path>
+												</svg>
+											</div>
+											<div class="text">Supprimer</div>
+										</button>
 									{% endif %}
 								</li>
 							{% endfor %}
 						</ul>
+
 
 						{% if project.role == 'owner' %}
 							<div class="form-group hidden" id="searchContainer-{{ project.id_project }}">
@@ -61,12 +71,11 @@
 								<div id="followerList-{{ project.id_project }}" class="follower-list"></div>
 								<input type="hidden" id="selectedFollowers-{{ project.id_project }}" name="selectedFollowers">
 							</div>
-
-
 						{% endif %}
-						<button class="save-changes" style="display: none;">Enregistrer</button>
-						<button class="cancel-changes" style="display: none;">Annuler</button>
-
+						<div id="btn-update">
+							<button class="save-changes" style="display: none;">Enregistrer</button>
+							<button class="cancel-changes" style="display: none;">Annuler</button>
+						</div>
 						{% if project.role == 'owner' %}
 							<form action="/project/delete/{{ project.id_project }}" method="POST" class="delete-form">
 								<button type="submit" class="delete">

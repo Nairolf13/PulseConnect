@@ -11,9 +11,9 @@ body {
 
 .header {
     align-items: center;
-    justify-content: space-between; 
-    padding: 5px; 
-    width: 100%; 
+    justify-content: space-between;
+    padding: 5px;
+    width: 100%;
     border-bottom: 1px solid #3d3d3d;
 }
 
@@ -49,7 +49,7 @@ h1 {
     max-width: 600px;
     margin: auto;
     padding: 20px;
-    background-color: black; 
+    background-color: black;
 }
 
 .projects-list {
@@ -86,6 +86,8 @@ h1 {
     object-fit: cover;
 }
 
+.participant-list {}
+
 img {
     height: 50px;
 }
@@ -100,6 +102,8 @@ img {
 }
 
 .project-item a {
+    position: absolute;
+    right: 10%;
     color: aquamarine;
     text-decoration: none;
     font-weight: bold;
@@ -125,6 +129,7 @@ img {
 }
 
 .delete img {
+    margin-left: 10px;
     width: 16px;
     height: 16px;
 }
@@ -134,58 +139,152 @@ img {
 }
 
 .menu-dropdown {
-    position: fixed; /* Permet de centrer sur l'écran */
-    top: 50%; /* Alignement vertical */
-    left: 50%; /* Alignement horizontal */
-    transform: translate(-50%, -50%); /* Centre précisément en ajustant les axes X et Y */
-    z-index: 1000; /* Assure que la modal est au-dessus des autres éléments */
-    background-color: #1e1e1e; /* Fond blanc pour le menu */
-    border-radius: 8px; /* Coins arrondis pour un look moderne */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Légère ombre pour un effet de profondeur */
-    padding: 20px; /* Espace intérieur */
-    display: none; /* Masqué par défaut */
-    min-width: 300px; /* Largeur minimale */
-    text-align: center; /* Centre les éléments */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    background-color: #1e1e1e;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: none;
+    height: 100px;
+    min-width: 200px;
+    text-align: center;
 }
 
-/* Animation d'apparition */
 .menu-dropdown.show {
     display: block;
-    animation: fadeIn 0.3s ease-out; /* Transition douce */
+    animation: fadeIn 0.3s ease-out;
 }
 
 .menu-btn {
-    
+    position: absolute;
+    right: 5%;
     background: none;
     border: none;
     color: white;
     cursor: pointer;
 }
 
-
 .edit-project {
-    display: block; /* Changez cela si nécessaire */
+    display: block;
+    position: relative;
+    top: 35%;
+    left: 33%;
+    background-color: aquamarine;
+    border-radius: 8px;
+}
+
+.participant-list li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* ajuste l'espace entre le nom et le bouton */
+    padding: 10px 0;
+}
+
+.Btn {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 45px;
+    height: 45px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition-duration: 0.3s;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.199);
+    background: rgb(255, 135, 65);
+    background: linear-gradient(250deg, #17a2b8 15%, rgb(127 255 212) 65%);
+}
+
+.sign {
+    width: 100%;
+    transition-duration: 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: none;
+}
+
+.sign svg {
+    width: 17px;
+    height: 17px;
+}
+
+.sign svg path {
+    fill: #343a40
+}
+
+.text {
+    position: absolute;
+    top: 24%;
+    right: 0%;
+    width: 0%;
+    opacity: 0;
+    color: rgb(0, 0, 0);
+    font-size: 1em;
+    font-weight: 600;
+    transition-duration: 0.3s;
+}
+
+.Btn:hover {
+    width: 135px;
+    border-radius: 40px;
+    transition-duration: 0.3s;
+}
+
+.Btn:hover .sign {
+    padding-left: 20px;
+}
+
+.Btn:hover .text {
+    opacity: 1;
+    width: 70%;
+    transition-duration: 0.3s;
+    padding-right: 10px;
+}
+
+.Btn:active {
+    transform: translate(2px, 2px);
 }
 
 
-.menu-btn:hover + .menu-dropdown {
+
+.save-changes,
+.cancel-changes {
+    border-radius: 8px;
+}
+
+.menu-btn:hover+.menu-dropdown {
     display: block;
 }
 
 .editable-title[contenteditable="true"],
 .editable-description[contenteditable="true"] {
+    width: 50%;
     border: 1px solid #ccc;
     padding: 5px;
     margin-bottom: 10px;
     border-radius: 5px;
 }
 
+#btn-update {
+    display: flex;
+    margin-bottom: 40px;
+    justify-content: center;
+    gap: 10px;
+}
+
 .save-changes,
 .cancel-changes {
     margin-top: 10px;
     display: inline-block;
-    background-color: #007bff;
-    color: white;
+    background-color: aquamarine;
+    color: rgb(0, 0, 0);
     border: none;
     padding: 10px;
     cursor: pointer;
@@ -193,13 +292,13 @@ img {
 
 .cancel-changes {
     background-color: red;
+    color: white;
 }
 
 @media (max-width: 768px) {
     .projects-container {
         left: 0;
         width: 100%;
-
     }
 
     h1 {
@@ -208,6 +307,28 @@ img {
 
     .project-members {
         display: grid;
-        
+
+    }
+
+    .edit-project {
+        left: 28%;
+    }
+}
+
+@media (hover: none) and (pointer: coarse) {
+    .Btn:hover {
+        width: 45px;
+        border-radius: 50%;
+        transition-duration: 0s;
+    }
+
+    .Btn:hover .sign {
+        padding-left: 0;
+    }
+
+    .Btn:hover .text {
+        opacity: 0;
+        width: 0;
+        padding-right: 0;
     }
 }

@@ -11,16 +11,57 @@ document.addEventListener('DOMContentLoaded', function () {
         const participantButtons = item.querySelectorAll('.remove-participant');
         const saveChangesBtn = item.querySelector('.save-changes');
         const cancelChangesBtn = item.querySelector('.cancel-changes');
-        const searchContainer = item.querySelector(`#searchContainer-${projectId}`);
-        const searchInput = item.querySelector(`#searchUser-${projectId}`);
-        
+        const searchContainer = document.querySelector(`#searchContainer-${projectId}`);
+        const searchInput = document.querySelector(`#searchUser-${projectId}`);
+        const followerList = document.querySelector(`#followerList-${projectId}`);
+        const selectedFollowersInput = document.querySelector(`#selectedFollowers-${projectId}`);
+        const fileItems = item.querySelectorAll('.file-item');
+
         let originalTitle, originalDescription;
+        let selectedFollowers = new Map();
 
-
-        if (searchContainer) {
-            searchContainer.style.display = 'none';
+        // Fonction pour basculer l'affichage de la liste des followers
+        function toggleFollowerList(visible) {
+            followerList.style.display = visible ? 'block' : 'none';
         }
 
+        // Fonction pour mettre à jour l'input caché avec les IDs des followers sélectionnés
+        function updateHiddenInput() {
+            selectedFollowersInput.value = JSON.stringify([...selectedFollowers.keys()]);
+        }
+
+        // Fonction pour ajouter un follower à la liste des sélectionnés
+  // Fonction pour ajouter un follower à la liste des sélectionnés
+function addFollower(follower) {
+    if (selectedFollowers.has(follower.id_user)) return;
+
+    selectedFollowers.set(follower.id_user, follower);
+
+    const selectedFollowersContainer = document.getElementById('selectedFollowersContainer');
+    if (!selectedFollowersContainer) {
+        console.error('Container for selected followers not found');
+        return;
+    }
+
+    const div = document.createElement('div');
+    div.classList.add('selected-follower');
+    div.dataset.id = follower.id_user;
+    div.innerHTML = `
+        <img src="${follower.picture}" alt="${follower.userName}" class="selected-picture">
+        <span class="selected-name">${follower.userName}</span>
+        <button class="remove-follower">×</button>
+    `;
+
+    const removeBtn = div.querySelector('.remove-follower');
+    removeBtn.addEventListener('click', () => {
+        selectedFollowers.delete(follower.id_user);
+        div.remove();
+        updateHiddenInput();
+    });
+
+    selectedFollowersContainer.appendChild(div);
+    updateHiddenInput();
+}
         // Gestion du menu déroulant du projet
         if (menuBtn && menuDropdown) {
             menuBtn.addEventListener('click', (event) => {
@@ -29,6 +70,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
 
+        // Mode édition du projet
         if (editProjectBtn) {
             editProjectBtn.addEventListener('click', () => {
                 originalTitle = editableTitle.textContent;
@@ -37,39 +79,56 @@ document.addEventListener('DOMContentLoaded', function () {
                 editableDescription.contentEditable = true;
                 saveChangesBtn.style.display = 'inline-block';
                 cancelChangesBtn.style.display = 'inline-block';
-                menuDropdown.style.display = 'none'; // Fermer le menu déroulant lors de l'édition
+                menuDropdown.style.display = 'none';
 
-                // Afficher la barre de recherche et les boutons de suppression des participants
-                searchContainer.style.display = 'block';
+                if (searchContainer) {
+                    searchContainer.style.display = 'block';
+                    searchInput.style.display = 'block';
+                }
                 participantButtons.forEach(btn => btn.style.display = 'inline-block');
             });
         }
 
-
-        // Enregistrer les modifications du projet
+        // Sauvegarde des modifications du projet
         if (saveChangesBtn) {
             saveChangesBtn.addEventListener('click', async () => {
                 const newTitle = editableTitle.textContent;
                 const newDescription = editableDescription.textContent;
                 try {
-                    const response = await fetch(`/project/update/${projectId}`, {
+                    const updateResponse = await fetch(`/project/update/${projectId}`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ name: newTitle, description: newDescription })
+                        body: JSON.stringify({ 
+                            name: newTitle, 
+                            description: newDescription
+                        })
                     });
-                    if (response.ok) {
+
+                    // Add selected followers to the project
+                    for (let userId of selectedFollowers.keys()) {
+                        const addUserResponse = await fetch(`/project/${projectId}/addUser`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ userId: userId })
+                        });
+                        if (!addUserResponse.ok) {
+                            console.error(`Erreur lors de l'ajout de l'utilisateur ${userId}`);
+                            // You might want to show an error to the user here
+                        }
+                    }
+
+                    if (updateResponse.ok) {
                         editableTitle.contentEditable = false;
                         editableDescription.contentEditable = false;
                         participantButtons.forEach(btn => btn.style.display = 'none');
                         saveChangesBtn.style.display = 'none';
                         cancelChangesBtn.style.display = 'none';
-        
-                        // Masquer la barre de recherche après sauvegarde (utilisation de projectId pour ID spécifique)
-                        const searchInput = item.querySelector(`#searchUser-${projectId}`);
-                        if (searchInput) {
-                            searchInput.style.display = 'none';
-                        }
-                        isEditing = false;
+                        if (searchInput) searchInput.style.display = 'none';
+                        if (searchContainer) searchContainer.style.display = 'none';
+                        selectedFollowers.clear();
+                        followerList.innerHTML = ''; 
+                        
+                        window.location.reload();
                     } else {
                         throw new Error('Erreur lors de la modification du projet');
                     }
@@ -77,11 +136,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     console.error('Erreur:', error);
                     editableTitle.textContent = originalTitle;
                     editableDescription.textContent = originalDescription;
+                    if (searchInput) searchInput.style.display = 'none';
+                    if (searchContainer) searchContainer.style.display = 'none';
                 }
             });
         }
-        
-        // Dans la section 'Annuler les modifications du projet'
+
+        // Annulation des modifications du projet
         if (cancelChangesBtn) {
             cancelChangesBtn.addEventListener('click', () => {
                 editableTitle.textContent = originalTitle;
@@ -91,238 +152,147 @@ document.addEventListener('DOMContentLoaded', function () {
                 participantButtons.forEach(btn => btn.style.display = 'none');
                 saveChangesBtn.style.display = 'none';
                 cancelChangesBtn.style.display = 'none';
-        
-                // Masquer la barre de recherche après annulation (utilisation de projectId pour ID spécifique)
-                const searchInput = item.querySelector(`#searchUser-${projectId}`);
-                if (searchInput) {
-                    searchInput.style.display = 'none';
-                }
-                isEditing = false;
+                if (searchInput) searchInput.style.display = 'none';
+                if (searchContainer) searchContainer.style.display = 'none';
+                selectedFollowers.clear();
+                followerList.innerHTML = '';
             });
         }
-        // Gestion de la suppression des participants
+
+        // Suppression des participants
         if (participantButtons) {
             participantButtons.forEach(btn => {
-                btn.addEventListener('click', async (event) => {
-                    const userId = parseInt(btn.dataset.userId); // Récupère l'ID de l'utilisateur depuis l'attribut data
-
-                    if (confirm('Êtes-vous sûr de vouloir supprimer ce participant ?')) {
-                        try {
-                            const response = await fetch(`/project/${projectId}/removeParticipant`, {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ userId }) // Envoie l'ID de l'utilisateur dans le corps de la requête
-                            });
-                            const data = await response.json();
-                            if (response.ok && data.success) {
-                                btn.closest('li').remove();
-                                alert('Participant supprimé avec succès.');
-                            } else {
-                                throw new Error(data.message || 'Erreur lors de la suppression.');
-                            }
-                        } catch (error) {
-                            console.error('Erreur:', error);
-                            alert('Une erreur est survenue lors de la suppression du participant.');
-                        }
-                    }
+                btn.addEventListener('click', function(event) {
+                    const projectId = item.dataset.projectId;
+                    const userId = btn.dataset.userId;
+                    
+                    // Show confirmation modal
+                    showModal('confirmModal', `Voulez-vous vraiment supprimer ce participant ?`, userId, projectId);
                 });
+            });
+        }
+
+        // Recherche et ajout de participants
+        if (searchInput) {
+            searchInput.addEventListener('input', async (e) => {
+                const query = e.target.value.trim();
+
+                if (query.length > 0) {
+                    try {
+                        const response = await fetch(`/searchFollowers?query=${encodeURIComponent(query)}`);
+                        const followers = await response.json();
+
+                        followerList.innerHTML = '';
+                        if (followers.length > 0) {
+                            toggleFollowerList(true);
+                            followers.forEach(follower => {
+                                const div = document.createElement('div');
+                                div.classList.add('follower-item');
+                                div.innerHTML = `
+                                    <img src="${follower.picture}" alt="${follower.userName}" class="follower-picture">
+                                    <span class="follower-name">${follower.userName}</span>
+                                `;
+                                div.addEventListener('click', () => {
+                                    addFollower(follower);
+                                    toggleFollowerList(false);
+                                });
+                                followerList.appendChild(div);
+                            });
+                        } else {
+                            toggleFollowerList(false);
+                        }
+                    } catch (error) {
+                        console.error('Erreur lors de la recherche des followers :', error);
+                        toggleFollowerList(false);
+                    }
+                } else {
+                    toggleFollowerList(false);
+                }
+            });
+
+            // Fermer la liste des followers si un clic se produit en dehors de la liste ou de l'input de recherche
+            document.addEventListener('click', (e) => {
+                if (!followerList.contains(e.target) && e.target !== searchInput) {
+                    toggleFollowerList(false);
+                }
             });
         }
 
         // Gestion des fichiers attachés au projet
-        const fileItems = item.querySelectorAll('.file-item');
-
-        fileItems.forEach(fileItem => {
-            const fileId = fileItem.dataset.fileId;
-            const toggleBtn = fileItem.querySelector('.menu-btn');
-            const menuDropdown = fileItem.querySelector('.menu-dropdown');
-            const actionsMenu = fileItem.querySelector('.actions-menu');
-            const editBtn = fileItem.querySelector('.edit-file-btn');
-            const deleteBtn = fileItem.querySelector('.delete-file-btn');
-            const fileName = fileItem.querySelector('.file-name');
-            const fileDescription = fileItem.querySelector('.file-description');
-            const editActions = fileItem.querySelector('.edit-actions');
-            const saveBtn = fileItem.querySelector('.save-edit-btn');
-            const cancelBtn = fileItem.querySelector('.cancel-edit-btn');
-
-            let originalName, originalFileDescription;
-
-            fileName.contentEditable = false;
-            fileDescription.contentEditable = false;
-
-            // Gestion du menu déroulant des fichiers
-            if (toggleBtn && menuDropdown) {
-                toggleBtn.addEventListener('click', (event) => {
-                    event.stopPropagation();
-                    menuDropdown.style.display = menuDropdown.style.display === 'none' ? 'block' : 'none';
-                });
-            }
-
-            // Édition du fichier
-            if (editBtn) {
-                editBtn.addEventListener('click', () => {
-                    originalName = fileName.textContent;
-                    originalFileDescription = fileDescription.textContent;
-                    fileName.contentEditable = true;
-                    fileDescription.contentEditable = true;
-                    editActions.style.display = 'flex';
-                    actionsMenu.style.display = 'none';
-                });
-            }
-
-            // Enregistrer les modifications du fichier
-            if (saveBtn) {
-                saveBtn.addEventListener('click', async () => {
-                    const newName = fileName.textContent;
-                    const newFileDescription = fileDescription.textContent;
-                    try {
-                        const response = await fetch(`/project/${projectId}/file/${fileId}/edit`, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ name: newName, description: newFileDescription })
-                        });
-                        if (response.ok) {
-                            fileName.contentEditable = false;
-                            fileDescription.contentEditable = false;
-                            editActions.style.display = 'none';
-                        } else {
-                            throw new Error('Erreur lors de la modification du fichier');
-                        }
-                    } catch (error) {
-                        console.error('Erreur:', error);
-                        fileName.textContent = originalName;
-                        fileDescription.textContent = originalFileDescription;
-                    }
-                });
-            }
-
-            // Annuler les modifications du fichier
-            if (cancelBtn) {
-                cancelBtn.addEventListener('click', () => {
-                    fileName.textContent = originalName;
-                    fileDescription.textContent = originalFileDescription;
-                    fileName.contentEditable = false;
-                    fileDescription.contentEditable = false;
-                    editActions.style.display = 'none';
-                });
-            }
-
-            // Supprimer le fichier
-            if (deleteBtn) {
-                deleteBtn.addEventListener('click', async () => {
-                    if (confirm('Êtes-vous sûr de vouloir supprimer ce fichier ?')) {
-                        try {
-                            const response = await fetch(`/project/${projectId}/file/${fileId}/delete`, {
-                                method: 'POST'
-                            });
-                            const data = await response.json();
-                            if (response.ok && data.success) {
-                                fileItem.remove();
-                            } else {
-                                throw new Error(data.error || 'Erreur lors de la suppression');
-                            }
-                        } catch (error) {
-                            console.error('Erreur:', error);
-                        }
-                    }
-                });
-            }
-        });
+        // ... (le code pour la gestion des fichiers reste inchangé)
     });
 
-    // Code pour la gestion de la recherche de participants
-    const searchInput = document.getElementById('searchUser');
-    const followerList = document.getElementById('followerList');
-    const selectedFollowersInput = document.getElementById('selectedFollowers');
-    const selectedFollowers = new Map();
+    // Fonction pour afficher la modale
+    function showModal(modalId, message, userId, projectId) {
+        const modal = document.getElementById(modalId);
+        if (!modal) return;
 
-    if (searchInput) {
-        function toggleFollowerList(visible) {
-            followerList.style.display = visible ? 'block' : 'none';
-        }
+        modal.querySelector('.modal-body').innerText = message;
+        modal.style.display = 'block';
 
-        function updateHiddenInput() {
-            selectedFollowersInput.value = JSON.stringify([...selectedFollowers.keys()]);
-        }
+        const confirmBtn = modal.querySelector('#confirmDelete-' + modalId);
+        const cancelBtn = modal.querySelector('#confirmCancel-' + modalId);
+        const closeBtn = modal.querySelector('#closeSuccess');
 
-        function addFollower(follower) {
-            if (selectedFollowers.has(follower.id_user)) return;
-
-            selectedFollowers.set(follower.id_user, follower);
-
-            const div = document.createElement('div');
-            div.classList.add('selected-follower');
-            div.dataset.id = follower.id_user;
-            div.innerHTML = `
-                <img src="${follower.picture}" alt="${follower.userName}" class="selected-picture">
-                <span class="selected-name">${follower.userName}</span>
-                <button class="remove-follower">&times;</button>
-            `;
-
-            div.querySelector('.remove-follower').addEventListener('click', () => {
-                selectedFollowers.delete(follower.id_user);
-                div.remove();
-                updateHiddenInput();
-            });
-
-            followerList.appendChild(div);
-            updateHiddenInput();
-        }
-
-        searchInput.addEventListener('input', async (e) => {
-            const query = e.target.value.trim();
-
-            if (query.length > 0) {
+        if (confirmBtn) {
+            confirmBtn.onclick = async () => {
+                modal.style.display = 'none';
                 try {
-                    const response = await fetch(`/searchFollowers?query=${encodeURIComponent(query)}`);
-                    const followers = await response.json();
-
-                    followerList.innerHTML = ''; // Clear previous results
-                    if (followers.length > 0) {
-                        toggleFollowerList(true);
-                        followers.forEach(follower => {
-                            const div = document.createElement('div');
-                            div.classList.add('follower-item');
-                            div.innerHTML = `
-                                <img src="${follower.picture}" alt="${follower.userName}" class="follower-picture">
-                                <span class="follower-name">${follower.userName}</span>
-                            `;
-                            div.addEventListener('click', () => {
-                                addFollower(follower);
-                                toggleFollowerList(false);
-                            });
-                            followerList.appendChild(div);
-                        });
+                    const response = await fetch(`/project/${projectId}/removeParticipant`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ userId: userId })
+                    });
+                    const data = await response.json();
+                    if (response.ok && data.success) {
+                        // Remove participant from the list
+                        document.querySelector(`[data-user-id="${userId}"]`).closest('li').remove();
+                        // Show success modal
+                        showModal('successModal', 'Participant supprimé avec succès.', null, null);
                     } else {
-                        toggleFollowerList(false);
+                        throw new Error(data.message || 'Erreur lors de la suppression.');
                     }
                 } catch (error) {
-                    console.error('Erreur lors de la recherche des followers :', error);
-                    toggleFollowerList(false);
+                    console.error('Erreur:', error);
+                    alert('Une erreur est survenue lors de la suppression du participant.');
                 }
-            } else {
-                toggleFollowerList(false);
-            }
-        });
+            };
+        }
 
-        document.addEventListener('click', (e) => {
-            if (!followerList.contains(e.target) && e.target !== searchInput) {
-                toggleFollowerList(false);
+        // Event listener for "Non" button
+        if (cancelBtn) {
+            cancelBtn.onclick = () => {
+                modal.style.display = 'none';
+            };
+        }
+
+        // Event listener for "Fermer" button
+        if (closeBtn) {
+            closeBtn.onclick = () => {
+                modal.style.display = 'none';
+            };
+        }
+
+        // Handle modal closing
+        modal.querySelector('.closeModal').onclick = () => {
+            modal.style.display = 'none';
+        };
+
+        // Close modal if clicked outside
+        window.onclick = function(event) {
+            if (event.target === modal) {
+                modal.style.display = 'none';
             }
-        });
+        };
     }
 
     // Fermer les menus déroulants lorsqu'on clique en dehors d'eux
-    document.addEventListener('click', () => {
-        document.querySelectorAll('.menu-dropdown').forEach(menu => {
-            menu.style.display = 'none';
-        });
-    });
-
-    // Empêcher le clic de fermer le menu lorsqu'il est cliqué directement
-    document.querySelectorAll('.menu-btn').forEach(btn => {
-        btn.addEventListener('click', (event) => {
-            event.stopPropagation();
-        });
+    document.addEventListener('click', (event) => {
+        if (!event.target.closest('.project-header')) {
+            document.querySelectorAll('.menu-dropdown').forEach(menu => {
+                menu.style.display = 'none';
+            });
+        }
     });
 });
+

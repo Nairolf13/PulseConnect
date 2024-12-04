@@ -31,10 +31,8 @@
 							<div class="menu-dropdown" id="menu-dropdown-{{ project.id_project }}" style="display: none;">
 								{% if project.role == 'owner' %}
 									<button class="edit-project" data-dropdown-id="{{ project.id_project }}">Modifier</button>
-									<form action="/project/delete/{{ project.id_project }}" method="POST" class="delete-form" style="display: none;">
-										<button type="submit" class="delete">
-											<img src="/../../assets/imgs/remove.png" alt="Delete">
-										</button>
+									<form action="/project/delete/{{ project.id_project }}" method="POST" class="delete-form">
+										<button type="submit" class="delete" alt="Delete">Supprimer</button>
 									</form>
 								{% endif %}
 							</div>
@@ -63,29 +61,37 @@
 							{% endfor %}
 						</ul>
 
-
 						{% if project.role == 'owner' %}
 							<div class="form-group hidden" id="searchContainer-{{ project.id_project }}">
 								<label for="searchUser-{{ project.id_project }}"></label><br>
 								<input type="text" id="searchUser-{{ project.id_project }}" placeholder="Ajouter un participant" style="display: none;">
 								<div id="followerList-{{ project.id_project }}" class="follower-list"></div>
 								<input type="hidden" id="selectedFollowers-{{ project.id_project }}" name="selectedFollowers">
+								<div id="selectedFollowersContainer" class="selected-followers-container"></div>
 							</div>
 						{% endif %}
 						<div id="btn-update">
 							<button class="save-changes" style="display: none;">Enregistrer</button>
 							<button class="cancel-changes" style="display: none;">Annuler</button>
 						</div>
-						{% if project.role == 'owner' %}
-							<form action="/project/delete/{{ project.id_project }}" method="POST" class="delete-form">
-								<button type="submit" class="delete">
-									<img src="/../../assets/imgs/remove.png" alt="Delete">
-								</button>
-							</form>
-						{% endif %}
-
 						<a href="/project/{{ project.id_project }}">Voir le projet</a>
 					</li>
+					<div id="confirmModal" class="modal">
+						<div class="modal-content">
+							<span class="closeModal">&times;</span>
+							<p class="modal-body"></p>
+							<button id="confirmDelete-confirmModal">Oui</button><br>
+							<button id="confirmCancel-confirmModal">Non</button>
+						</div>
+					</div>
+
+					<div id="successModal" class="modal">
+						<div class="modal-content">
+							<span class="closeModal">&times;</span>
+							<p class="modal-body"></p>
+							<button id="closeSuccess">Fermer</button>
+						</div>
+					</div>
 				{% endfor %}
 			</ul>
 		{% endif %}

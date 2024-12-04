@@ -143,10 +143,6 @@ collaborationRouter.get('/collaboration', authguard, async (req, res) => {
     }
 });
 
-
-
-
-
 collaborationRouter.get('/searchFollowers', authguard, async (req, res) => {
     const userId = req.session.userId;
     const query = req.query.query || '';
@@ -524,17 +520,56 @@ collaborationRouter.post('/project/update/:id', authguard, async (req, res) => {
 });
 
 collaborationRouter.post('/project/:id/addUser', authguard, async (req, res) => {
-    const { userId } = req.body;
     const projectId = parseInt(req.params.id);
+    const userId = parseInt(req.body.userId);
 
     try {
-        await prisma.usersToProjects.create({
-            data: { id_user: userId, id_project: projectId },
+        // Vérifier si le projet existe
+        const project = await prisma.projects.findUnique({
+            where: { id_project: projectId },
         });
 
-        res.status(200).send('Participant ajouté.');
+        if (!project) {
+            return res.status(404).send('Projet non trouvé.');
+        }
+
+        // Vérifier si l'utilisateur connecté est le propriétaire du projet
+        const userRole = await prisma.usersToProjects.findFirst({
+            where: {
+                id_project: projectId,
+                id_user: req.session.userId, // Supposons que c'est ainsi que vous récupérez l'ID de l'utilisateur connecté
+                role: 'owner'
+            }
+        });
+
+        if (!userRole) {
+            return res.status(403).send('Permission refusée. Vous devez être le propriétaire du projet.');
+        }
+
+        // Vérifier si l'utilisateur n'est pas déjà dans le projet
+        const userExists = await prisma.usersToProjects.findFirst({
+            where: {
+                id_project: projectId,
+                id_user: userId
+            }
+        });
+
+        if (userExists) {
+            return res.status(400).send('Utilisateur déjà dans le projet.');
+        }
+
+        // Ajouter l'utilisateur au projet
+        await prisma.usersToProjects.create({
+            data: {
+                id_project: projectId,
+                id_user: userId,
+                role: 'user'
+            }
+        });
+
+        res.status(200).send('Utilisateur ajouté avec succès.');
     } catch (error) {
-        console.error(error);
+        console.error('Erreur lors de l\'ajout de l\'utilisateur:', error);
         res.status(500).send('Erreur lors de l\'ajout.');
     }
 });
@@ -643,7 +678,7 @@ collaborationRouter.post('/project/delete/:id', authguard, async (req, res) => {
         res.redirect('/myProjects');
     } catch (error) {
         console.error(error);
-        res.status(500).send('Erreur lors de la suppression du projet.');
+        res.status(500).json({ success: false, message: 'Erreur lors de la suppression du projet.' });
     }
 });
 

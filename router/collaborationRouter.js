@@ -239,39 +239,39 @@ collaborationRouter.post('/createProject', authguard, async (req, res) => {
     }
 });
 
-// collaborationRouter.post("/project/:id_project/upload", authguard, upload.single('file'), async (req, res) => {
-//     try {
-//         const { id_project } = req.params;  
-//         const userId = req.session.users.id_user;  
-//         const { genre, description, price } = req.body; 
-//         const file_url = req.file ? req.file.path : null;  
+collaborationRouter.post("/project/:id_project/upload", authguard, upload.single('file'), async (req, res) => {
+    try {
+        const { id_project } = req.params;  
+        const userId = req.session.users.id_user;  
+        const { genre, description, price } = req.body; 
+        const file_url = req.file ? req.file.path : null;  
 
-//         if (!id_project) {
-//             return res.status(400).send('ID du projet manquant');
-//         }
+        if (!id_project) {
+            return res.status(400).send('ID du projet manquant');
+        }
 
-//         if (!file_url) {
-//             return res.status(400).send('Aucun fichier uploadé.');
-//         }
+        if (!file_url) {
+            return res.status(400).send('Aucun fichier uploadé.');
+        }
 
-//         await prisma.assets.create({
-//             data: {
-//                 id_user: userId,
-//                 name: req.body.name, 
-//                 isPublic: false,
-//                 url: req.file.filename,
-//                 genre: req.body.genre || null,
-//                 description: req.body.description || null,
-//                 id_project: parseInt(id_project),  
-//             },
-//         });
+        await prisma.assets.create({
+            data: {
+                id_user: userId,
+                name: req.body.name, 
+                isPublic: false,
+                url: req.file.filename,
+                genre: req.body.genre || null,
+                description: req.body.description || null,
+                id_project: parseInt(id_project),  
+            },
+        });
 
-//         res.redirect(`/project/${id_project}`);
-//     } catch (error) {
-//         console.error("Erreur lors du téléversement du fichier :", error);
-//         res.status(500).send("Erreur lors du téléversement du fichier.");
-//     }
-// });
+        res.redirect(`/project/${id_project}`);
+    } catch (error) {
+        console.error("Erreur lors du téléversement du fichier :", error);
+        res.status(500).send("Erreur lors du téléversement du fichier.");
+    }
+});
 
 
 collaborationRouter.post("/project/:id_project/:id_asset/comment", authguard, async (req, res) => {
@@ -392,51 +392,51 @@ collaborationRouter.get("/project/:id_project", authguard, async (req, res) => {
 
 // code pour l'espace de collaboration 
 
-// collaborationRouter.post("/project/:id_project/file/:id_file/edit", authguard, async (req, res) => {
-//     const { id_file } = req.params;
-//     const { name, description, genre } = req.body;
+collaborationRouter.post("/project/:id_project/file/:id_file/edit", authguard, async (req, res) => {
+    const { id_file } = req.params;
+    const { name, description, genre } = req.body;
 
-//     try {
-//         await prisma.assets.update({
-//             where: { id: parseInt(id_file) },
-//             data: {
-//                 name,
-//                 description,
-//             },
-//         });
+    try {
+        await prisma.assets.update({
+            where: { id: parseInt(id_file) },
+            data: {
+                name,
+                description,
+            },
+        });
 
-//         res.redirect(`/project/${req.params.id_project}`);
-//     } catch (err) {
-//         console.error(err);
-//         res.status(500).json({ error: "Erreur lors de la modification de l'asset." });
-//     }
-// });
+        res.redirect(`/project/${req.params.id_project}`);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Erreur lors de la modification de l'asset." });
+    }
+});
 
 
-// collaborationRouter.post("/project/:id_project/file/:id_file/delete", authguard, async (req, res) => {
-//     const { id_file } = req.params;
+collaborationRouter.post("/project/:id_project/file/:id_file/delete", authguard, async (req, res) => {
+    const { id_file } = req.params;
 
-//     try {
-//         await prisma.$transaction(async (prisma) => {
-//             await prisma.commentaires.deleteMany({
-//                 where: { id_asset: parseInt(id_file) },
-//             });
+    try {
+        await prisma.$transaction(async (prisma) => {
+            await prisma.commentaires.deleteMany({
+                where: { id_asset: parseInt(id_file) },
+            });
 
-//             await prisma.assets.delete({
-//                 where: { id: parseInt(id_file) },
-//             });
-//         });
+            await prisma.assets.delete({
+                where: { id: parseInt(id_file) },
+            });
+        });
 
-//         res.json({ success: true });
-//     } catch (err) {
-//         console.error(err);
-//         if (err.code === 'P2003') {
-//             res.status(400).json({ error: "Impossible de supprimer l'asset car il est référencé par d'autres éléments." });
-//         } else {
-//             res.status(500).json({ error: "Erreur lors de la suppression de l'asset." });
-//         }
-//     }
-// });
+        res.json({ success: true });
+    } catch (err) {
+        console.error(err);
+        if (err.code === 'P2003') {
+            res.status(400).json({ error: "Impossible de supprimer l'asset car il est référencé par d'autres éléments." });
+        } else {
+            res.status(500).json({ error: "Erreur lors de la suppression de l'asset." });
+        }
+    }
+});
 
 
 

@@ -36,19 +36,25 @@ document.addEventListener('DOMContentLoaded', function () {
         let originalName, originalDescription;
 
         toggleBtn.addEventListener('click', () => {
-            actionsMenu.style.display = actionsMenu.style.display === 'none' ? 'flex' : 'none';
+            actionsMenu.style.display = actionsMenu.style.display === 'none' ? 'block' : 'none';
         });
 
-        const closeActionsBtn = item.querySelector('.close-actions-btn');
-        closeActionsBtn.addEventListener('click', () => {
-            actionsMenu.style.display = 'none';
+        
+
+        document.addEventListener('click', (event) => {
+            if (!actionsMenu.contains(event.target) && !toggleBtn.contains(event.target)) {
+                actionsMenu.style.display = 'none';
+            }
         });
+        
 
         editBtn.addEventListener('click', () => {
             originalName = fileName.textContent;
             originalDescription = fileDescription.textContent;
             fileName.contentEditable = true;
             fileDescription.contentEditable = true;
+            fileName.classList.add('editing');
+            fileDescription.classList.add('editing');
             editActions.style.display = 'flex';
             actionsMenu.style.display = 'none';
         });
@@ -65,6 +71,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (response.ok) {
                     fileName.contentEditable = false;
                     fileDescription.contentEditable = false;
+                    fileName.classList.remove('editing');
+                    fileDescription.classList.remove('editing');
                     editActions.style.display = 'none';
                 } else {
                     throw new Error('Erreur lors de la modification');
@@ -81,6 +89,8 @@ document.addEventListener('DOMContentLoaded', function () {
             fileDescription.textContent = originalDescription;
             fileName.contentEditable = false;
             fileDescription.contentEditable = false;
+            fileName.classList.remove('editing');
+            fileDescription.classList.remove('editing');
             editActions.style.display = 'none';
         });
 

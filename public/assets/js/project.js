@@ -20,18 +20,14 @@ document.addEventListener('DOMContentLoaded', function () {
         let originalTitle, originalDescription;
         let selectedFollowers = new Map();
 
-        // Fonction pour basculer l'affichage de la liste des followers
         function toggleFollowerList(visible) {
             followerList.style.display = visible ? 'block' : 'none';
         }
 
-        // Fonction pour mettre à jour l'input caché avec les IDs des followers sélectionnés
         function updateHiddenInput() {
             selectedFollowersInput.value = JSON.stringify([...selectedFollowers.keys()]);
         }
 
-        // Fonction pour ajouter un follower à la liste des sélectionnés
-  // Fonction pour ajouter un follower à la liste des sélectionnés
 function addFollower(follower) {
     if (selectedFollowers.has(follower.id_user)) return;
 
@@ -62,7 +58,6 @@ function addFollower(follower) {
     selectedFollowersContainer.appendChild(div);
     updateHiddenInput();
 }
-        // Gestion du menu déroulant du projet
         if (menuBtn && menuDropdown) {
             menuBtn.addEventListener('click', (event) => {
                 event.stopPropagation();
@@ -70,7 +65,6 @@ function addFollower(follower) {
             });
         }
 
-        // Mode édition du projet
         if (editProjectBtn) {
             editProjectBtn.addEventListener('click', () => {
                 originalTitle = editableTitle.textContent;
@@ -89,7 +83,6 @@ function addFollower(follower) {
             });
         }
 
-        // Sauvegarde des modifications du projet
         if (saveChangesBtn) {
             saveChangesBtn.addEventListener('click', async () => {
                 const newTitle = editableTitle.textContent;
@@ -104,7 +97,6 @@ function addFollower(follower) {
                         })
                     });
 
-                    // Add selected followers to the project
                     for (let userId of selectedFollowers.keys()) {
                         const addUserResponse = await fetch(`/project/${projectId}/addUser`, {
                             method: 'POST',
@@ -113,7 +105,6 @@ function addFollower(follower) {
                         });
                         if (!addUserResponse.ok) {
                             console.error(`Erreur lors de l'ajout de l'utilisateur ${userId}`);
-                            // You might want to show an error to the user here
                         }
                     }
 
@@ -142,7 +133,6 @@ function addFollower(follower) {
             });
         }
 
-        // Annulation des modifications du projet
         if (cancelChangesBtn) {
             cancelChangesBtn.addEventListener('click', () => {
                 editableTitle.textContent = originalTitle;
@@ -159,20 +149,17 @@ function addFollower(follower) {
             });
         }
 
-        // Suppression des participants
         if (participantButtons) {
             participantButtons.forEach(btn => {
                 btn.addEventListener('click', function(event) {
                     const projectId = item.dataset.projectId;
                     const userId = btn.dataset.userId;
                     
-                    // Show confirmation modal
                     showModal('confirmModal', `Voulez-vous vraiment supprimer ce participant ?`, userId, projectId);
                 });
             });
         }
 
-        // Recherche et ajout de participants
         if (searchInput) {
             searchInput.addEventListener('input', async (e) => {
                 const query = e.target.value.trim();
@@ -210,7 +197,6 @@ function addFollower(follower) {
                 }
             });
 
-            // Fermer la liste des followers si un clic se produit en dehors de la liste ou de l'input de recherche
             document.addEventListener('click', (e) => {
                 if (!followerList.contains(e.target) && e.target !== searchInput) {
                     toggleFollowerList(false);
@@ -218,11 +204,8 @@ function addFollower(follower) {
             });
         }
 
-        // Gestion des fichiers attachés au projet
-        // ... (le code pour la gestion des fichiers reste inchangé)
     });
 
-    // Fonction pour afficher la modale
     function showModal(modalId, message, userId, projectId) {
         const modal = document.getElementById(modalId);
         if (!modal) return;
@@ -245,9 +228,7 @@ function addFollower(follower) {
                     });
                     const data = await response.json();
                     if (response.ok && data.success) {
-                        // Remove participant from the list
                         document.querySelector(`[data-user-id="${userId}"]`).closest('li').remove();
-                        // Show success modal
                         showModal('successModal', 'Participant supprimé avec succès.', null, null);
                     } else {
                         throw new Error(data.message || 'Erreur lors de la suppression.');
@@ -259,26 +240,22 @@ function addFollower(follower) {
             };
         }
 
-        // Event listener for "Non" button
         if (cancelBtn) {
             cancelBtn.onclick = () => {
                 modal.style.display = 'none';
             };
         }
 
-        // Event listener for "Fermer" button
         if (closeBtn) {
             closeBtn.onclick = () => {
                 modal.style.display = 'none';
             };
         }
 
-        // Handle modal closing
         modal.querySelector('.closeModal').onclick = () => {
             modal.style.display = 'none';
         };
 
-        // Close modal if clicked outside
         window.onclick = function(event) {
             if (event.target === modal) {
                 modal.style.display = 'none';
@@ -286,7 +263,6 @@ function addFollower(follower) {
         };
     }
 
-    // Fermer les menus déroulants lorsqu'on clique en dehors d'eux
     document.addEventListener('click', (event) => {
         if (!event.target.closest('.project-header')) {
             document.querySelectorAll('.menu-dropdown').forEach(menu => {

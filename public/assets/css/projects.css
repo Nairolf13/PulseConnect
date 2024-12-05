@@ -117,7 +117,8 @@ img {
     border-radius: 5px;
     width: 98%;
     padding: 5px;
-    background-color: #f44336; /* Rouge pour le bouton de suppression */
+    background-color: red; 
+    color: white;
 }
 
 .delete:hover {

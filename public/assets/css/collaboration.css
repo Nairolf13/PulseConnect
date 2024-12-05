@@ -89,7 +89,7 @@ body {
 }
 
 .feed-container {
-    background-color: #3b3b3b;
+    background-color: #2a2a2a;
     margin-top: 50px;
     border-radius: 8px;
     padding: 20px;
@@ -150,7 +150,7 @@ body {
     display: flex;
     align-items: center;
     margin-bottom: 15px;
-    background-color: #333;
+    background-color: #1e1e1e;
     padding: 10px;
     border-radius: 8px;
     transition: background-color 0.3s ease;
@@ -229,18 +229,30 @@ body {
     text-align: center;
 }
 
-.file-feed {
+.file-feed {background-color: #1e1e1e;
+    border: none;
+    border-radius: 10px;
     list-style-type: none;
     padding: 0;
 }
 
 .file-item {
-    margin-bottom: 20px;
-    padding: 15px;
-    border: 1px solid #333;
-    border-radius: 10px;
-    background-color: #2a2a2a;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    position: relative; /* Nécessaire pour positionner les enfants par rapport à cet élément */
+    padding: 10px; /* Optionnel, pour de l'espace intérieur */
+    margin-bottom: 15px; /* Espacement entre les éléments */
+}
+
+.file-header {
+    display: flex;
+    justify-content: space-between; /* Sépare le nom et les actions */
+    align-items: center; /* Aligne verticalement les éléments */
+}
+
+.file-actions {
+    position: absolute; /* Positionnement par rapport à .file-item */
+    top: 10px; /* Distance par rapport au haut */
+    right: 10px; /* Distance par rapport à la droite */
+    z-index: 10; /* Optionnel, pour s'assurer que ça reste visible */
 }
 
 .file-item h4 {
@@ -345,7 +357,7 @@ form {
     max-width: 400px;
     margin: 20px auto;
     padding: 20px;
-    background-color: #333333;
+    background-color: #1e1e1e;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -447,41 +459,72 @@ form button[type="submit"] {
 
 .file-actions {
     position: absolute;
-    top: 18%;
-    left: 62%;
-}
-
-.toggle-actions-btn {
-    border: none;
-    background: none;
-    color: white;
-}
-
-.actions-menu {
-    display: flex;
-    position: absolute;
-    right: 500%;
-    top: 500%;
-    align-items: center;
-    flex-direction: column;
-    gap: 10px;
-    border: 1px solid white;
-    border-radius: 8px;
-    background-color: #3d3d3d;
-    width: 200px;
-    padding: 20px;
+    top: 2%;
+    right: 2%;
     z-index: 1000;
 }
 
-.edit-file-btn ,.delete-file-btn{
-    background-color: aquamarine;
-    border-radius: 5px;
-    border: 1px solid black;
+.toggle-actions-btn {
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: white;
+    cursor: pointer;
+    z-index: 1000;
 }
 
-.close-actions-btn{
+.actions-menu {
+    display: none; /* Caché par défaut */
+    position: fixed; /* Utiliser fixed pour que l'élément reste centré même lors du défilement */
+    top: 50%; /* Positionner au milieu de l'écran verticalement */
+    left: 50%; /* Positionner au milieu de l'écran horizontalement */
+    transform: translate(-50%, -50%); /* Décaler l'élément de moitié de sa largeur et hauteur pour le centrer */
+    background-color: #383d41;
+    border-radius: 5px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    z-index: 100;
+    width: 200px; /* Largeur de l'élément */
+    max-width: 300px; /* Largeur maximale */
+    text-align: center; /* Centrer le contenu dans le menu */
+    padding: 10px;
+}
+
+.edit-file-btn {
+    width: 100%;
+    padding: 10px 0;
+    margin: 10px 0;
+    background-color: aquamarine;
+    color: rgb(0, 0, 0);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+.editing {
+    width: 50%;
+    border: 1px solid #ccc;
+    padding: 5px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+
+.delete-file-btn {
+    border: none;
+    border-radius: 5px;
+    width: 98%;
+    padding: 5px;
+    margin-left: 2px;
+    background-color: red;
+    color: white;
+}
+
+.close-actions-btn {
     position: absolute;
-    bottom: 60%;
+    bottom: 70%;
     left: 82%;
     border: none;
     background: none;
@@ -489,27 +532,43 @@ form button[type="submit"] {
     font-size: xx-large;
 }
 
-.edit-actions{
-    display: flex;
-    position: absolute;
-    right: 45%;
-    top: 35%;
-    align-items: center;
+.edit-actions {
+    display: flex; /* Activer le modèle Flexbox */
     flex-direction: column;
-    gap: 10px;
-    border: 1px solid white;
-    border-radius: 8px;
-    background-color: #3d3d3d;
+    align-items: center; /* Centrer horizontalement les enfants */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #383d41;
+    border-radius: 5px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    z-index: 100;
     width: 200px;
-    padding: 20px;
-    z-index: 1000;
+    max-width: 300px;
+    text-align: center;
+    padding: 10px;
 }
 
-.save-edit-btn,.cancel-edit-btn{
-    background-color: aquamarine;
+.save-edit-btn,
+.cancel-edit-btn {
+    width: 95%; /* Ils devraient être centrés automatiquement avec `align-items: center;` */
     border-radius: 5px;
     border: 1px solid black;
+    padding: 10px; /* Ajoutez cette ligne pour que les boutons aient la même taille */
 }
+
+.save-edit-btn {
+    background-color: aquamarine;
+    color: black;
+}
+
+.cancel-edit-btn {
+    background-color: red;
+    color: white;
+    padding: 5px;
+}
+
 
 
 @media (max-width: 768px) {
@@ -539,10 +598,14 @@ form button[type="submit"] {
 
     .toggle-sidebar-btn {
         display: block;
-        background: none;
-        color: white;
-        margin-right: 10px;
-
+        background: aquamarine;
+        border-radius: 100%;
+        padding: 0px;
+        width: 30px;
+        color: black;
+        font-size: 20px;
+        margin-top: 10px;
+        margin-right: 12px;
     }
 
     .sidebar-container {
@@ -568,9 +631,10 @@ form button[type="submit"] {
 
     #picture img,
     video {
-        max-width: 280px;
-        width: 350px;
-        height: 350px;
+        max-width: 98%;
+        width: 95%;
+        margin-left: 8px;
+        margin-bottom: 30px;
     }
 
     .layout-container {

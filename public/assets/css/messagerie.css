@@ -203,4 +203,8 @@ img {
     #titleSearch {
         height: 40px;
     }
+
+    .user-item {
+        justify-content: center;
+    }
 }

@@ -21,9 +21,8 @@
 							<div class="file-header">
 								<strong class="file-name" contenteditable="false">{{ file.name }}</strong>
 								<div class="file-actions">
-									<button class="toggle-actions-btn">. . .</button>
+									<button class="toggle-actions-btn" id="toggle-actions-btn-{{ file.id }}">...</button>
 									<div class="actions-menu" style="display: none;">
-										<button class="close-actions-btn">&times;</button>
 										<button class="edit-file-btn">Modifier</button>
 										<button class="delete-file-btn">Supprimer</button>
 									</div>
@@ -78,20 +77,11 @@
 						</div>
 					{% endfor %}
 				</div>
+
 			</div>
 
 			<div class="sidebar-container">
 				<div class="members-list">
-					<h3>Participants</h3>
-					<ul>
-						{% for member in project.members %}
-							<li>
-								<img src="{{ member.picture }}" alt="Avatar">
-								<strong>{{ member.userName }}</strong>
-								({{ member.role }})
-							</li>
-						{% endfor %}
-					</ul>
 					<form action="/project/{{ project.id_project }}/upload" method="POST" enctype="multipart/form-data">
 						<h3>Ajouter un fichier</h3>
 						<div id="textTitle">
@@ -111,9 +101,20 @@
 						<input type="file" name="file" required><br>
 						<button type="submit">Ajouter</button>
 					</form>
+					<h3>Participants</h3>
+					<ul>
+						{% for member in project.members %}
+							<li>
+								<img src="{{ member.picture }}" alt="Avatar">
+								<strong>{{ member.userName }}</strong>
+								({{ member.role }})
+							</li>
+						{% endfor %}
+					</ul>
+
 				</div>
 			</div>
-			<button id="toggle-sidebar-btn" class="toggle-sidebar-btn" onclick="toggleSidebar()">...</button>
+			<button id="toggle-sidebar-btn" class="toggle-sidebar-btn" onclick="toggleSidebar()">+</button>
 		</section>
 	</div>
 

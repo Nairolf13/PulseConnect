@@ -53,7 +53,7 @@ const sendWelcomeEmail = async (to, firstName) => {
     </head>
     <body>
         <div class="container">
-            <img src="http://51.91.208.111:4000/assets/imgs/LogoWhiteRemoveBg.png" alt="Logo PulseConnect" class="logo">
+            <img src="http://51.91.208.111:4000/assets/imgs/PulseConnect.png" alt="Logo PulseConnect" class="logo">
             <h1>Bienvenue chez PulseConnect, ${firstName} !</h1>
             <p>Merci de vous être inscrit sur notre plateforme. Nous sommes ravis de vous compter parmi nous !</p>
             <p>Pour commencer, explorez nos fonctionnalités et n'hésitez pas à nous contacter si vous avez des questions.</p>

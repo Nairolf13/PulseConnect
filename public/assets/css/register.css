@@ -98,6 +98,13 @@ span {
     color: aquamarine;
 }
 
+#closeModal{
+    position: absolute;
+    top: 1%;
+    right: 3%;
+    color: aquamarine;
+}
+
 p {
     color: red;
     font-size: 0.9em;
@@ -116,28 +123,53 @@ p {
     background-color: rgba(0, 0, 0, 0.5);
 }
 
+.modal-backdrop {
+    z-index: 999;
+    /* Moins élevé que la modal */
+}
+
+.modal-backdrop.show {
+    background-color: rgba(0, 0, 0, 0.5);
+    /* Assurez-vous qu'il est semi-transparent */
+    z-index: 999;
+}
+
+
 .modal-content {
-    background-color: #fefefe;
+    background-color: #2a2a2a;
     margin: 15% auto;
     padding: 20px;
     border: 1px solid #888;
     width: 300px;
     border-radius: 10px;
     text-align: center;
+    z-index: 1000;
 }
 
 .modal-header {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+}
+
+.btn-secondary{
+    background-color: aquamarine;
+    color: black;
 }
 
 .modal-header h5 {
     font-size: 1.2em;
-    color: black;
+    color: white;
+}
+
+li#errorList {
+    color: white;
 }
 
 .close {
+    position: absolute;
+    top: 1%;
+    left: 42%;
     font-size: 1.5em;
     cursor: pointer;
 }
@@ -147,6 +179,7 @@ p {
 }
 
 .modal-body {
+    color: white;
     padding: 10px;
     text-align: left;
 }

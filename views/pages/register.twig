@@ -21,47 +21,46 @@
 					</div>
 					<div>
 						<label for="lastName"></label>
-						<input id="lastName" type="text" name="lastName" placeholder="Votre nom">
+						<input id="lastName" type="text" name="lastName" placeholder="Votre nom" value="{{ requestBody.lastName }}">
 					</div>
 					<div>
 						<label for="firstName"></label>
-						<input id="firstName" type="text" name="firstName" placeholder="Votre prénom">
+						<input id="firstName" type="text" name="firstName" placeholder="Votre prénom" value="{{ requestBody.firstName }}">
 					</div>
 					<div>
 						<label for="userName"></label>
-						<input id="userName" type="text" name="userName" placeholder="Votre nom d'utilisateur">
+						<input id="userName" type="text" name="userName" placeholder="Votre nom d'utilisateur" value="{{ requestBody.userName }}">
 					</div>
 					<div>
 						<label for="age"></label>
-						<input type="number" name="age" id="age" placeholder="Votre age" value="">
+						<input type="number" name="age" id="age" placeholder="Votre age" value="{{ requestBody.age }}">
 					</div>
 					<div>
 						<label for="genre"></label>
 						<select id="genre" name="genre" required>
-							<option value="">Sélectionnez votre genre</option>
-							<option value="Masculin">Masculin</option>
-							<option value="Feminin">Féminin</option>
-							<option value="Autre">Autre</option>
+							<option value="" {% if not requestBody.genre %} selected {% endif %}>Sélectionnez votre genre</option>
+							<option value="Masculin" {% if requestBody.genre == "Masculin" %} selected {% endif %}>Masculin</option>
+							<option value="Feminin" {% if requestBody.genre == "Feminin" %} selected {% endif %}>Féminin</option>
+							<option value="Autre" {% if requestBody.genre == "Autre" %} selected {% endif %}>Autre</option>
 						</select>
 					</div>
 					<div>
 						<label for="mail"></label>
-						<input id="mail" type="email" name="mail" placeholder="Votre adresse mail">
+						<input id="mail" type="email" name="mail" placeholder="Votre adresse mail" value="{{ requestBody.mail }}">
 					</div>
 					<div>
 						<label for="localisation"></label>
-						<input id="localisation" type="text" name="localisation" placeholder="Votre adresse postal">
+						<input id="localisation" type="text" name="localisation" placeholder="Votre adresse postal" value="{{ requestBody.localisation }}">
 					</div>
 					<div>
 						<label for="password"></label>
 						<input id="password" type="password" name="password" placeholder="(12 caractères, majuscule, chiffre, spécial)">
 					</div>
-
 					<div>
 						<label for="confirmPassword"></label>
 						<input id="confirmPassword" type="password" name="confirmPassword" placeholder="Confirmer le mot de passe">
 						{% if error %}
-							<p>{{error.confirmPassword}}</p>
+							<p>{{ error.confirmPassword }}</p>
 						{% endif %}
 					</div>
 					<button type="submit">S'inscrire</button>
@@ -71,14 +70,13 @@
 						</a>
 					</section>
 				</form>
-
 				<div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
 					<div class="modal-dialog" role="document">
 						<div class="modal-content">
 							<div class="modal-header">
 								<h5 class="modal-title" id="errorModalLabel">Erreur d'inscription</h5>
 								<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-									<span id"closeModal" aria-hidden="true">&times;</span>
+									<span id"closemodal" aria-hidden="true">&times;</span>
 								</button>
 							</div>
 							<div class="modal-body">
@@ -97,12 +95,10 @@
 	{% include "../partials/error.twig" %}
 
 	<script>
-		$(document).ready(function (){
-{% if error %}
+		$(document).ready(function (){% if error %}
 const errorList = $("#errorList");
-errorList.empty();{% for key, value in error %}errorList.append("<li> {{ value }}</li>");{% endfor %}
-$("#errorModal").modal("show");{% endif %}
-});
+errorList.empty();{% for key, value in error %}errorList.append("<li>  {{ value }}</li>");{% endfor %}$("#errorModal").modal("show");{% endif %}
+);
 	</script>
-	
+
 {% endblock %}

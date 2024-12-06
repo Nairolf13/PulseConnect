@@ -121,63 +121,85 @@ userRouter.get('/register', (req, res) => {
  
 userRouter.post('/register', async (req, res) => {
     try {
-        const { password, confirmPassword, lastName, firstName, userName, age, mail, genre, localisation } = req.body;
+        const {
+            lastName,
+            firstName,
+            userName,
+            age,
+            genre,
+            mail,
+            localisation,
+            password,
+            confirmPassword
+        } = req.body;
 
-        if (!password || !confirmPassword || !lastName || !firstName || !userName || !age || !mail || !genre || !localisation) {
-            return res.render('pages/register.twig', {
-                error: { message: "Tous les champs sont requis !" },
-                title: "Inscription - PulseConnect"
-            });
+        const errors = {};
+
+        if (!lastName || !firstName || !userName || !age || !genre || !mail || !localisation || !password || !confirmPassword) {
+            errors.message = "Tous les champs sont requis !";
         }
 
         if (password !== confirmPassword) {
-            return res.render('pages/register.twig', {
-                error: { confirmPassword: "Vos mots de passe ne correspondent pas !" },
-                title: "Inscription - PulseConnect"
-            });
+            errors.confirmPassword = "Les mots de passe ne correspondent pas.";
         }
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(mail)) {
-            return res.render('pages/register.twig', {
-                error: { mail: "L'adresse email est invalide !" },
-                title: "Inscription - PulseConnect"
-            });
+            errors.mail = "L'adresse email est invalide !";
         }
 
         const passwordRegex = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[A-Za-z0-9!@#$%^&*]{12,}$/;
         if (!passwordRegex.test(password)) {
+            errors.password = "Le mot de passe doit contenir au moins 12 caractères, une majuscule, un chiffre, et un caractère spécial !";
+        }
+
+        if (Object.keys(errors).length > 0) {
             return res.render('pages/register.twig', {
-                error: { password: "Le mot de passe doit contenir au moins 12 caractères, une majuscule, un chiffre, et un caractère spécial !" },
-                title: "Inscription - PulseConnect"
+                title: "Inscription - PulseConnect",
+                requestBody: req.body,
+                error: errors
             });
         }
 
         const user = await prisma.users.create({
             data: {
-                lastName:req.body.lastName,
-                firstName:req.body.firstName,
-                userName:req.body.userName,
-                age: parseInt(req.body.age),
-                mail:req.body.mail,
-                genre:req.body.genre,
-                localisation:req.body.localisation, 
-                password:req.body.password, 
-                role:"users",
-                description:req.body.description || null
+                lastName,
+                firstName,
+                userName,
+                age: parseInt(age),
+                mail,
+                genre,
+                localisation,
+                password,
+                role: "users",
+                description: req.body.description || null
             }
-        }); 
-       console.log(user);
-       
-        await sendWelcomeEmail(user.mail, user.firstName);
+        });
+
+        console.log("Utilisateur enregistré :", user);
+
+        sendWelcomeEmail(user.mail, user.firstName).catch(err => {
+            console.error("Erreur lors de l'envoi de l'email :", err);
+        });
+
+      
         res.redirect('/login');
     } catch (error) {
+        console.error("Erreur lors de l'inscription :", error);
+
         if (error.code === 'P2002') {
             error = { mail: "Cet email existe déjà !" };
         }
-        res.render('pages/register.twig', { error, title: "Inscription - PulseConnect" });
+
+        res.render('pages/register.twig', {
+            title: "Inscription - PulseConnect",
+            requestBody: req.body,
+            error
+        });
     }
 });
+
+
 
 
 userRouter.get('/forgot-password', (req, res) => {
@@ -441,22 +463,29 @@ userRouter.post("/update", authguard, upload.single('picture'), async (req, res)
 
 userRouter.get("/delete", authguard, async (req, res) => {
     if (!req.session || !req.session.users || !req.session.users.id_user) {
-        return res.redirect("/home"); // Rediriger si l'utilisateur n'est pas connecté
+        return res.redirect("/home");
     }
 
     try {
-        const deleteEmploye = await prisma.users.delete({
+        await prisma.users.delete({
             where: {
                 id_user: parseInt(req.session.users.id_user)
             }
         });
-        req.session.destroy(); // Détruire la session après suppression
-        res.redirect("/register");
+
+        req.session.destroy((err) => {
+            if (err) {
+                console.error("Erreur lors de la destruction de la session :", err);
+                return res.redirect("/home");
+            }
+            res.redirect("/register");
+        });
     } catch (error) {
         console.error("Erreur lors de la suppression :", error);
         res.redirect("/home");
     }
 });
+
 
 
 module.exports = userRouter;

@@ -26,3 +26,22 @@ window.addEventListener('click', function(event) {
         deleteModal.style.display = 'none';
     }
 });
+
+confirmDelete.addEventListener('click', async function() {
+    try {
+        const response = await fetch('/delete', {
+            method: 'GET',
+            credentials: 'include', // Pour inclure les cookies et la session
+        });
+
+        if (response.redirected) {
+            window.location.href = response.url; // Redirige après suppression
+        } else {
+            const result = await response.json();
+            alert(result.message || 'Compte supprimé avec succès.');
+        }
+    } catch (error) {
+        console.error("Erreur lors de la suppression :", error);
+        alert("Une erreur s'est produite.");
+    }
+});

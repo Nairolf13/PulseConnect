@@ -19,7 +19,7 @@
 	</div>
 	<div class="container">
 		<div id="profilEdit">
-			<img src="{{ users.picture }}" alt="Photo de profil" class="profile-pic"/>
+			<img src="{{ users.picture }}" alt="Photo de profil" class="profile-pic" onerror="this.src='/../../assets/imgs/addPics.png'"/>
 			<a href="/update">Modifier le profil</a>
 		</div>
 		<div id="username">{{users.userName}}

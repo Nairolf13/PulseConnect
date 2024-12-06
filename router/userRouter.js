@@ -440,16 +440,23 @@ userRouter.post("/update", authguard, upload.single('picture'), async (req, res)
 
 
 userRouter.get("/delete", authguard, async (req, res) => {
+    if (!req.session || !req.session.users || !req.session.users.id_user) {
+        return res.redirect("/home"); // Rediriger si l'utilisateur n'est pas connecté
+    }
+
     try {
         const deleteEmploye = await prisma.users.delete({
             where: {
                 id_user: parseInt(req.session.users.id_user)
             }
-        })
-        res.redirect("/register")
+        });
+        req.session.destroy(); // Détruire la session après suppression
+        res.redirect("/register");
     } catch (error) {
-        res.redirect("/home")
+        console.error("Erreur lors de la suppression :", error);
+        res.redirect("/home");
     }
-})
+});
+
 
 module.exports = userRouter;

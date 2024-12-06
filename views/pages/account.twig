@@ -21,7 +21,7 @@
 			</div>
 			<div>
 				<div class="profile-picture" onclick="document.getElementById('picture').click();">
-					<img src="{{ users.picture }}" alt="Photo de profil"/>
+					<img src="{{ users.picture }}" alt="Photo de profil" onerror="this.src='/../../assets/imgs/addPics.png'"/>
 				</div>
 				<input id="picture" type="file" name="picture" style="display: none;"/>
 			</div>

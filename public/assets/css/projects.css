@@ -55,6 +55,7 @@ h1 {
 }
 
 .projects-list {
+    width: 100%;
     list-style-type: none;
     padding: 0;
 }
@@ -104,7 +105,7 @@ img {
 .project-item a {
     position: absolute;
     right: 10%;
-    bottom: 10%;
+    bottom: 15%;
     color: aquamarine;
     text-decoration: none;
     font-weight: bold;

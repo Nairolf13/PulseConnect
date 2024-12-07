@@ -68,7 +68,6 @@ body {
 }
 
 section {
-    width: 100%;
     color: white;
     text-align: center;
 }
@@ -415,6 +414,7 @@ video {
     }
 
     .slider {
+        justify-content: center;
         width: 100%;
     }
 
@@ -468,7 +468,7 @@ video {
     display: flex;
     align-items: center;
     animation: infiniteCarousel 30s linear infinite;
-    width: 200%; /* Double la largeur du conteneur */
+    width: 100%; /* Double la largeur du conteneur */
     user-select: none; /* Empêche la sélection de texte */
 }
 

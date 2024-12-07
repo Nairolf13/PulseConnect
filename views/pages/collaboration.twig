@@ -37,7 +37,7 @@
 										Votre navigateur ne supporte pas l'élément audio.
 									</audio>
 								{% elseif file.url ends with '.mp4' or file.url ends with '.avi' %}
-									<video controls>
+									<video controls playsinline>
 										<source src="/uploads/{{ file.url }}" type="video/mp4">
 										Votre navigateur ne supporte pas l'élément vidéo.
 									</video>

@@ -76,7 +76,7 @@
 							{% endif %}
 
 							{% if post.url and (post.url ends with '.mp4' or post.url ends with '.avi' or post.url ends with '.mkv' or post.url ends with '.mov') %}
-								<video controls>
+								<video controls playsinline>
 									<source src="./uploads/{{ post.url }}" type="video/mp4">
 									Votre navigateur ne supporte pas l'élément vidéo.
 								</video>

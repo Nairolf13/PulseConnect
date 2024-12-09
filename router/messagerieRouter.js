@@ -5,45 +5,59 @@ const authguard = require("../services/authguard")
 const prisma = new PrismaClient()
 
 messagerieRouter.get("/messagerie", authguard, async (req, res) => {
-    const userId = req.session.users?.id_user; 
+    const userId = req.session.users?.id_user;
 
     if (!userId) {
         console.error("Erreur : l'ID utilisateur est manquant");
         return res.status(400).send("Erreur : l'ID utilisateur est manquant");
     }
+
     try {
+        // Récupérer les conversations, en excluant celles où tous les messages ont été supprimés par l'utilisateur connecté
         const conversations = await prisma.messages.findMany({
             where: {
                 OR: [
                     { senderId: userId },
                     { recipientId: userId }
+                ],
+                AND: [
+                    {
+                        OR: [
+                            { deletedByUserId: null },
+                            { deletedByUserId: { not: userId } }
+                        ]
+                    }
                 ]
             },
             orderBy: {
                 created_at: "asc"
             },
             include: {
-                senderUsers: true,        
-                recipientUsers: true      
+                senderUsers: true,
+                recipientUsers: true
             }
         });
 
+        // Regrouper les messages par utilisateur et préparer les conversations uniques
         const uniqueConversationsMap = new Map();
 
         conversations.forEach((message) => {
             const otherUser = message.senderId === userId ? message.recipientUsers : message.senderUsers;
             if (!otherUser) return;
 
-            uniqueConversationsMap.set(otherUser.id_user, {
-                userId: otherUser.id_user,
-                username: otherUser.userName,
-                profilePicture: otherUser.picture,
-                lastMessage: message.content,
-                messageDate: message.created_at
-            });
+            if (!uniqueConversationsMap.has(otherUser.id_user)) {
+                uniqueConversationsMap.set(otherUser.id_user, {
+                    userId: otherUser.id_user,
+                    username: otherUser.userName,
+                    profilePicture: otherUser.picture,
+                    lastMessage: message.content,
+                    messageDate: message.created_at
+                });
+            }
         });
 
         const recentConversations = Array.from(uniqueConversationsMap.values());
+
         const recipientUser = await prisma.users.findUnique({
             where: { id_user: Number(userId) },
             select: {
@@ -63,6 +77,7 @@ messagerieRouter.get("/messagerie", authguard, async (req, res) => {
         res.status(500).send('Erreur interne du serveur');
     }
 });
+
 
 
 messagerieRouter.delete("/messagerie/delete-conversation/:userId", authguard, async (req, res) => {
@@ -87,11 +102,11 @@ messagerieRouter.delete("/messagerie/delete-conversation/:userId", authguard, as
 
 
 messagerieRouter.get("/searchUsers", authguard, async (req, res) => {
-    const userId = req.session.users.id_user; 
-    const { query } = req.query; 
+    const userId = req.session.users.id_user;
+    const { query } = req.query;
 
     if (!query) {
-        return res.json([]); 
+        return res.json([]);
     }
 
     try {
@@ -127,7 +142,7 @@ messagerieRouter.get("/searchUsers", authguard, async (req, res) => {
                 picture: true
             }
         });
-    
+
         res.json(users);
     } catch (error) {
         console.error('Erreur lors de la recherche des utilisateurs :', error);
@@ -183,7 +198,7 @@ messagerieRouter.get("/conversation/:userId", authguard, async (req, res) => {
         });
 
         res.render("pages/conversations.twig", { messages, userId: recipientId, senderId, recipientUser });
-        
+
     } catch (error) {
         console.error("Erreur lors de la récupération des messages:", error);
         res.status(500).json({ error: "Erreur lors de la récupération des messages" });
@@ -270,13 +285,45 @@ messagerieRouter.delete('/deleteMessage/:messageId', authguard, async (req, res)
             },
         });
 
-        res.status(200).json({ message: "Message supprimé avec succès"});
+        res.status(200).json({ message: "Message supprimé avec succès" });
     } catch (error) {
         console.error("Erreur lors de la suppression du message:", error);
         res.status(500).json({ error: "Erreur lors de la suppression du message" });
     }
 });
 
+messagerieRouter.delete('/deleteConversation/:otherUserId', authguard, async (req, res) => {
+    try {
+        const currentUserId = req.session.users.id_user;
+        const otherUserId = parseInt(req.params.otherUserId);
+
+        if (isNaN(otherUserId)) {
+            return res.status(400).json({ message: 'Invalid user ID provided.' });
+        }
+
+        // Mettre à jour les messages pour marquer comme supprimés par l'utilisateur actuel
+        const updateResult = await prisma.messages.updateMany({
+            where: {
+                OR: [
+                    { senderId: currentUserId, recipientId: otherUserId },
+                    { senderId: otherUserId, recipientId: currentUserId }
+                ]
+            },
+            data: {
+                deletedByUserId: currentUserId
+            }
+        });
+
+        if (updateResult.count === 0) {
+            return res.status(404).json({ message: 'No conversation found to delete.' });
+        }
+
+        return res.status(200).json({ message: 'Conversation deleted successfully.' });
+    } catch (error) {
+        console.error('Error deleting conversation:', error.message);
+        return res.status(500).json({ message: 'Internal server error.', error: error.message });
+    }
+});
 
 
 

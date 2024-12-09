@@ -33,10 +33,79 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Cacher la liste lorsqu'on clique en dehors
     document.addEventListener('click', function(e) {
         if (e.target !== searchInput && !userList.contains(e.target)) {
             userList.style.display = 'none';
         }
     });
 });
+
+async function openDeleteModal(userId) {
+    const modal = document.getElementById('deleteConversationModal');
+    modal.style.display = 'block';
+
+    document.getElementById('confirmDeleteButton').onclick = async function () {
+        try {
+            const response = await fetch(`/deleteConversation/${userId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+    
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+    
+            // Supprimer visuellement la conversation de la liste
+            const conversationItem = document.querySelector(`[data-user-id="${userId}"]`);
+            if (conversationItem) {
+                conversationItem.remove();
+            }
+    
+            modal.style.display = 'none'; // Ferme la modal de suppression
+    
+            // Afficher la modal de succès
+            const successModal = document.getElementById('successModal');
+            successModal.style.display = 'block';
+    
+            // Ajouter un gestionnaire d'événements pour fermer la modal de succès
+            const closeSuccessModalButton = document.getElementById('closeSuccessModal');
+            const closeModalButton = document.getElementById('closeModalButton');
+            closeSuccessModalButton.onclick = closeModalButton.onclick = function () {
+                successModal.style.display = 'none';
+            };
+    
+        } catch (error) {
+            console.error('Erreur lors de la suppression de la conversation:', error);
+    
+            // Afficher une modal d'erreur
+            const successModal = document.getElementById('successModal');
+            const successMessage = document.getElementById('successMessage');
+            successMessage.textContent = `Erreur lors de la suppression : ${error.message}`;
+            successModal.style.display = 'block';
+    
+            const closeSuccessModalButton = document.getElementById('closeSuccessModal');
+            const closeModalButton = document.getElementById('closeModalButton');
+            closeSuccessModalButton.onclick = closeModalButton.onclick = function () {
+                successModal.style.display = 'none';
+            };
+        }
+    };
+    
+
+    document.getElementById('cancelDeleteButton').onclick = function () {
+        modal.style.display = 'none';
+    };
+
+    document.getElementById('closeModal').onclick = function () {
+        modal.style.display = 'none';
+    };
+}
+
+window.onclick = function (event) {
+    const modal = document.getElementById('deleteConversationModal');
+    if (event.target === modal) {
+        modal.style.display = 'none';
+    }
+};

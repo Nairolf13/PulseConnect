@@ -24,6 +24,7 @@
 					<span class="last-message">{{ user.lastMessage }}</span>
 					<small class="message-date">{{ user.messageDate | date('l d F, H:i') }}</small>
 				</div>
+				<div class="menu-icon" data-user-id="{{ user.userId }}" onclick="event.stopPropagation(); openDeleteModal({{ user.userId }})">⋮</div>
 			</div>
 		{% else %}
 			<p>Aucun utilisateur trouvé.</p>
@@ -38,6 +39,15 @@
 			<button id="cancelDeleteButton">Annuler</button>
 		</div>
 	</div>
+	<div id="successModal" class="modal">
+		<div class="modal-content">
+			<span class="close-button" id="closeSuccessModal">&times;</span>
+			<h3>Succès</h3>
+			<p id="successMessage">La conversation a été supprimée avec succès.</p>
+			<button id="closeModalButton">OK</button>
+		</div>
+	</div>
+
 	{% include "../partials/error.twig" %}
 
 	{% block script %}

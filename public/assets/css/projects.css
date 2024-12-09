@@ -103,7 +103,6 @@ img {
 }
 
 .project-item a {
-    position: absolute;
     right: 10%;
     bottom: 15%;
     color: aquamarine;

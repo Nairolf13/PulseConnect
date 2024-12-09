@@ -20,6 +20,12 @@ document.addEventListener('DOMContentLoaded', function () {
         let originalTitle, originalDescription;
         let selectedFollowers = new Map();
 
+        // Créer un conteneur pour les followers sélectionnés spécifique à chaque projet
+        const selectedFollowersContainer = document.createElement('div');
+        selectedFollowersContainer.classList.add('selected-followers-container');
+        selectedFollowersContainer.id = `selectedFollowersContainer-${projectId}`; // ID unique pour chaque projet
+        item.appendChild(selectedFollowersContainer); // Ajouter le conteneur au project-item
+
         function toggleFollowerList(visible) {
             followerList.style.display = visible ? 'block' : 'none';
         }
@@ -28,36 +34,33 @@ document.addEventListener('DOMContentLoaded', function () {
             selectedFollowersInput.value = JSON.stringify([...selectedFollowers.keys()]);
         }
 
-function addFollower(follower) {
-    if (selectedFollowers.has(follower.id_user)) return;
+        function addFollower(follower) {
+            if (selectedFollowers.has(follower.id_user)) return;
 
-    selectedFollowers.set(follower.id_user, follower);
+            selectedFollowers.set(follower.id_user, follower);
 
-    const selectedFollowersContainer = document.getElementById('selectedFollowersContainer');
-    if (!selectedFollowersContainer) {
-        console.error('Container for selected followers not found');
-        return;
-    }
+            const div = document.createElement('div');
+            div.classList.add('selected-follower');
+            div.dataset.id = follower.id_user;
+            div.innerHTML = `
+                <img src="${follower.picture}" alt="${follower.userName}" class="selected-picture">
+                <span class="selected-name">${follower.userName}</span>
+                <button class="remove-follower">×</button>
+            `;
 
-    const div = document.createElement('div');
-    div.classList.add('selected-follower');
-    div.dataset.id = follower.id_user;
-    div.innerHTML = `
-        <img src="${follower.picture}" alt="${follower.userName}" class="selected-picture">
-        <span class="selected-name">${follower.userName}</span>
-        <button class="remove-follower">×</button>
-    `;
+            const removeBtn = div.querySelector('.remove-follower');
+            removeBtn.addEventListener('click', () => {
+                selectedFollowers.delete(follower.id_user);
+                div.remove();
+                updateHiddenInput();
+            });
 
-    const removeBtn = div.querySelector('.remove-follower');
-    removeBtn.addEventListener('click', () => {
-        selectedFollowers.delete(follower.id_user);
-        div.remove();
-        updateHiddenInput();
-    });
+            // Ajouter au conteneur spécifique du projet
+            selectedFollowersContainer.appendChild(div);
+            updateHiddenInput();
+        }
 
-    selectedFollowersContainer.appendChild(div);
-    updateHiddenInput();
-}
+        // Gestion du menu dropdown
         if (menuBtn && menuDropdown) {
             menuBtn.addEventListener('click', (event) => {
                 event.stopPropagation();
@@ -65,6 +68,7 @@ function addFollower(follower) {
             });
         }
 
+        // Gestion du bouton d'édition du projet
         if (editProjectBtn) {
             editProjectBtn.addEventListener('click', () => {
                 originalTitle = editableTitle.textContent;
@@ -83,6 +87,7 @@ function addFollower(follower) {
             });
         }
 
+        // Gestion du bouton pour sauvegarder les changements
         if (saveChangesBtn) {
             saveChangesBtn.addEventListener('click', async () => {
                 const newTitle = editableTitle.textContent;
@@ -118,7 +123,6 @@ function addFollower(follower) {
                         if (searchContainer) searchContainer.style.display = 'none';
                         selectedFollowers.clear();
                         followerList.innerHTML = ''; 
-                        
                         window.location.reload();
                     } else {
                         throw new Error('Erreur lors de la modification du projet');
@@ -133,6 +137,7 @@ function addFollower(follower) {
             });
         }
 
+        // Gestion du bouton pour annuler les changements
         if (cancelChangesBtn) {
             cancelChangesBtn.addEventListener('click', () => {
                 editableTitle.textContent = originalTitle;
@@ -149,21 +154,21 @@ function addFollower(follower) {
             });
         }
 
-        if (participantButtons) {
+        // Gestion des boutons pour supprimer un participant
+        if (participantButtons.length > 0) {
             participantButtons.forEach(btn => {
                 btn.addEventListener('click', function(event) {
-                    const projectId = item.dataset.projectId;
+                    const projectId = btn.closest('.project-item').dataset.projectId;
                     const userId = btn.dataset.userId;
-                    
                     showModal('confirmModal', `Voulez-vous vraiment supprimer ce participant ?`, userId, projectId);
                 });
             });
         }
 
+        // Gestion de la recherche de followers
         if (searchInput) {
             searchInput.addEventListener('input', async (e) => {
                 const query = e.target.value.trim();
-
                 if (query.length > 0) {
                     try {
                         const response = await fetch(`/searchFollowers?query=${encodeURIComponent(query)}`);
@@ -193,19 +198,14 @@ function addFollower(follower) {
                         toggleFollowerList(false);
                     }
                 } else {
-                    toggleFollowerList(false);
-                }
-            });
-
-            document.addEventListener('click', (e) => {
-                if (!followerList.contains(e.target) && e.target !== searchInput) {
+                    followerList.innerHTML = ''; // Effacer les résultats si le champ est vide
                     toggleFollowerList(false);
                 }
             });
         }
-
     });
 
+    // Fonction pour afficher une modal
     function showModal(modalId, message, userId, projectId) {
         const modal = document.getElementById(modalId);
         if (!modal) return;
@@ -263,6 +263,7 @@ function addFollower(follower) {
         };
     }
 
+    // Fermer les menus dropdown lorsqu'on clique en dehors
     document.addEventListener('click', (event) => {
         if (!event.target.closest('.project-header')) {
             document.querySelectorAll('.menu-dropdown').forEach(menu => {
@@ -271,4 +272,3 @@ function addFollower(follower) {
         }
     });
 });
-

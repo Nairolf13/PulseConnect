@@ -129,15 +129,16 @@ ul.nav-list li img {
 
     ul.nav-list li a {
         list-style-type: none;
-        padding: 10px;
-        width: 60px;
-        height: 60px;
     }
 
     ul.nav-list li img {
         list-style-type: none;
         width: 24px; 
         height: 24px;
+    }
+
+    ul.nav-list li a span{
+        display: none;
     }
 
     .modal {

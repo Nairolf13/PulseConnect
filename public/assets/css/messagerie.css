@@ -215,4 +215,10 @@ img {
     .user-item {
         justify-content: center;
     }
+
+    .menu-icon {
+        position: relative;
+        right:0;
+        margin-bottom: 40px;    
+    }
 }

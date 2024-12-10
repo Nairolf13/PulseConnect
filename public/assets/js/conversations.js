@@ -137,15 +137,25 @@ $(document).ready(function () {
 
 
 function adjustMessagesHeight() {
-    const keyboardOpen = window.innerHeight < document.documentElement.clientHeight;
     const messagesContainer = document.getElementById('messages');
-    if (keyboardOpen) {
-        messagesContainer.style.height = `${window.innerHeight - messageInput.offsetHeight}px`;
-    } else {
-        messagesContainer.style.height = 'auto'; // Rétablir la hauteur par défaut
-    }
+    const messageInput = document.getElementById('messageInput');
+
+    const viewportHeight = window.innerHeight; // Hauteur visible actuelle
+    const inputHeight = messageInput.offsetHeight;
+
+    // Ajustez la hauteur des messages dynamiquement
+    messagesContainer.style.height = `${viewportHeight - inputHeight}px`;
 }
 
+// Ajustez lorsque le clavier s'ouvre ou se ferme
 window.addEventListener('resize', adjustMessagesHeight);
-messageInput.addEventListener('focus', adjustMessagesHeight);
-messageInput.addEventListener('blur', adjustMessagesHeight);
+
+// Assurez-vous que l'ajustement est fait initialement
+document.addEventListener('DOMContentLoaded', adjustMessagesHeight);
+
+window.addEventListener('resize', () => {
+    const messagesContainer = document.getElementById('messages');
+    const viewportHeight = window.innerHeight;
+
+    messagesContainer.style.height = `${viewportHeight - messageInput.offsetHeight}px`;
+});

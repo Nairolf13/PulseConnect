@@ -1,11 +1,15 @@
+body,
+html {
+    height: 100%;
+    overflow: hidden;
+}
+
 body {
     display: flex;
     flex-direction: column;
-    height: 100vh;
     margin: 0;
     background-color: black;
     color: white;
-    overflow: hidden;
     font-family: Arial, sans-serif;
 }
 
@@ -20,6 +24,14 @@ body {
     transition: margin-bottom 0.3s;
     scrollbar-width: thin;
     scrollbar-color: aquamarine #1e1e1e;
+    -webkit-overflow-scrolling: touch;
+}
+
+#messageInputContainer {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    bottom: 6%;
 }
 
 form {
@@ -122,7 +134,8 @@ h1 {
 .container {
     display: flex;
     flex-direction: column;
-    height: 100vh; /* Hauteur de la vue */
+    height: 100vh;
+    /* Hauteur de la vue */
 }
 
 .container li {
@@ -253,11 +266,15 @@ input.edit-input[type="text"] {
     .keyboard-open form {
         transform: translateY(-250px);
     }
+
+    #messageInputContainer {
+        bottom: 8%;
+    }
 }
 
 @media (min-width: 769px) {
     #messages {
-        height: calc(100dvh - 60px); /* Hauteur dynamique moins la hauteur du champ d'entrée */
+        height: calc(100dvh - 60px);
         overflow-y: auto;
         align-self: center;
         width: 60%;
@@ -265,6 +282,7 @@ input.edit-input[type="text"] {
         scrollbar-color: aquamarine #1e1e1e;
         margin-bottom: 60px;
     }
+
 
     #messages::-webkit-scrollbar {
         width: 8px;
@@ -308,7 +326,7 @@ input.edit-input[type="text"] {
         width: 400px;
     }
 
-    #closeModal{
+    #closeModal {
         cursor: pointer;
         margin-left: 230px;
         margin-bottom: 50px;
@@ -318,5 +336,6 @@ input.edit-input[type="text"] {
 
 
 .keyboard-open #messages {
-    height: calc(100% - 50px); /* Exemple qui pourrait causer une réduction inattendue */
+    height: calc(100% - 50px);
+    /* Exemple qui pourrait causer une réduction inattendue */
 }

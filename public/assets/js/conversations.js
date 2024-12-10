@@ -138,20 +138,17 @@ $(document).ready(function () {
 
 function adjustMessagesHeight() {
     const messagesContainer = document.getElementById('messages');
-    const messageInput = document.getElementById('messageInput');
+    const messageInputContainer = document.getElementById('messageInputContainer');
 
-    const viewportHeight = window.innerHeight; // Hauteur visible actuelle
-    const inputHeight = messageInput.offsetHeight;
+    const viewportHeight = window.innerHeight;
+    const inputHeight = messageInputContainer.offsetHeight;
 
-    // Ajustez la hauteur des messages dynamiquement
     messagesContainer.style.height = `${viewportHeight - inputHeight}px`;
 }
 
-// Ajustez lorsque le clavier s'ouvre ou se ferme
 window.addEventListener('resize', adjustMessagesHeight);
-
-// Assurez-vous que l'ajustement est fait initialement
 document.addEventListener('DOMContentLoaded', adjustMessagesHeight);
+
 
 window.addEventListener('resize', () => {
     const messagesContainer = document.getElementById('messages');

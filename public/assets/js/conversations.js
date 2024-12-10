@@ -151,7 +151,7 @@ document.addEventListener('DOMContentLoaded', adjustMessagesHeight);
 
 
 window.addEventListener('resize', () => {
-    const messagesContainer = document.getElementById('messages');
+    const messagesContainer = document.getElementById('messages')
     const viewportHeight = window.innerHeight;
 
     messagesContainer.style.height = `${viewportHeight - messageInput.offsetHeight}px`;

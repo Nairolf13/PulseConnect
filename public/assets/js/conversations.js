@@ -12,25 +12,25 @@ $(document).ready(function () {
     });
     
 
-    function scrollToBottom() {
-        const lastMessage = messagesContainer.lastElementChild;
-        if (lastMessage) lastMessage.scrollIntoView({ behavior: "auto", block: "end" });
-    }
+    // function scrollToBottom() {
+    //     const lastMessage = messagesContainer.lastElementChild;
+    //     if (lastMessage) lastMessage.scrollIntoView({ behavior: "auto", block: "end" });
+    // }
 
-    scrollToBottom();
+    // scrollToBottom();
 
-    messagesContainer.addEventListener("scroll", function () {
-        const { scrollTop, scrollHeight, clientHeight } = messagesContainer;
+    // messagesContainer.addEventListener("scroll", function () {
+    //     const { scrollTop, scrollHeight, clientHeight } = messagesContainer;
 
-        if (scrollHeight - scrollTop === clientHeight) {
-            location.reload();
-        }
-    });
+    //     if (scrollHeight - scrollTop === clientHeight) {
+    //         location.reload();
+    //     }
+    // });
 
-    messageInput.addEventListener('focus', function () {
-        document.body.classList.add('keyboard-open');
-        scrollToBottom(); 
-    });
+    // messageInput.addEventListener('focus', function () {
+    //     document.body.classList.add('keyboard-open');
+    //     scrollToBottom(); 
+    // });
 
     messageInput.addEventListener('blur', function () {
         document.body.classList.remove('keyboard-open');

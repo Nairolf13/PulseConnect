@@ -1,21 +1,17 @@
-body,
-html {
-    height: 100%;
-    overflow: hidden;
-}
-
 body {
     display: flex;
     flex-direction: column;
+    height: 100vh;
     margin: 0;
     background-color: black;
     color: white;
+    overflow: hidden;
     font-family: Arial, sans-serif;
 }
 
 #messages {
     flex: 1;
-    overflow-y: auto;
+    overflow-y: scroll;
     padding: 15px;
     background-color: #1e1e1e;
     border: 1px solid #e1e8ed;
@@ -24,14 +20,10 @@ body {
     transition: margin-bottom 0.3s;
     scrollbar-width: thin;
     scrollbar-color: aquamarine #1e1e1e;
-    -webkit-overflow-scrolling: touch;
 }
 
-#messageInputContainer {
-    display: flex;
-    justify-content: center;
-    position: relative;
-    bottom: 6%;
+.keyboard-open #messages {
+    margin-bottom: 330px;
 }
 
 form {
@@ -129,13 +121,6 @@ h1 {
 
 .delete:hover {
     background-color: darkred;
-}
-
-.container {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    /* Hauteur de la vue */
 }
 
 .container li {
@@ -264,25 +249,18 @@ input.edit-input[type="text"] {
 
 @media (max-width: 768px) {
     .keyboard-open form {
-        transform: translateY(-250px);
-    }
-
-    #messageInputContainer {
-        bottom: 8%;
+        transform: translateY(-330px);
     }
 }
 
 @media (min-width: 769px) {
     #messages {
-        height: calc(100dvh - 60px);
-        overflow-y: auto;
         align-self: center;
         width: 60%;
         scrollbar-width: thin;
         scrollbar-color: aquamarine #1e1e1e;
         margin-bottom: 60px;
     }
-
 
     #messages::-webkit-scrollbar {
         width: 8px;
@@ -326,16 +304,10 @@ input.edit-input[type="text"] {
         width: 400px;
     }
 
-    #closeModal {
+    #closeModal{
         cursor: pointer;
         margin-left: 230px;
         margin-bottom: 50px;
     }
 
-}
-
-
-.keyboard-open #messages {
-    height: calc(100% - 50px);
-    /* Exemple qui pourrait causer une réduction inattendue */
 }

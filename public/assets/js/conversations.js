@@ -133,26 +133,3 @@ $(document).ready(function () {
         });
     });
 });
-
-
-
-function adjustMessagesHeight() {
-    const messagesContainer = document.getElementById('messages');
-    const messageInputContainer = document.getElementById('messageInputContainer');
-
-    const viewportHeight = window.innerHeight;
-    const inputHeight = messageInputContainer.offsetHeight;
-
-    messagesContainer.style.height = `${viewportHeight - inputHeight}px`;
-}
-
-window.addEventListener('resize', adjustMessagesHeight);
-document.addEventListener('DOMContentLoaded', adjustMessagesHeight);
-
-
-window.addEventListener('resize', () => {
-    const messagesContainer = document.getElementById('messages')
-    const viewportHeight = window.innerHeight;
-
-    messagesContainer.style.height = `${viewportHeight - messageInput.offsetHeight}px`;
-});

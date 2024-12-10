@@ -21,6 +21,7 @@ model Users {
   Messages_Messages_sender_idToUsers    Messages[]        @relation("Messages_sender_idToUsers")
   Messages_Messages_recipient_idToUsers Messages[]        @relation("Messages_recipient_idToUsers")
   UsersToProjects                       UsersToProjects[]
+  Notification                          Notification[]
 }
 
 

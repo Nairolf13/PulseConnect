@@ -22,9 +22,7 @@ body {
     scrollbar-color: aquamarine #1e1e1e;
 }
 
-.keyboard-open #messages {
-    margin-bottom: 330px;
-}
+
 
 form {
     display: flex;
@@ -310,4 +308,9 @@ input.edit-input[type="text"] {
         margin-bottom: 50px;
     }
 
+}
+
+
+.keyboard-open #messages {
+    height: calc(100% - 50px); /* Exemple qui pourrait causer une réduction inattendue */
 }

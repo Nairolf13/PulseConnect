@@ -301,7 +301,6 @@ messagerieRouter.delete('/deleteConversation/:otherUserId', authguard, async (re
             return res.status(400).json({ message: 'Invalid user ID provided.' });
         }
 
-        // Mettre à jour les messages pour marquer comme supprimés par l'utilisateur actuel
         const updateResult = await prisma.messages.updateMany({
             where: {
                 OR: [
@@ -324,6 +323,12 @@ messagerieRouter.delete('/deleteConversation/:otherUserId', authguard, async (re
         return res.status(500).json({ message: 'Internal server error.', error: error.message });
     }
 });
+
+
+// notification
+
+
+
 
 
 

@@ -1,0 +1,12 @@
+model Notification {
+  id          Int       @id @default(autoincrement())
+  userId      Int
+  type        String    // Par exemple: "message", "invitation", "collaboration"
+  message     String
+  link        String?
+  read        Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  user        Users     @relation(fields: [userId], references: [id_user])
+
+  @@index([userId])
+}

@@ -133,3 +133,19 @@ $(document).ready(function () {
         });
     });
 });
+
+
+
+function adjustMessagesHeight() {
+    const keyboardOpen = window.innerHeight < document.documentElement.clientHeight;
+    const messagesContainer = document.getElementById('messages');
+    if (keyboardOpen) {
+        messagesContainer.style.height = `${window.innerHeight - messageInput.offsetHeight}px`;
+    } else {
+        messagesContainer.style.height = 'auto'; // Rétablir la hauteur par défaut
+    }
+}
+
+window.addEventListener('resize', adjustMessagesHeight);
+messageInput.addEventListener('focus', adjustMessagesHeight);
+messageInput.addEventListener('blur', adjustMessagesHeight);

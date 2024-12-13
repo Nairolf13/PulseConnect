@@ -253,8 +253,10 @@ input.edit-input[type="text"] {
     }
 }
 
-@media (min-width: 500px) and (max-width: 1024px){
- header{display: none;}
+@media (min-width: 768px) and (max-width: 1024px) {
+    form {
+        margin-bottom:60px
+    }
 }
 
 @media (min-width: 769px) {
@@ -308,7 +310,7 @@ input.edit-input[type="text"] {
         width: 400px;
     }
 
-    #closeModal{
+    #closeModal {
         cursor: pointer;
         margin-left: 230px;
         margin-bottom: 50px;

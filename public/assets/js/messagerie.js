@@ -84,6 +84,8 @@ async function openDeleteModal(userId) {
             const successMessage = document.getElementById('successMessage');
             successMessage.textContent = `Erreur lors de la suppression : ${error.message}`;
             successModal.style.display = 'block';
+
+            
     
             const closeSuccessModalButton = document.getElementById('closeSuccessModal');
             const closeModalButton = document.getElementById('closeModalButton');

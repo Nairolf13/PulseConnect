@@ -1,7 +1,6 @@
 $(document).ready(function () {
     const messageInput = document.getElementById('messageInput');
     const messagesContainer = document.getElementById('messages');
-    let lastScrollTop = 0;
     let startX, currentMessage;
 
     document.querySelectorAll('#messages > div .options-dots').forEach(dot => {

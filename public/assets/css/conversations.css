@@ -253,6 +253,10 @@ input.edit-input[type="text"] {
     }
 }
 
+@media (min-width: 500px) and (max-width: 1024px){
+ header{display: none;}
+}
+
 @media (min-width: 769px) {
     #messages {
         align-self: center;
@@ -287,7 +291,7 @@ input.edit-input[type="text"] {
     }
 
     form {
-        width: 60%;
+        width: 60.5%;
         align-self: center;
         border-radius: 8px;
         bottom: 6%;

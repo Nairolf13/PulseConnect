@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const selectedFollowersInput = document.getElementById('selectedFollowers');
     const selectedFollowers = new Map(); 
 
-    function toggleFollowerList(visible) {
+    function FollowerList(visible) {
         followerList.style.display = visible ? 'block' : 'none';
     }
 
@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 followerList.innerHTML = '';
                 if (followers.length > 0) {
-                    toggleFollowerList(true);
+                    FollowerList(true);
                     followers.forEach(follower => {
                         const div = document.createElement('div');
                         div.classList.add('follower-item');
@@ -63,25 +63,25 @@ document.addEventListener('DOMContentLoaded', () => {
                         `;
                         div.addEventListener('click', () => {
                             addFollower(follower);
-                            toggleFollowerList(false);
+                            FollowerList(false);
                         });
                         followerList.appendChild(div);
                     });
                 } else {
-                    toggleFollowerList(false);
+                    FollowerList(false);
                 }
             } catch (error) {
                 console.error('Erreur lors de la recherche des followers :', error);
-                toggleFollowerList(false);
+                FollowerList(false);
             }
         } else {
-            toggleFollowerList(false);
+            FollowerList(false);
         }
     });
 
     document.addEventListener('click', (e) => {
         if (!followerList.contains(e.target) && e.target !== searchInput) {
-            toggleFollowerList(false);
+            FollowerList(false);
         }
     });
 });

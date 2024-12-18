@@ -1,5 +1,6 @@
 const multer = require('multer');
 const path = require('path');
+const rateLimit = require('express-rate-limit');
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -47,10 +48,20 @@ const fileFilter = (req, file, cb) => {
     }
 };
 
+
 const upload = multer({
     storage: storage,
-    limits: { fileSize: 150 * 1024 * 1024 }, // Taille maximale de 150 Mo
+    limits: { 
+        fileSize: 50 * 1024 * 1024, // Taille maximale de 50 Mo par fichier
+        files: 5 // Nombre maximal de fichiers autorisés par requête
+    },
     fileFilter: fileFilter
+});
+
+const uploadLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // Limite chaque IP à 100 requêtes par fenêtre
+    message: "Trop de tentatives de téléchargement, veuillez réessayer plus tard."
 });
 
 module.exports = upload;

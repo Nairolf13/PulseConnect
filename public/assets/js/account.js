@@ -35,7 +35,7 @@ confirmDelete.addEventListener('click', async function() {
         });
 
         if (response.redirected) {
-            window.location.href = response.url; // Redirige après suppression
+            window.location.href = response.url; 
         } else {
             const result = await response.json();
             alert(result.message || 'Compte supprimé avec succès.');

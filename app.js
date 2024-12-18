@@ -9,6 +9,7 @@ const messagerieRouter = require("./router/messagerieRouter");
 const bodyParser = require("body-parser");
 const collaborationRouter = require("./router/collaborationRouter");
 dotenv.config();
+
 const app = express();
 
 
@@ -19,8 +20,8 @@ app.use(express.json());
 app.use(bodyParser.json());
 app.use(session({
     secret: process.env.SECRET,
-    resave: true,
-    saveUninitialized: true
+    resave: false,
+    saveUninitialized: false
 }));
 
 
@@ -32,5 +33,5 @@ app.use(messagerieRouter);
 
 
 app.listen(process.env.PORT, () => {
-    console.log("écoute sur le port 4000");
+    console.log("Application en cours d'éxecution !");
 });

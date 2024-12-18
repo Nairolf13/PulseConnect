@@ -226,6 +226,7 @@ section {
 
 audio,
 video {
+    min-height: 140px;
     width: 80%;
     border-radius: 10px;
     margin-top: 10px;

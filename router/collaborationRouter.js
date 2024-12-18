@@ -596,7 +596,6 @@ collaborationRouter.post('/project/:id/removeParticipant', authguard, async (req
 
     
     try {
-        // Vérifiez si l'utilisateur connecté est le propriétaire du projet
         const project = await prisma.projects.findUnique({
             where: { id_project: projectId },
             include: {

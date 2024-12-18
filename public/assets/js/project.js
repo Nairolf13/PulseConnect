@@ -15,16 +15,14 @@ document.addEventListener('DOMContentLoaded', function () {
         const searchInput = document.querySelector(`#searchUser-${projectId}`);
         const followerList = document.querySelector(`#followerList-${projectId}`);
         const selectedFollowersInput = document.querySelector(`#selectedFollowers-${projectId}`);
-        const fileItems = item.querySelectorAll('.file-item');
 
         let originalTitle, originalDescription;
         let selectedFollowers = new Map();
 
-        // Créer un conteneur pour les followers sélectionnés spécifique à chaque projet
         const selectedFollowersContainer = document.createElement('div');
         selectedFollowersContainer.classList.add('selected-followers-container');
-        selectedFollowersContainer.id = `selectedFollowersContainer-${projectId}`; // ID unique pour chaque projet
-        item.appendChild(selectedFollowersContainer); // Ajouter le conteneur au project-item
+        selectedFollowersContainer.id = `selectedFollowersContainer-${projectId}`; 
+        item.appendChild(selectedFollowersContainer); 
 
         function toggleFollowerList(visible) {
             followerList.style.display = visible ? 'block' : 'none';
@@ -55,12 +53,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 updateHiddenInput();
             });
 
-            // Ajouter au conteneur spécifique du projet
             selectedFollowersContainer.appendChild(div);
             updateHiddenInput();
         }
 
-        // Gestion du menu dropdown
         if (menuBtn && menuDropdown) {
             menuBtn.addEventListener('click', (event) => {
                 event.stopPropagation();
@@ -68,7 +64,6 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
 
-        // Gestion du bouton d'édition du projet
         if (editProjectBtn) {
             editProjectBtn.addEventListener('click', () => {
                 originalTitle = editableTitle.textContent;
@@ -87,7 +82,6 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
 
-        // Gestion du bouton pour sauvegarder les changements
         if (saveChangesBtn) {
             saveChangesBtn.addEventListener('click', async () => {
                 const newTitle = editableTitle.textContent;
@@ -137,7 +131,6 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
 
-        // Gestion du bouton pour annuler les changements
         if (cancelChangesBtn) {
             cancelChangesBtn.addEventListener('click', () => {
                 editableTitle.textContent = originalTitle;
@@ -154,7 +147,6 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
 
-        // Gestion des boutons pour supprimer un participant
         if (participantButtons.length > 0) {
             participantButtons.forEach(btn => {
                 btn.addEventListener('click', function(event) {
@@ -165,7 +157,6 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
 
-        // Gestion de la recherche de followers
         if (searchInput) {
             searchInput.addEventListener('input', async (e) => {
                 const query = e.target.value.trim();
@@ -198,14 +189,13 @@ document.addEventListener('DOMContentLoaded', function () {
                         toggleFollowerList(false);
                     }
                 } else {
-                    followerList.innerHTML = ''; // Effacer les résultats si le champ est vide
+                    followerList.innerHTML = ''; 
                     toggleFollowerList(false);
                 }
             });
         }
     });
 
-    // Fonction pour afficher une modal
     function showModal(modalId, message, userId, projectId) {
         const modal = document.getElementById(modalId);
         if (!modal) return;
@@ -263,7 +253,6 @@ document.addEventListener('DOMContentLoaded', function () {
         };
     }
 
-    // Fermer les menus dropdown lorsqu'on clique en dehors
     document.addEventListener('click', (event) => {
         if (!event.target.closest('.project-header')) {
             document.querySelectorAll('.menu-dropdown').forEach(menu => {

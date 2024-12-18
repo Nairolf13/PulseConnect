@@ -366,8 +366,6 @@ textarea {
 
 form {
     max-width: 400px;
-    margin: 20px auto;
-    padding: 20px;
     background-color: #1e1e1e;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -404,6 +402,7 @@ form button[type="submit"] {
     margin-top: 23px;
 }
 
+
 form select {
     appearance: none;
     background-image: url('data:image/svg+xml;utf8,<svg fill="%23fff" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
@@ -422,11 +421,25 @@ form input[type="text"] {
 }
 
 form button[type="submit"] {
-    background-color: aquamarine;
-    color: black;
+    background-color: red;
+    color: white;
     border: none;
     cursor: pointer;
     transition: background-color 0.3s;
+}
+
+form button:hover[type="submit"]{
+    background-color: #701010;
+}
+
+form button[type="button"] {
+    width: 100%;
+    margin-left: 0;
+}
+
+#btn-add{
+    background-color: aquamarine;
+    color: black;
 }
 
 .comment-form {
@@ -488,9 +501,9 @@ form button[type="submit"] {
     display: none;
     position: relative;
     top: 50%;
-    left: -35%;
+    left: 10%;
     transform: translate(-50%, -50%);
-    background-color: #383d41;
+    background-color: #1e1e1e;
     border-radius: 8px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
     z-index: 1000;
@@ -501,6 +514,7 @@ form button[type="submit"] {
 }
 
 .actions-menu h2{
+    color:#a0a0a0;
     font-size: 1rem;
     font-weight: 500;
     line-height: 1.2;
@@ -593,6 +607,12 @@ form button[type="submit"] {
 
 .modal-content {
     text-align: center;
+}
+.modal-content h2{
+    color: aquamarine;
+}
+.modal-content p{
+    color: #a0a0a0;
 }
 
 .confirm-delete {
@@ -711,6 +731,6 @@ form button[type="submit"] {
     .actions-menu {
         position: relative;
         top: 50%;
-        left: 25%;
+        left: 50%;
     }
 }

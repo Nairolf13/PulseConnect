@@ -14,7 +14,7 @@
 		<section class="main-content">
 			<div class="feed-container">
 				<h1>{{ project.name }}</h1>
-				<p>{{ project.description }}</p>
+				<p id="descriptionProject">{{ project.description }}</p>
 				<div class="file-feed">
 					{% for file in project.files %}
 						<div class="file-item" data-file-id="{{ file.id }}">
@@ -23,6 +23,7 @@
 								<div class="file-actions">
 									<button class="toggle-actions-btn" id="toggle-actions-btn-{{ file.id }}">...</button>
 									<div class="actions-menu" style="display: none;">
+										<h2>Que voulez-vous faire ?</h2>
 										<button class="edit-file-btn">Modifier</button>
 										<button class="delete-file-btn">Supprimer</button>
 									</div>
@@ -54,7 +55,7 @@
 											{% for comment in file.comments %}
 												<li class="commentaire">
 													<strong>{{ comment.userName }}</strong>
-													<p>{{ comment.content }}</p>
+													<p id="Commment">{{ comment.content }}</p>
 													{{ comment.created_at | date("d/m/Y") }}
 												</li>
 											{% endfor %}
@@ -116,6 +117,16 @@
 			</div>
 			<button id="toggle-sidebar-btn" class="toggle-sidebar-btn" onclick="toggleSidebar()">+</button>
 		</section>
+	</div>
+	<div id="deleteModal" class="modal">
+		<div class="modal-content">
+			<h2>Confirmation de suppression</h2>
+			<p>Êtes-vous sûr de vouloir supprimer ce contenu ?</p>
+			<form id="deleteForm" method="POST">
+				<button type="submit" class="confirm-delete">Supprimer</button>
+				<button type="button" class="cancel-delete" onclick="closeModal()">Annuler</button>
+			</form>
+		</div>
 	</div>
 
 	{% include "../partials/error.twig" %}

@@ -229,30 +229,36 @@ body {
     text-align: center;
 }
 
-.file-feed {background-color: #1e1e1e;
+.file-feed {
     border: none;
     border-radius: 10px;
     list-style-type: none;
     padding: 0;
 }
 
+#descriptionProject {
+    border-bottom: 1px solid #1e1e1e;
+}
+
 .file-item {
-    position: relative; /* Nécessaire pour positionner les enfants par rapport à cet élément */
-    padding: 10px; /* Optionnel, pour de l'espace intérieur */
-    margin-bottom: 15px; /* Espacement entre les éléments */
+    background-color: #1e1e1e;
+    border-radius: 10px;
+    position: relative;
+    padding: 10px;
+    margin-bottom: 15px;
 }
 
 .file-header {
     display: flex;
-    justify-content: space-between; /* Sépare le nom et les actions */
-    align-items: center; /* Aligne verticalement les éléments */
+    justify-content: space-between;
+    align-items: center;
 }
 
 .file-actions {
-    position: absolute; /* Positionnement par rapport à .file-item */
-    top: 10px; /* Distance par rapport au haut */
-    right: 10px; /* Distance par rapport à la droite */
-    z-index: 10; /* Optionnel, pour s'assurer que ça reste visible */
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 10;
 }
 
 .file-item h4 {
@@ -338,6 +344,11 @@ video {
 
 #textComment {
     width: 100%;
+}
+
+#Commment {
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
 textarea {
@@ -474,19 +485,25 @@ form button[type="submit"] {
 }
 
 .actions-menu {
-    display: none; /* Caché par défaut */
-    position: fixed; /* Utiliser fixed pour que l'élément reste centré même lors du défilement */
-    top: 50%; /* Positionner au milieu de l'écran verticalement */
-    left: 50%; /* Positionner au milieu de l'écran horizontalement */
-    transform: translate(-50%, -50%); /* Décaler l'élément de moitié de sa largeur et hauteur pour le centrer */
+    display: none;
+    position: relative;
+    top: 50%;
+    left: -35%;
+    transform: translate(-50%, -50%);
     background-color: #383d41;
-    border-radius: 5px;
+    border-radius: 8px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-    z-index: 100;
-    width: 200px; /* Largeur de l'élément */
-    max-width: 300px; /* Largeur maximale */
-    text-align: center; /* Centrer le contenu dans le menu */
-    padding: 10px;
+    z-index: 1000;
+    width: 300px;
+    max-width: 300px;
+    text-align: center;
+    padding: 20px;
+}
+
+.actions-menu h2{
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.2;
 }
 
 .edit-file-btn {
@@ -533,9 +550,9 @@ form button[type="submit"] {
 }
 
 .edit-actions {
-    display: flex; /* Activer le modèle Flexbox */
+    display: flex;
     flex-direction: column;
-    align-items: center; /* Centrer horizontalement les enfants */
+    align-items: center;
     position: fixed;
     top: 50%;
     left: 50%;
@@ -552,10 +569,10 @@ form button[type="submit"] {
 
 .save-edit-btn,
 .cancel-edit-btn {
-    width: 95%; /* Ils devraient être centrés automatiquement avec `align-items: center;` */
+    width: 95%;
     border-radius: 5px;
     border: 1px solid black;
-    padding: 10px; /* Ajoutez cette ligne pour que les boutons aient la même taille */
+    padding: 10px;
 }
 
 .save-edit-btn {
@@ -569,7 +586,31 @@ form button[type="submit"] {
     padding: 5px;
 }
 
+.modal {
+    display: none;
 
+}
+
+.modal-content {
+    text-align: center;
+}
+
+.confirm-delete {
+    background-color: red;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+}
+
+.cancel-delete {
+    background-color: gray;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    margin-left: 10px;
+}
 
 @media (max-width: 768px) {
     .main-content {
@@ -586,14 +627,12 @@ form button[type="submit"] {
 
     .sidebar-container {
         display: none;
-        /* Masquer par défaut sur mobile */
         width: 90%;
         margin: 10px 0;
     }
 
     .show-sidebar {
         display: block !important;
-        /* Afficher la sidebar quand elle est activée */
     }
 
     .toggle-sidebar-btn {
@@ -610,12 +649,10 @@ form button[type="submit"] {
 
     .sidebar-container {
         display: none;
-        /* Masquer la barre latérale par défaut */
         position: fixed;
         top: 0;
         right: 0;
         width: 80%;
-        /* Occupe une bonne partie de l'écran */
         height: 100%;
         background-color: #1e1e1e;
         z-index: 1000;
@@ -669,5 +706,11 @@ form button[type="submit"] {
 
     .members-list li img {
         margin-bottom: 10px;
+    }
+
+    .actions-menu {
+        position: relative;
+        top: 50%;
+        left: 25%;
     }
 }

@@ -208,7 +208,9 @@ input.edit-input[type="text"] {
 }
 
 #closeModal {
-    margin-left: 220px;
+    position: relative;
+    left: 50%;
+    margin-top: -10px;
 }
 
 #messages>div {

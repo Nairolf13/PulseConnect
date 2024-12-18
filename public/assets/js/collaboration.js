@@ -94,23 +94,54 @@ document.addEventListener('DOMContentLoaded', function () {
             editActions.style.display = 'none';
         });
 
-        deleteBtn.addEventListener('click', async () => {
-            if (confirm('Êtes-vous sûr de vouloir supprimer ce fichier ?')) {
+        deleteBtn.addEventListener('click', () => {
+            // Référence au modal
+            const deleteModal = document.getElementById('deleteModal');
+            const deleteForm = document.getElementById('deleteForm');
+        
+            // Afficher le modal
+            deleteModal.style.display = 'block';
+        
+            // Préparer la soumission du formulaire lors de la confirmation
+            deleteForm.onsubmit = async function (event) {
+                event.preventDefault(); // Empêche le rechargement de la page
+        
                 try {
                     const response = await fetch(`/project/${projectId}/file/${fileId}/delete`, {
                         method: 'POST'
                     });
                     const data = await response.json();
+        
                     if (response.ok && data.success) {
-                        item.remove();
+                        item.remove(); // Supprime l'élément de la liste
                     } else {
                         throw new Error(data.error || 'Erreur lors de la suppression');
                     }
                 } catch (error) {
                     console.error('Erreur:', error);
-                    (error.message);
+                    alert(error.message);
+                } finally {
+                    closeModal(); // Fermer le modal après l'action
                 }
-            }
+            };
         });
+        
+        // Fonction pour fermer le modal
+        function closeModal() {
+            const modal = document.getElementById('deleteModal');
+            modal.style.display = 'none'; 
+        }
+        
+        // Fermer le modal en cliquant en dehors
+        window.onclick = function (event) {
+            const modal = document.getElementById('deleteModal');
+            if (event.target === modal) {
+                closeModal(); // Appelle la fonction de fermeture
+            }
+        };
+        
+        // Ajouter un événement au bouton "Annuler"
+        document.querySelector('.cancel-delete').addEventListener('click', closeModal);
+        
     });
 });

@@ -341,19 +341,18 @@ button.delete .dots {
     transition: background-color 0.3s ease;
 }
 
-.confirm-delete {
-    background-color: red;
-    color: white;
-}
-
-.confirm-delete:hover {
+#confirm-delete:hover {
     background-color: darkred;
 }
 
 .cancel-delete {
     background-color: aquamarine;
     color: black;
-    margin-left: 10px;
+}
+
+#confirm-delete {
+    background-color: red;
+    color: white;
 }
 
 .cancel-delete:hover {

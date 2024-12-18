@@ -30,6 +30,7 @@
 							<h2 class="editable-title" contenteditable="false">{{ project.name }}</h2>
 							<div class="menu-dropdown" id="menu-dropdown-{{ project.id_project }}" style="display: none;">
 								{% if project.role == 'owner' %}
+									<h2>Que souhaitez-vous faire avec ce projet ?</h2><br>
 									<button class="edit-project" data-dropdown-id="{{ project.id_project }}">Modifier</button>
 									<form action="/project/delete/{{ project.id_project }}" method="POST" class="delete-form">
 										<button type="submit" class="delete" alt="Delete">Supprimer</button>
@@ -52,13 +53,13 @@
 											<div class="sign">
 												<svg viewbox="0 0 16 16" class="bi bi-trash3-fill" fill="currentColor" height="18" width="18" xmlns="http://www.w3.org/2000/svg">
 													<path d="M11 1.5 v1 h3.5 a0.5 0.5 0 0 1 0 1 h-0.538 l-0.853 10.66
-														A2 2 0 0 1 11.115 16 h-6.23
-														A2 2 0 0 1 2.89 14.16 L2.038 3.5 H1.5 a0.5 0.5 0 0 1 0-1 H5 v-1
-														A1.5 1.5 0 0 0 3.5 0 v-1
-														M4.5 5.029 l0.5 8.5
-														a0.5 0.5 0 1 0 0.998-0.06 l-0.5-8.5
-														a0.5 0.5 0 1 0-0.998 0.06
-														Z"></path>
+																												A2 2 0 0 1 11.115 16 h-6.23
+																												A2 2 0 0 1 2.89 14.16 L2.038 3.5 H1.5 a0.5 0.5 0 0 1 0-1 H5 v-1
+																												A1.5 1.5 0 0 0 3.5 0 v-1
+																												M4.5 5.029 l0.5 8.5
+																												a0.5 0.5 0 1 0 0.998-0.06 l-0.5-8.5
+																												a0.5 0.5 0 1 0-0.998 0.06
+																												Z"></path>
 
 												</svg>
 											</div>

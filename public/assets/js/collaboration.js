@@ -101,6 +101,10 @@ document.addEventListener('DOMContentLoaded', function () {
         
             // Afficher le modal
             deleteModal.style.display = 'block';
+            
+            if (deleteModal.style.display === 'block'){
+                actionsMenu.style.display = 'none';
+            }
         
             // Préparer la soumission du formulaire lors de la confirmation
             deleteForm.onsubmit = async function (event) {

@@ -33,7 +33,7 @@ body {
 .main-content {
     display: flex;
     flex-direction: row;
-    margin-left: 15%;
+    margin-left: 20%;
     gap: 230px;
 }
 
@@ -686,7 +686,7 @@ form button[type="button"] {
         width: 30px;
         color: black;
         font-size: 20px;
-        margin-top: 10px;
+        margin-top: 5px;
         margin-right: 12px;
     }
 
@@ -758,13 +758,19 @@ form button[type="button"] {
     }
 }
 
+
 @media(max-width:1510px) {
+
+    .main-content{
+        height: 100vh;
+        margin-left: 0;
+    }
 
     .feed-container{
         width: 90%;
         margin-top: 50px;
-        margin-left: 15%;
-        margin-right: 15%;
+        margin-right: 19%;
+        margin-left: 19%;
     }
 
     .toggle-sidebar-btn {

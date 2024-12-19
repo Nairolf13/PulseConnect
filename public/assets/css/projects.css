@@ -105,7 +105,7 @@ img {
 
 .project-item a {
     position: relative;
-    left: 70%;
+    left: 75%;
     background-color: aquamarine;
     padding: 10px;
     border-radius: 8px;
@@ -386,6 +386,10 @@ img {
         width: 100%;
     }
 
+    .project-item a {
+        left: 65%;
+    }
+
     h1 {
         left: 39%;
     }
@@ -399,6 +403,7 @@ img {
         left: 28%;
     }
 }
+
 
 @media (hover: none) and (pointer: coarse) {
     .Btn:hover {

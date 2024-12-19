@@ -11,11 +11,11 @@
 
 .footer-right {
     display: flex !important;
-    gap: 15px !important; /* Espacement entre les icônes */
+    gap: 25px !important;
 }
 
 .footer-right img {
-    width: 30px !important; /* Ajustez la taille des images selon vos besoins */
+    width: 30px !important; 
     height: auto !important;
 }
 

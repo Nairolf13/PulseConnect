@@ -159,7 +159,7 @@ h1 {
 
 .modal-content h2 {
     margin: 0 0 20px;
-    color: aquamarine;
+    color: #6c757d;
 }
 
 .modal-content p {
@@ -208,7 +208,9 @@ input.edit-input[type="text"] {
 }
 
 #closeModal {
-    position: relative;
+    color: #6c757d;
+    font-weight: bold;
+    
     left: 50%;
     margin-top: -10px;
 }
@@ -306,9 +308,7 @@ input.edit-input[type="text"] {
     }
 
     .modal-content {
-        position: absolute;
         top: 10%;
-        left: 38%;
         width: 400px;
     }
 

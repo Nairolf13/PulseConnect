@@ -81,6 +81,7 @@ ul.nav-list li img {
 .modal-content h2 {
     font-size: 1.5em;
     margin-bottom: 20px;
+    color: #6c757d;;
 }
 
 .modal-content ul {
@@ -108,7 +109,7 @@ ul.nav-list li img {
 
 .close {
     color: #ffffff;
-    font-size: 28px;
+    font-size: 15px;
     font-weight: bold;
     position: absolute;
     right: 5%;

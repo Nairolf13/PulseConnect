@@ -519,9 +519,9 @@ form button[type="button"] {
 
 .actions-menu {
     display: none;
-    position: relative;
+    position: absolute;
     top: 50%;
-    left: 10%;
+    left: 50%;
     transform: translate(-50%, -50%);
     background-color: #1e1e1e;
     border-radius: 8px;
@@ -749,15 +749,8 @@ form button[type="button"] {
 
     .members-list li img {
         margin-bottom: 10px;
-    }
-
-    .actions-menu {
-        position: relative;
-        top: 50%;
-        left: 50%;
-    }
+    } 
 }
-
 
 @media(max-width:1510px) {
 
@@ -780,7 +773,6 @@ form button[type="button"] {
 
     .sidebar-container {
         display: none;
-
     }
 
 }

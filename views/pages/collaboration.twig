@@ -65,7 +65,7 @@
 									{% endif %}
 									<form id="formComment" action="/project/{{ project.id_project }}/{{ file.id }}/comment" method="POST">
 										<textarea id="textComment" name="commentContent" placeholder="Ajouter un commentaire" required></textarea><br>
-										<button type="submit">Commenter</button>
+										<button id="btn-comment" type="submit">Commenter</button>
 									</form>
 								</div>
 								<button class="toggle-comments-btn" id="btn-toggle-{{ file.id }}" onclick="toggleComments({{ file.id }})">Afficher les commentaires</button>

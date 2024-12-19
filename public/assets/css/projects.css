@@ -106,13 +106,16 @@ img {
 .project-item a {
     position: relative;
     left: 70%;
-    color: aquamarine;
+    background-color: aquamarine;
+    padding: 10px;
+    border-radius: 8px;
+    color: #212529;
     text-decoration: none;
     font-weight: bold;
 }
 
 .project-item a:hover {
-    text-decoration: underline;
+    background-color: #2bc2d9;
 }
 
 .delete {

@@ -33,8 +33,8 @@ body {
 .main-content {
     display: flex;
     flex-direction: row;
+    margin-left: 15%;
     gap: 230px;
-    width: 100%;
 }
 
 .layout-container {
@@ -127,7 +127,6 @@ body {
     background-color: #2a2a2a;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-    width: 150%;
 }
 
 .members-list h3 {
@@ -290,7 +289,12 @@ body {
 
 video {
     width: 100%;
+    border-radius: 10px;
 }
+audio{
+    width: 100%;
+}
+
 
 .comments {
     margin-top: 15px;
@@ -363,6 +367,11 @@ textarea {
     padding: 5px;
 }
 
+.toggle-comments-btn:hover{
+    background-color: #2bc2d9;
+    border: none;
+}
+
 form {
     max-width: 400px;
     background-color: #1e1e1e;
@@ -393,7 +402,7 @@ form button[type="submit"] {
     width: 100%;
     padding: 10px;
     margin-bottom: 15px;
-    border: 1px solid #ddd;
+    border: none;
     border-radius: 4px;
     font-size: 14px;
     background-color: black;
@@ -435,9 +444,22 @@ form button[type="button"] {
     margin-left: 0;
 }
 
+#btn-comment{
+    background-color: aquamarine;
+    color: black;
+}
+
+#btn-comment:hover{
+    background-color: #2bc2d9;
+}
+
 #btn-add {
     background-color: aquamarine;
     color: black;
+}
+
+#btn-add:hover{
+    background-color: #2bc2d9;
 }
 
 .comment-form {
@@ -643,7 +665,7 @@ form button[type="button"] {
 
     .feed-container {
         width: 90%;
-        margin: 10px 0;
+       
     }
 
     .sidebar-container {
@@ -664,7 +686,7 @@ form button[type="button"] {
         width: 30px;
         color: black;
         font-size: 20px;
-        margin-top: 5px;
+        margin-top: 10px;
         margin-right: 12px;
     }
 
@@ -739,7 +761,10 @@ form button[type="button"] {
 @media(max-width:1510px) {
 
     .feed-container{
+        width: 90%;
         margin-top: 50px;
+        margin-left: 15%;
+        margin-right: 15%;
     }
 
     .toggle-sidebar-btn {

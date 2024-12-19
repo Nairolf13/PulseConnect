@@ -210,7 +210,7 @@ input.edit-input[type="text"] {
 #closeModal {
     color: #6c757d;
     font-weight: bold;
-    
+    position: relative;
     left: 50%;
     margin-top: -10px;
 }

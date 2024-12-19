@@ -156,3 +156,7 @@ h1 {
     cursor: pointer;
     color: black;
 }
+
+button:hover {
+    background-color: #2bc2d9;
+}

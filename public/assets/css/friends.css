@@ -124,6 +124,10 @@ ul {
     font-size: 0.9em;
 }
 
+button:hover {
+    background-color: #2bc2d9;
+}
+
 .description {
     font-size: 0.9em;
     color: #a0a0a0;

@@ -86,7 +86,7 @@ img {
     position: absolute;
     right:15%;
     cursor:pointer;
-    z-index: 1000;
+    z-index: 900;
 
 }
 

@@ -75,6 +75,7 @@ ul.nav-list li img {
     width: 300px;
     text-align: center;
     color: white;
+    z-index: 1000;
 }
 
 .modal-content h2 {

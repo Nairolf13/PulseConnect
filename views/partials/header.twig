@@ -1,48 +1,61 @@
 {% block style %}
-    <link rel="stylesheet" href="/../../assets/css/header.css">
+	<link rel="stylesheet" href="/../../assets/css/header.css">
 {% endblock %}
 
 <header>
-    <div id="containerHeader">
-        <nav>
-            <ul class="nav-list">
-                <li>
-                    <a href="/home"><img src="/../../assets/imgs/homeLogo.png" alt="Home"><span>Home</span></a>
-                </li>
-                <li>
-                    <a href="/following"><img src="/../../assets/imgs/friendLogo.png" alt="Friends"><span>Friends</span></a>
-                </li>
-                <li>
-                    <a href="/messagerie"><img src="/../../assets/imgs/messagerieLogo.png" alt="Messages"><span>Messages</span></a>
-                </li>
-                <li>
-                    <a href="#" id="createButton"><img src="/../../assets/imgs/createLogo.png" alt="Create"><span>Create</span></a>
-                </li>
-                <li>
-                    <a href="#"><img src="/../../assets/imgs/marketplaceLogo.png" alt="Marketplace"><span>Marketplace</span></a>
-                </li>
-                <li>
-                    <a href="/myProjects"><img src="/../../assets/imgs/collaborationW.png" alt="Messages"><span>Collaboration</span></a>
-                </li>
-                <li>
-                    <a href="/studio"><img src="/../../assets/imgs/localisationW.png" alt="Messages"><span>Studio</span></a>
-                </li>
-               
-            </ul>
-        </nav>
-    </div>
+	<div id="containerHeader">
+		<nav>
+			<ul class="nav-list">
+				<li>
+					<a href="/home"><img src="/../../assets/imgs/homeLogo.png" alt="Home"><span>Home</span>
+					</a>
+				</li>
+				<li>
+					<a href="/following"><img src="/../../assets/imgs/friendLogo.png" alt="Friends"><span>Friends</span>
+					</a>
+				</li>
+				<li>
+					<a href="/messagerie"><img src="/../../assets/imgs/messagerieLogo.png" alt="Messages"><span>Messages</span>
+					</a>
+				</li>
+				<li>
+					<a href="#" id="createButton"><img src="/../../assets/imgs/createLogo.png" alt="Create"><span>Create</span>
+					</a>
+				</li>
+				<li>
+					<a href="#"><img src="/../../assets/imgs/marketplaceLogo.png" alt="Marketplace"><span>Marketplace</span>
+					</a>
+				</li>
+				<li>
+					<a href="/myProjects"><img src="/../../assets/imgs/collaborationW.png" alt="Messages"><span>Collaboration</span>
+					</a>
+				</li>
+				<li>
+					<a href="/studio"><img src="/../../assets/imgs/localisationW.png" alt="Messages"><span>Studio</span>
+					</a>
+				</li>
+
+			</ul>
+		</nav>
+	</div>
 </header>
 
 <div id="createModal" class="modal">
-    <div class="modal-content">
-        <span id="closeModal" class="close">&times;</span>
-        <ul>
-            <li><button id="createSpaceButton">Créer un space</button></li>
-            <li><button id="publishPostButton">Publier un post</button></li>
-        </ul>
-    </div>
+	<div class="modal-content">
+		<span id="closeModal" class="close">&times;</span>
+		<ul>
+			<h2>Que souhaitez vous faire ?</h2>
+			
+			<li>
+				<button id="publishPostButton">Publier du contenu</button>
+			</li>
+            <li>
+				<button id="createSpaceButton">Créer un espace de collaboration</button>
+			</li>
+		</ul>
+	</div>
 </div>
 
 {% block script %}
-    <script src="/../../assets/js/header.js"></script>
+	<script src="/../../assets/js/header.js"></script>
 {% endblock %}

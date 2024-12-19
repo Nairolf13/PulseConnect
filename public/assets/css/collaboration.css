@@ -89,6 +89,8 @@ body {
 }
 
 .feed-container {
+    min-width: 500px;
+    width: 90;
     background-color: #2a2a2a;
     margin-top: 50px;
     border-radius: 8px;
@@ -291,7 +293,8 @@ video {
     width: 100%;
     border-radius: 10px;
 }
-audio{
+
+audio {
     width: 100%;
     border-radius: 10px;
 }
@@ -368,7 +371,7 @@ textarea {
     padding: 5px;
 }
 
-.toggle-comments-btn:hover{
+.toggle-comments-btn:hover {
     background-color: #2bc2d9;
     border: none;
 }
@@ -444,12 +447,12 @@ form button[type="button"] {
     margin-left: 0;
 }
 
-#btn-comment{
+#btn-comment {
     background-color: aquamarine;
     color: black;
 }
 
-#btn-comment:hover{
+#btn-comment:hover {
     background-color: #2bc2d9;
 }
 
@@ -458,7 +461,7 @@ form button[type="button"] {
     color: black;
 }
 
-#btn-add:hover{
+#btn-add:hover {
     background-color: #2bc2d9;
 }
 
@@ -665,7 +668,7 @@ form button[type="button"] {
 
     .feed-container {
         width: 90%;
-       
+        min-width: 400px;
     }
 
     .sidebar-container {
@@ -749,22 +752,18 @@ form button[type="button"] {
 
     .members-list li img {
         margin-bottom: 10px;
-    } 
+    }
+}
+
+@media (min-width: 768px) and (max-width:968px) {
+    .feed-container {
+        margin-right: 25%;
+    }
 }
 
 @media(max-width:1510px) {
 
-    .main-content{
-        height: 100vh;
-        margin-left: 0;
-    }
 
-    .feed-container{
-        width: 90%;
-        margin-top: 50px;
-        margin-right: 19%;
-        margin-left: 19%;
-    }
 
     .toggle-sidebar-btn {
         display: block;

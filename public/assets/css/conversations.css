@@ -185,7 +185,7 @@ input.edit-input[type="text"] {
 
 .save-button {
     border-radius: 5px;
-    margin-left: 220px;
+    margin-left: 100px;
 }
 
 #confirmDelete {
@@ -314,8 +314,6 @@ input.edit-input[type="text"] {
 
     #closeModal {
         cursor: pointer;
-        margin-left: 230px;
-        margin-bottom: 50px;
     }
 
 }

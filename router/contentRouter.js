@@ -279,11 +279,6 @@ contentRouter.get('/likes/users/:assetId', async (req, res) => {
     }
 });
 
-
-
-
-
-
 contentRouter.get('/likes/count/:assetId', async (req, res) => {
     try {
         const assetId = parseInt(req.params.assetId);
@@ -367,5 +362,69 @@ contentRouter.get('/comments/count/:assetId', async (req, res) => {
         res.status(500).send("Erreur lors de la récupération du nombre de commentaires.");
     }
 });
+
+contentRouter.put('/comment/:commentId', authguard, async (req, res) => {
+    try {
+        const commentId = parseInt(req.params.commentId, 10);
+        const userId = req.session.users.id_user; // ID de l'utilisateur connecté
+        const { content } = req.body;
+
+        const comment = await prisma.commentaires.findUnique({
+            where: { id: commentId },
+        });
+
+        if (!comment) {
+            return res.status(404).send("Commentaire non trouvé.");
+        }
+
+        if (comment.id_user !== userId) {
+            return res.status(403).send("Vous n'avez pas la permission de modifier ce commentaire.");
+        }
+
+        const updatedComment = await prisma.commentaires.update({
+            where: { id: commentId },
+            data: { content },
+        });
+
+        res.json(updatedComment);
+    } catch (error) {
+        console.error("Erreur lors de la modification du commentaire :", error);
+        res.status(500).send("Erreur lors de la modification du commentaire.");
+    }
+});
+
+contentRouter.delete('/comment/:commentId', authguard, async (req, res) => {
+    try {
+        const commentId = parseInt(req.params.commentId, 10);
+        const userId = req.session.users.id_user;
+
+        const comment = await prisma.commentaires.findUnique({
+            where: { id: commentId },
+        });
+
+        if (!comment) {
+            return res.status(404).send("Commentaire non trouvé.");
+        }
+
+        if (comment.id_user !== userId) {
+            return res.status(403).send("Vous n'avez pas la permission de supprimer ce commentaire.");
+        }
+
+        await prisma.commentaires.delete({
+            where: { id: commentId },
+        });
+
+        // Compter les commentaires restants
+        const remainingComments = await prisma.commentaires.count({
+            where: { id_asset: comment.id_asset },
+        });
+
+        res.json({ remainingComments });
+    } catch (error) {
+        console.error("Erreur lors de la suppression du commentaire :", error);
+        res.status(500).send("Erreur lors de la suppression du commentaire.");
+    }
+});
+
 
 module.exports = contentRouter;

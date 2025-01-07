@@ -191,15 +191,13 @@ document.querySelectorAll('.like-button').forEach(button => {
 });
 
 
-
-
 document.querySelectorAll('.like-button').forEach(button => {
     let timeoutId;  
     const MIN_PRESS_DURATION = 200; 
     let isLiked = false; 
     let isTouching = false; 
     let isPressing = false;  
-    let modalOpen = false; // Flag pour vérifier si la modal est ouverte
+    let modalOpen = false;
 
     const openModal = async (assetId) => {
         try {
@@ -222,7 +220,7 @@ document.querySelectorAll('.like-button').forEach(button => {
 
             const modal = document.getElementById('likeModal');
             modal.style.display = 'block';
-            modalOpen = true; // Marque la modal comme ouverte
+            modalOpen = true; 
         } catch (error) {
             console.error("Erreur lors de la récupération des utilisateurs ayant liké:", error);
         }
@@ -258,7 +256,7 @@ document.querySelectorAll('.like-button').forEach(button => {
 
     button.addEventListener('touchstart', (event) => {
         if ('ontouchstart' in window) {
-            button.removeEventListener('click', handleLikeClick); // Désactive le click pendant un touch
+            button.removeEventListener('click', handleLikeClick); 
         }
         
         if (!isTouching) {
@@ -270,13 +268,11 @@ document.querySelectorAll('.like-button').forEach(button => {
         }
     });
 
-    // Modification ici pour garder la modal ouverte si elle l'était déjà
     button.addEventListener('touchend', (event) => {
         if (isTouching) {
             isTouching = false;
             clearTimeout(timeoutId);
-            if (!isPressing && !modalOpen) { // Vérifie si la modal n'est pas déjà ouverte
-                // Rétablit le click event pour un tap court
+            if (!isPressing && !modalOpen) { 
                 if ('ontouchstart' in window) {
                     button.addEventListener('click', handleLikeClick);
                 }
@@ -297,7 +293,7 @@ document.querySelectorAll('.like-button').forEach(button => {
 
     button.addEventListener('mouseup', () => {
         clearTimeout(timeoutId);
-        if (!isPressing && !modalOpen) { // Vérifie si la modal n'est pas déjà ouverte
+        if (!isPressing && !modalOpen) { 
             handleLikeClick(event);
         }
         isPressing = false;
@@ -306,7 +302,7 @@ document.querySelectorAll('.like-button').forEach(button => {
     button.addEventListener('touchcancel', () => {
         clearTimeout(timeoutId);
         if ('ontouchstart' in window) {
-            button.addEventListener('click', handleLikeClick); // Rétablit le click event
+            button.addEventListener('click', handleLikeClick);
         }
     });
 
@@ -315,17 +311,143 @@ document.querySelectorAll('.like-button').forEach(button => {
     });
 });
 
-// Fermeture de la modal
 document.querySelector('.close').addEventListener('click', () => {
     const modal = document.getElementById('likeModal');
     modal.style.display = 'none';
-    modalOpen = false; // Réinitialise le flag quand la modal est fermée
+    modalOpen = false; 
 });
 
 window.addEventListener('click', (event) => {
     const modal = document.getElementById('likeModal');
     if (event.target === modal) {
         modal.style.display = 'none';
-        modalOpen = false; // Réinitialise le flag quand la modal est fermée
+        modalOpen = false; 
+    }
+});
+
+
+
+
+
+
+
+// Récupérer la modal et ses boutons
+const optionsModal = document.getElementById('optionsModal');
+const editCommentBtn = document.getElementById('editCommentBtn');
+const deleteCommentBtn = document.getElementById('deleteCommentBtn');
+const closeModalBtn = document.getElementById('closeModalBtn');
+
+// Variables pour gérer la suppression
+const deleteModal = document.getElementById('deleteModal');
+const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+
+// Variable pour stocker l'ID du commentaire en cours de traitement
+let currentCommentId = null;
+
+// Ouvrir la modal pour les options
+document.querySelectorAll('.options-btn').forEach(button => {
+    button.addEventListener('click', (event) => {
+        const comment = event.target.closest('.comment');
+        currentCommentId = comment.getAttribute('id').replace('comment-', '');
+
+        // Afficher la modal
+        optionsModal.style.display = 'flex';
+    });
+});
+
+// Modifier un commentaire directement
+editCommentBtn.addEventListener('click', () => {
+    const commentElement = document.querySelector(`#comment-${currentCommentId} .comment-content`);
+
+    // Passer en mode édition
+    const currentText = commentElement.textContent;
+    const input = document.createElement('textarea');
+    input.value = currentText;
+    input.className = 'edit-comment-input';
+    commentElement.replaceWith(input);
+
+    // Gérer la validation de la modification
+    input.addEventListener('blur', async () => {
+        const updatedText = input.value;
+
+        try {
+            const response = await fetch(`/comment/${currentCommentId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ content: updatedText }),
+            });
+
+            if (response.ok) {
+                const updatedComment = await response.json();
+                const newContentElement = document.createElement('p');
+                newContentElement.textContent = updatedComment.content;
+                newContentElement.className = 'comment-content';
+                input.replaceWith(newContentElement);
+            } else {
+                alert("Erreur lors de la modification du commentaire.");
+                input.replaceWith(commentElement); // Revenir au texte d'origine en cas d'erreur
+            }
+        } catch (error) {
+            console.error("Erreur :", error);
+            input.replaceWith(commentElement); // Revenir au texte d'origine en cas d'erreur
+        }
+    });
+
+    // Focus sur le champ pour édition
+    input.focus();
+    optionsModal.style.display = 'none'; // Fermer la modal
+});
+
+// Supprimer un commentaire avec confirmation
+deleteCommentBtn.addEventListener('click', () => {
+    deleteModal.style.display = 'flex'; // Ouvrir la modal de confirmation
+    optionsModal.style.display = 'none'; // Fermer la modal d'options
+});
+
+// Confirmer la suppression
+// Confirmer la suppression
+confirmDeleteBtn.addEventListener('click', async () => {
+    try {
+        const response = await fetch(`/comment/${currentCommentId}`, {
+            method: 'DELETE',
+        });
+
+        if (response.ok) {
+            // Sauvegarder la position actuelle de la page
+            const scrollPosition = window.scrollY;
+
+            // Rafraîchir la page et revenir à la position actuelle
+            window.location.reload();
+            window.scrollTo(0, scrollPosition); // Revenir à la position sauvegardée
+        } else {
+            alert("Erreur lors de la suppression du commentaire.");
+        }
+    } catch (error) {
+        console.error("Erreur :", error);
+    }
+    deleteModal.style.display = 'none'; // Fermer la modal de confirmation
+});
+
+
+// Annuler la suppression
+cancelDeleteBtn.addEventListener('click', () => {
+    deleteModal.style.display = 'none'; // Fermer la modal de confirmation
+});
+
+// Fermer la modal d'options
+closeModalBtn.addEventListener('click', () => {
+    optionsModal.style.display = 'none';
+});
+
+// Fermer la modal si l'utilisateur clique en dehors
+window.addEventListener('click', (event) => {
+    if (event.target === optionsModal) {
+        optionsModal.style.display = 'none';
+    }
+    if (event.target === deleteModal) {
+        deleteModal.style.display = 'none';
     }
 });

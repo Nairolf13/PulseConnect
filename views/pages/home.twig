@@ -72,12 +72,25 @@
 							<div class="comments-container" id="comments-{{ content.id }}" style="display: none;">
 								{% if content.Commentaires is defined and content.Commentaires is not empty %}
 									{% for comment in content.Commentaires %}
-										<div class="comment">
+										<div class="comment" id="comment-{{ comment.id }}">
+											<div class="comment-options">
+												<button class="options-btn">...</button>
+												<div id="optionsModal" class="options-modal" style="display: none;">
+													<div class="options-content">
+														<button id="closeModalBtn" class="close-modal-btn">×</button>
+														<p>Que souhaitez-vous faire ?</p>
+														<button id="editCommentBtn">Modifier</button>
+														<button id="deleteCommentBtn">Supprimer</button>
+													</div>
+												</div>
+
+											</div>
 											<p>
 												<strong>{{ comment.Users.userName }}</strong>:
-												{{ comment.content }}
+												<span class="comment-content">{{ comment.content }}</span>
 											</p>
 											<small>{{ comment.created_at|date("d/m/Y H:i") }}</small>
+
 										</div>
 									{% endfor %}
 								{% else %}
@@ -89,6 +102,7 @@
 									<button type="submit">Ajouter un commentaire</button>
 								</form>
 							</div>
+
 							<div class="share-section">
 
 								<div id="shareModal-{{ content.id }}" style="display: none;">
@@ -110,6 +124,13 @@
 								<div class="modal-content">
 									<p id="modalMessage"></p>
 									<button id="closeModal">OK</button>
+								</div>
+							</div>
+							<div id="deleteModal" class="options-modal" style="display: none;">
+								<div class="options-content">
+									<p>Voulez-vous vraiment supprimer ce commentaire ?</p>
+									<button id="confirmDeleteBtn">Supprimer</button>
+									<button id="cancelDeleteBtn">Annuler</button>
 								</div>
 							</div>
 						</li>

@@ -1,4 +1,3 @@
-// Gestion du rechargement au défilement vers le haut
 window.addEventListener("scroll", function () {
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
     const lastScrollTop = this.lastScrollTop || 0;
@@ -10,7 +9,6 @@ window.addEventListener("scroll", function () {
 });
 
 document.addEventListener('DOMContentLoaded', function () {
-    // MutationObserver pour gérer les changements dynamiques du DOM
     const observer = new MutationObserver(() => {
         attachEventListeners();
     });
@@ -20,19 +18,17 @@ document.addEventListener('DOMContentLoaded', function () {
         subtree: true,
     });
 
-    attachEventListeners(); // Attacher les événements initiaux
+    attachEventListeners();
 });
 
 function attachEventListeners() {
-    // Gestion des commentaires
     document.querySelectorAll('.comment-toggle-btn').forEach(button => {
-        button.removeEventListener('click', toggleComments); // Éviter les doublons
+        button.removeEventListener('click', toggleComments); 
         button.addEventListener('click', toggleComments);
     });
 
-    // Gestion des boutons de partage
     document.querySelectorAll('.share-button').forEach(button => {
-        button.removeEventListener('click', toggleShareModal); // Éviter les doublons
+        button.removeEventListener('click', toggleShareModal); 
         button.addEventListener('click', toggleShareModal);
     });
 }
@@ -55,14 +51,12 @@ function toggleShareModal(event) {
     const contentId = this.id.split('-')[1];
     const modal = document.getElementById(`shareModal-${contentId}`);
 
-    // Basculer l'affichage du modal
     if (modal.style.display === 'block') {
         modal.style.display = 'none';
     } else {
         modal.style.display = 'block';
     }
 
-    // Fermer le modal si on clique en dehors
     window.onclick = function (event) {
         if (event.target == modal) {
             modal.style.display = 'none';
@@ -70,7 +64,6 @@ function toggleShareModal(event) {
     };
 }
 
-// Fonctions de partage
 function shareOnFacebook(contentId) {
     const postUrl = encodeURIComponent(`${window.location.origin}/uploads/${contentId}`);
     window.open(`https://www.facebook.com/sharer.php?u=${postUrl}`, '_blank');
@@ -94,7 +87,6 @@ function shareOnWhatsApp(contentId) {
     window.open(`https://api.whatsapp.com/send?text=${postTitle} ${postUrl}`, '_blank');
 }
 
-// Gestion des modaux personnalisés
 function showModal(message) {
     const modal = document.getElementById('customModal');
     if (!modal) {
@@ -162,4 +154,178 @@ function showCopyMessage(contentId) {
 }
 
 
+document.querySelectorAll('.like-button').forEach(button => {
+ 
+    button.addEventListener('click', async (event) => {
+        event.preventDefault();
 
+        if (window.isProcessing) return;
+        window.isProcessing = true; 
+
+        const assetId = button.dataset.assetId;
+        const likeCountElement = button.querySelector('.like-count'); 
+
+        try {
+            const response = await fetch(`/like/${assetId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            const data = await response.json(); 
+
+            if (response.ok) {
+                likeCountElement.textContent = data.likeCount;
+
+                button.classList.toggle('liked', data.likeCount !== 0);
+            } else {
+                console.error('Erreur serveur:', data.message);
+            }
+        } catch (error) {
+            console.error('Erreur lors du like/délike:', error);
+        } finally {
+            window.isProcessing = false;
+        }
+    });
+});
+
+
+
+
+document.querySelectorAll('.like-button').forEach(button => {
+    let timeoutId;  
+    const MIN_PRESS_DURATION = 200; 
+    let isLiked = false; 
+    let isTouching = false; 
+    let isPressing = false;  
+    let modalOpen = false; // Flag pour vérifier si la modal est ouverte
+
+    const openModal = async (assetId) => {
+        try {
+            const response = await fetch(`/likes/users/${assetId}`);
+            const data = await response.json();
+
+            const userListElement = document.getElementById('userList');
+            userListElement.innerHTML = '';
+
+            if (response.ok && data.users.length > 0) {
+                data.users.forEach(user => {
+                    const userItem = document.createElement('div');
+                    userItem.classList.add('like-user');
+                    userItem.textContent = `${user.firstName} ${user.lastName} (${user.userName})`;
+                    userListElement.appendChild(userItem);
+                });
+            } else {
+                userListElement.innerHTML = "Aucun utilisateur n'a aimé.";
+            }
+
+            const modal = document.getElementById('likeModal');
+            modal.style.display = 'block';
+            modalOpen = true; // Marque la modal comme ouverte
+        } catch (error) {
+            console.error("Erreur lors de la récupération des utilisateurs ayant liké:", error);
+        }
+    };
+
+    const handleLikeClick = async (event) => {
+        const assetId = button.dataset.assetId;
+
+        if (timeoutId || modalOpen) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`/like/${assetId}`, {
+                method: isLiked ? 'DELETE' : 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            
+            if (response.ok) {
+                isLiked = !isLiked;
+                button.classList.toggle('liked', isLiked);
+            } else {
+                console.error('Erreur lors du changement du statut de like');
+            }
+        } catch (error) {
+            console.error('Erreur lors de l\'action de like/dislike:', error);
+        }
+    };
+
+    button.addEventListener('click', handleLikeClick);
+
+    button.addEventListener('touchstart', (event) => {
+        if ('ontouchstart' in window) {
+            button.removeEventListener('click', handleLikeClick); // Désactive le click pendant un touch
+        }
+        
+        if (!isTouching) {
+            isTouching = true;
+            timeoutId = setTimeout(() => {
+                isPressing = true;
+                openModal(button.dataset.assetId);
+            }, MIN_PRESS_DURATION);
+        }
+    });
+
+    // Modification ici pour garder la modal ouverte si elle l'était déjà
+    button.addEventListener('touchend', (event) => {
+        if (isTouching) {
+            isTouching = false;
+            clearTimeout(timeoutId);
+            if (!isPressing && !modalOpen) { // Vérifie si la modal n'est pas déjà ouverte
+                // Rétablit le click event pour un tap court
+                if ('ontouchstart' in window) {
+                    button.addEventListener('click', handleLikeClick);
+                }
+                handleLikeClick(event);
+            }
+            isPressing = false;
+        }
+    });
+
+    button.addEventListener('mousedown', (event) => {
+        const assetId = button.dataset.assetId;
+        event.preventDefault();
+        timeoutId = setTimeout(() => {
+            isPressing = true;
+            openModal(assetId);
+        }, MIN_PRESS_DURATION);
+    });
+
+    button.addEventListener('mouseup', () => {
+        clearTimeout(timeoutId);
+        if (!isPressing && !modalOpen) { // Vérifie si la modal n'est pas déjà ouverte
+            handleLikeClick(event);
+        }
+        isPressing = false;
+    });
+
+    button.addEventListener('touchcancel', () => {
+        clearTimeout(timeoutId);
+        if ('ontouchstart' in window) {
+            button.addEventListener('click', handleLikeClick); // Rétablit le click event
+        }
+    });
+
+    button.addEventListener('mouseleave', () => {
+        clearTimeout(timeoutId);
+    });
+});
+
+// Fermeture de la modal
+document.querySelector('.close').addEventListener('click', () => {
+    const modal = document.getElementById('likeModal');
+    modal.style.display = 'none';
+    modalOpen = false; // Réinitialise le flag quand la modal est fermée
+});
+
+window.addEventListener('click', (event) => {
+    const modal = document.getElementById('likeModal');
+    if (event.target === modal) {
+        modal.style.display = 'none';
+        modalOpen = false; // Réinitialise le flag quand la modal est fermée
+    }
+});

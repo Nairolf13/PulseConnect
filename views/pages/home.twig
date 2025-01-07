@@ -44,10 +44,17 @@
 
 							<div class="interaction">
 								<div class="like-section">
-									<form action="/like/{{ content.id }}" method="POST">
-										<button type="submit" class="like-button">❤
-											{{ content.likes|length }}</button>
-									</form>
+									<button type="button" class="like-button" data-asset-id="{{ content.id }}">
+										❤
+										<span class="like-count">{{ content.likes | length }}</span>
+									</button>
+								</div>
+								<div id="likeModal" class="modal">
+									<div class="modal-content">
+										<span class="close">&times;</span>
+										<h2>Aimé par</h2>
+										<div id="userList"></div>
+									</div>
 								</div>
 
 								<div class="comment-section">

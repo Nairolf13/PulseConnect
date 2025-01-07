@@ -5,7 +5,7 @@ function togglePasswordVisibility(inputId, toggleId) {
     
     passwordInput.type = isPassword ? 'text' : 'password';
 
-    toggleImage.src = isPassword ? '/../../assets/imgs/oeilBarre.png' : '/../../assets/imgs/oeil.png';
+    toggleImage.src = isPassword ? '/../../assets/imgs/oeilBarrer.png' : '/../../assets/imgs/oeil.png';
 }
 
 document.getElementById('togglePassword').addEventListener('click', () => {

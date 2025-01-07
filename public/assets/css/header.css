@@ -153,6 +153,7 @@ ul.nav-list li img {
     }
 
     .modal-content {
+        top:20%;
         background-color: #1e1e1e;
         margin: 15% auto;
         padding: 20px;

@@ -84,17 +84,17 @@ const genresEnum = [
     "Instrumental"
 ];
 
-contentRouter.get('/addContent',authguard, async (req, res) => {
+contentRouter.get('/addContent', authguard, async (req, res) => {
     const users = await prisma.users.findUnique({
         where: { id_user: req.session.users.id_user }
     });
-    res.render('pages/addContent.twig', { genres: genresEnum }); 
+    res.render('pages/addContent.twig', { genres: genresEnum });
     users
 });
 
 contentRouter.post('/addContent', authguard, upload.single('mediaFile'), async (req, res) => {
     try {
-        const userId = req.session.users.id_user; 
+        const userId = req.session.users.id_user;
         const file_url = req.file ? req.file.path : null;
 
         if (!file_url) {
@@ -106,13 +106,13 @@ contentRouter.post('/addContent', authguard, upload.single('mediaFile'), async (
                 id_user: userId,
                 isPublic: true,
                 url: req.file.filename,
-                name: req.body.name, 
+                name: req.body.name,
                 genre: req.body.genre,
                 description: req.body.description
             },
         });
 
-        res.redirect('/home'); 
+        res.redirect('/home');
     } catch (error) {
         console.error("Erreur lors de l'ajout du contenu :", error);
         res.status(500).send('Erreur lors de l\'ajout du fichier.');
@@ -122,16 +122,16 @@ contentRouter.post('/addContent', authguard, upload.single('mediaFile'), async (
 contentRouter.get("/personalContent", authguard, async (req, res) => {
     try {
         const users = await prisma.users.findUnique({
-            where: { id_user: req.session.users.id_user } 
+            where: { id_user: req.session.users.id_user }
         });
-        
+
         const content = await prisma.assets.findMany({
             where: {
                 id_user: req.session.users.id_user
             },
             include: {
                 Users: true,
-                likes: true 
+                likes: true
             },
             orderBy: {
                 created_at: 'desc'
@@ -167,18 +167,18 @@ contentRouter.get("/personalContent", authguard, async (req, res) => {
                 }
             }
         });
-        
+
         const contentWithCommentsAndCounts = content.map(item => ({
             ...item,
             Commentaires: commentaires.filter(comment => comment.id_asset === item.id),
             commentCount: commentCounts.find(count => count.id_asset === item.id)?._count?.id_asset || 0
         }));
 
-        res.render("pages/profil.twig", { 
-            users, 
+        res.render("pages/profil.twig", {
+            users,
             content: contentWithCommentsAndCounts
         });
-        
+
     } catch (error) {
         console.error("Erreur lors du rendu de la page de profil :", error);
         res.render("pages/profil.twig", { error });
@@ -187,8 +187,8 @@ contentRouter.get("/personalContent", authguard, async (req, res) => {
 
 contentRouter.post("/deleteContent/:id", authguard, async (req, res) => {
     try {
-        const contentId = parseInt(req.params.id, 10); 
-        const userId = req.session.users.id_user; 
+        const contentId = parseInt(req.params.id, 10);
+        const userId = req.session.users.id_user;
         const asset = await prisma.assets.findUnique({
             where: { id: contentId },
         });
@@ -205,7 +205,7 @@ contentRouter.post("/deleteContent/:id", authguard, async (req, res) => {
             where: { id: contentId },
         });
 
-        res.redirect("/personalContent"); 
+        res.redirect("/personalContent");
     } catch (error) {
         console.error("Erreur lors de la suppression du contenu :", error);
         res.status(500).send("Erreur lors de la suppression du contenu.");
@@ -216,30 +216,72 @@ contentRouter.post('/like/:assetId', authguard, async (req, res) => {
     try {
         const assetId = parseInt(req.params.assetId, 10);
         const userId = req.session.users.id_user;
+
+        // Vérifier si l'utilisateur a déjà aimé cet asset
         const existingLike = await prisma.likes.findFirst({
             where: { id_user: userId, id_asset: assetId },
         });
 
+        let likeCount = 0;
+
         if (existingLike) {
-          
+            // Si l'utilisateur a déjà aimé, on supprime le like
             await prisma.likes.delete({ where: { id: existingLike.id } });
+            likeCount = -1; // Indiquer qu'on a retiré un like
         } else {
-            
+            // Sinon, on crée un nouveau like
             await prisma.likes.create({
                 data: {
                     id_user: userId,
                     id_asset: assetId,
                 },
             });
+            likeCount = 1; // Indiquer qu'on a ajouté un like
         }
 
-   
-        res.redirect(('/home'));
+        // Récupérer le nombre de likes mis à jour pour cet asset
+        const updatedLikeCount = await prisma.likes.count({
+            where: { id_asset: assetId },
+        });
+
+        // Retourner la réponse en JSON
+        res.json({ success: true, likeCount: updatedLikeCount });
     } catch (error) {
         console.error("Erreur lors du like/délike :", error);
-        res.status(500).send("Erreur lors du like/délike.");
+
+        // Renvoi d'une réponse JSON d'erreur avec un code 500
+        res.status(500).json({ success: false, message: "Erreur lors du like/délike." });
     }
 });
+
+contentRouter.get('/likes/users/:assetId', async (req, res) => {
+    try {
+        const assetId = parseInt(req.params.assetId, 10);
+
+        // Requête pour récupérer les utilisateurs qui ont liké
+        const likes = await prisma.likes.findMany({
+            where: { id_asset: assetId },
+            include: { Users: { select: { userName: true, firstName: true, lastName: true } } },
+        });
+
+        const users = likes.map(like => like.Users); // On récupère les utilisateurs associés au like
+
+        if (users.length > 0) {
+            // Retourner la liste des utilisateurs uniquement si la réponse est encore ouverte
+            return res.json({ users: users });
+        } else {
+            return res.json({ users: [] }); // Retourner une réponse vide si aucun utilisateur
+        }
+    } catch (error) {
+        console.error("Erreur lors de la récupération des utilisateurs ayant liké:", error);
+        // En cas d'erreur, assurez-vous de renvoyer une seule fois une réponse
+        return res.status(500).json({ success: false, message: "Erreur lors de la récupération des utilisateurs." });
+    }
+});
+
+
+
+
 
 
 contentRouter.get('/likes/count/:assetId', async (req, res) => {
@@ -279,7 +321,7 @@ contentRouter.post('/comment/:assetId', authguard, async (req, res) => {
         });
 
         res.redirect('/home');
-       
+
     } catch (error) {
         console.error("Erreur lors de l'ajout du commentaire :", error);
         res.status(500).send("Erreur lors de l'ajout du commentaire.");

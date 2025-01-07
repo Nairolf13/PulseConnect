@@ -54,18 +54,22 @@
 					</div>
 					<div>
 						<label for="password"></label>
-						<input id="password" type="password" name="password" placeholder="(12 caractères, majuscule, chiffre, spécial)">
+						<input id="password" type="password" name="password" placeholder="Mot de passe">
+						<img  id="togglePassword" src="/../../assets/imgs/oeil.png" alt="Afficher/Masquer le mot de passe" aria-label="Afficher/Masquer le mot de passe">
 					</div>
+					<p id="ToObligate">(12 caractères, majuscule, chiffre, caractère spécial)</p>
 					<div>
 						<label for="confirmPassword"></label>
-						<input id="confirmPassword" type="password" name="confirmPassword" placeholder="Confirmer le mot de passe">
+						<input id="confirmPassword" type="password" name="confirmPassword" placeholder="Confirmer le mot de passe" >
+						<img id="toggleConfirmPassword" src="/../../assets/imgs/oeil.png" alt="Afficher/Masquer le mot de passe" aria-label="Afficher/Masquer le mot de passe">
 						{% if error %}
 							<p>{{ error.confirmPassword }}</p>
 						{% endif %}
 					</div>
+
 					<button type="submit">Essayer gratuitement</button>
 					<section>
-						<a href="/login">Ce connecter à 
+						<a href="/login">Ce connecter à
 							<span>PulseConnect</span>
 						</a>
 					</section>
@@ -94,11 +98,21 @@
 	</main>
 	{% include "../partials/error.twig" %}
 
-	<script>
-		$(document).ready(function (){% if error %}
-const errorList = $("#errorList");
-errorList.empty();{% for key, value in error %}errorList.append("<li>  {{ value }}</li>");{% endfor %}$("#errorModal").modal("show");{% endif %}
-);
-	</script>
 
+{% endblock %}
+
+{% block script %}
+    <script src="/../../assets/js/register.js"></script>
+    <script>
+        $(document).ready(function () {
+            {% if error %}
+                const errorList = $("#errorList");
+                errorList.empty();
+                {% for key, value in error %}
+                    errorList.append("<li>{{ value }}</li>");
+                {% endfor %}
+                $("#errorModal").modal("show");
+            {% endif %}
+        });
+    </script>
 {% endblock %}

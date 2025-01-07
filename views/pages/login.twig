@@ -27,8 +27,9 @@
 						{% endif %}
 					</div>
 					<div>
-						<label for="password">Mot de passe</label>
-						<input id="password" type="password" name="password" placeholder="Mot de passe" required>
+						<label for="password"></label>
+						<input id="password" type="password" name="password" placeholder="Mot de passe">
+						<img id="togglePassword" src="/../../assets/imgs/oeil.png" alt="Afficher/Masquer le mot de passe" aria-label="Afficher/Masquer le mot de passe" required>
 						{% if error %}
 							<p>{{error.Password}}</p>
 						{% endif %}
@@ -36,7 +37,7 @@
 					<a href="/forgot-password">Mot de passe oublié ?</a><br>
 					<button type="submit">Se connecter</button>
 					<section>
-						<a href="/register">Essayer gratuitement 
+						<a href="/register">Essayer gratuitement
 							<span>PulseConnect</span>
 						</a>
 					</section>
@@ -44,6 +45,10 @@
 			</div>
 		</section>
 	</main>
-		{% include "../partials/error.twig" %}
+	{% include "../partials/error.twig" %}
 
+{% endblock %}
+
+{% block script %}
+	<script src="/../../assets/js/register.js"></script>
 {% endblock %}

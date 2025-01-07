@@ -81,6 +81,10 @@ button:hover {
     background-color: #2bc2d9;
 }
 
+#ToObligate {
+    color: white;
+}
+
 a {
     color: rgb(255, 255, 255);
     display: block;
@@ -94,11 +98,41 @@ a:hover {
     color: aquamarine;
 }
 
+span[role="button"] {
+    font-size: 1.2em;
+    color: #666;
+    align-items: center;
+}
+
 span {
     color: aquamarine;
 }
 
-#closeModal{
+input {
+    width: 100%;               
+    padding: 10px;             
+    padding-right: 40px;        
+    font-size: 1em;             
+    border: 1px solid #ccc;    
+    border-radius: 5px;        
+    box-sizing: border-box;     
+}
+
+div {
+    position: relative;         
+}
+
+#togglePassword,#toggleConfirmPassword {
+    position: absolute;         
+    top: 40%;                   
+    left: 90%;                
+    transform: translateY(-50%);
+    cursor: pointer;           
+    width: 1.5vw;                
+    pointer-events: all;  
+}
+    
+#closeModal {
     position: absolute;
     top: 1%;
     right: 3%;
@@ -140,7 +174,7 @@ p {
     margin: 15% auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 300px;
+    width: 320px;
     border-radius: 10px;
     text-align: center;
     z-index: 1000;
@@ -152,7 +186,7 @@ p {
     flex-wrap: wrap;
 }
 
-.btn-secondary{
+.btn-secondary {
     background-color: aquamarine;
     color: black;
 }
@@ -204,7 +238,7 @@ li#errorList {
     color: black;
 }
 
-@media (min-width: 769px) {
+/* @media (min-width: 769px) {
     img {
         position: absolute;
         top: 0;
@@ -227,7 +261,7 @@ li#errorList {
         padding: 7px;
     }
 
-}
+} */
 
 @media (max-width: 768px) {
     #form {
@@ -236,5 +270,12 @@ li#errorList {
 
     h1 {
         font-size: 1.2em;
+    }
+    #ToObligate {
+        width: 100%;
+    }
+
+    #togglePassword, #toggleConfirmPassword{
+        width: 5vw;
     }
 }

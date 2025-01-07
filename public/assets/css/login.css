@@ -170,6 +170,30 @@ p {
     color: black;
 }
 
+input {
+    width: 100%;               
+    padding: 10px;              
+    padding-right: 40px;        
+    font-size: 1em;             
+    border: 1px solid #ccc;     
+    border-radius: 5px;         
+    box-sizing: border-box;   
+}
+
+div {
+    position: relative;        
+}
+
+#togglePassword,#toggleConfirmPassword {
+    position: absolute;         
+    top: 40%;                  
+    left: 85%;                
+    transform: translateY(-50%);
+    cursor: pointer;           
+    width: 1.5vw;               
+    pointer-events: all;  
+}
+
 @media (min-width: 769px) {
     img {
         position: absolute;
@@ -200,5 +224,9 @@ p {
 
     h1 {
         font-size: 1.2em;
+    }
+
+    #togglePassword, #toggleConfirmPassword{
+        width: 5vw;
     }
 }

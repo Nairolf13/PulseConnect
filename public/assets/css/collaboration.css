@@ -77,6 +77,7 @@ body {
 .title-container h1 {
     font-size: 2em;
     margin: 0;
+    color: aquamarine;
 }
 
 .title-container p {
@@ -226,7 +227,7 @@ body {
     font-size: 1.5em;
     color: aquamarine;
     margin-bottom: 20px;
-    text-align: center;
+    text-align: left;
 }
 
 .file-feed {
@@ -403,6 +404,19 @@ form div {
     margin-bottom: 15px;
 }
 
+
+form label {
+    color: aquamarine;
+    text-align: left;
+    display: block;
+    margin-bottom: 5px;
+}
+
+form select {
+    width: 100%;
+    margin-top: 5px;
+}
+
 form input[type="text"],
 form select,
 form input[type="file"],
@@ -414,9 +428,8 @@ form button[type="submit"] {
     border-radius: 4px;
     font-size: 14px;
     background-color: black;
-    color: white;
+    color: white;;
     margin-top: 23px;
-   
 }
 
 form select {
@@ -428,6 +441,15 @@ form select {
     margin-top: 25px;
 }
 
+form button {
+    background-color: aquamarine;
+    color: black;
+}
+
+form button:hover {
+    background-color: #80ffe6;
+}
+
 #textTitle {
     margin-bottom: -22px;
 }
@@ -437,8 +459,8 @@ form input[type="text"] {
 }
 
 form button[type="submit"] {
-    background-color: red;
-    color: white;
+    background-color: aquamarine;
+    color: black;
     border: none;
     cursor: pointer;
     transition: background-color 0.3s;
@@ -762,6 +784,8 @@ input[type="file"]::-webkit-file-upload-button:hover {
 .members-list form select,
 .members-list form textarea,
 .members-list form button {
+    border: 1px solid #3d3d3d;
+    border-radius: 5px;
     margin: 10px 0;
     text-align: center;
 }
@@ -961,4 +985,18 @@ input[type="file"]::-webkit-file-upload-button:hover {
         display: none;
     }
 
+}
+
+form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    background-color: black;
+    color: white;
+    margin-top: 23px;
+    resize: vertical;
+    min-height: 100px;
 }

@@ -1,6 +1,7 @@
 {% extends "../layouts/base.twig" %}
 
 {% block style %}
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet"/>
 	<link rel="stylesheet" href="/../../assets/css/collaboration.css">
 {% endblock %}
 
@@ -85,30 +86,37 @@
 				<div class="members-list">
 					<form action="/project/{{ project.id_project }}/upload" method="POST" enctype="multipart/form-data">
 						<h3>Ajouter un fichier</h3>
-						<div id="textTitle">
-							<label for="name"></label>
-							<input id="name" name="name" placeholder="Titre" required>
+						<div>
+							<label for="name" style=" width: 100px;">Titre :</label>
+							<input type="text" id="name" name="name" required>
 						</div>
 						<div>
-							<label for="genre"></label>
-							<select id="genre" name="genre" required>
-								<option value="" disabled selected>Sélectionnez un genre</option>
-								{% for genre in genres %}
-									<option value="{{ genre }}">{{ genre }}</option>
-								{% endfor %}
-							</select>
+							<label for="description" style=" width: 100px;">Description :</label>
+							<textarea id="description" name="description" required></textarea>
 						</div>
-						<textarea type="text" name="description" placeholder="Description"></textarea><br>
-						<div class="custom-file">
-							<label for="file" id="fileLabel">Aucun fichier sélectionné</label>
-							<input type="file" name="file" id="fileInput" required accept="image/*,video/*,audio/*">
+						<div>
+							<label for="genre" style=" width: 100px;">Genre :</label>
+							<div>
+								<select id="genre" name="genre" required>
+									<option value="" disabled selected>Sélectionnez un genre</option>
+									{% for genre in genres %}
+										<option value="{{ genre }}">{{ genre }}</option>
+									{% endfor %}
+								</select>
+							</div>
 						</div>
-						<div id="filePreview" class="file-preview">
-							<img id="imagePreview" style="display: none; max-width: 100%; margin: 10px 0;">
-							<video id="videoPreview" style="display: none; max-width: 100%; margin: 10px 0;" controls></video>
-							<audio id="audioPreview" style="display: none; max-width: 100%; margin: 10px 0;" controls></audio>
+						<div>
+							<div class="custom-file">
+								<label for="file" id="fileLabel">Aucun fichier sélectionné</label>
+								<input type="file" id="fileInput" name="file" accept="image/*,video/*,audio/*" multiple required>
+							</div>
+							<div id="filePreview" class="file-preview">
+								<img id="imagePreview" style="display: none; max-width: 100%; margin: 10px 0;">
+								<video id="videoPreview" style="display: none; max-width: 100%; margin: 10px 0;" controls></video>
+								<audio id="audioPreview" style="display: none; max-width: 100%; margin: 10px 0;" controls></audio>
+							</div>
 						</div>
-						<button id="btn-add" type="submit">Ajouter</button>
+						<button type="submit">Ajouter</button>
 					</form>
 					<h3>Participants</h3>
 					<ul>
@@ -141,5 +149,12 @@
 {% endblock %}
 
 {% block script %}
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+	<script>
+		$(document).ready(function () {
+			$('#genre').select2({placeholder: 'Sélectionnez un genre', allowClear: true});
+		});
+	</script>
 	<script src="/../../assets/js/collaboration.js"></script>
 {% endblock %}

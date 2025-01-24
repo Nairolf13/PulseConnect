@@ -99,7 +99,15 @@
 							</select>
 						</div>
 						<textarea type="text" name="description" placeholder="Description"></textarea><br>
-						<input type="file" name="file" required><br>
+						<div class="custom-file">
+							<label for="file" id="fileLabel">Aucun fichier sélectionné</label>
+							<input type="file" name="file" id="fileInput" required accept="image/*,video/*,audio/*">
+						</div>
+						<div id="filePreview" class="file-preview">
+							<img id="imagePreview" style="display: none; max-width: 100%; margin: 10px 0;">
+							<video id="videoPreview" style="display: none; max-width: 100%; margin: 10px 0;" controls></video>
+							<audio id="audioPreview" style="display: none; max-width: 100%; margin: 10px 0;" controls></audio>
+						</div>
 						<button id="btn-add" type="submit">Ajouter</button>
 					</form>
 					<h3>Participants</h3>

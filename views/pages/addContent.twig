@@ -9,9 +9,10 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 	<script>
 		$(document).ready(function () {
-$('#genre').select2({placeholder: 'Sélectionnez un genre', allowClear: true});
-});
+			$('#genre').select2({placeholder: 'Sélectionnez un genre', allowClear: true});
+		});
 	</script>
+	<script src="/../../assets/js/addContent.js"></script>
 {% endblock %}
 
 {% block title %}
@@ -47,8 +48,15 @@ $('#genre').select2({placeholder: 'Sélectionnez un genre', allowClear: true});
 			</select>
 		</div>
 		<div>
-			<label for="mediaFile">Ajouter un fichier (Musique ou Vidéo) :</label>
-			<input type="file" id="mediaFile" name="mediaFile" accept=".mp3, .mp4" required>
+			<div class="custom-file">
+				<label for="mediaFile" id="fileLabel">Aucun fichier sélectionné</label>
+				<input type="file" id="mediaFile" name="mediaFile" accept="image/*,video/*,audio/*" multiple required>
+			</div>
+			<div id="filePreview" class="file-preview">
+				<img id="imagePreview" style="display: none; max-width: 100%; margin: 10px 0;">
+				<video id="videoPreview" style="display: none; max-width: 100%; margin: 10px 0;" controls></video>
+				<audio id="audioPreview" style="display: none; max-width: 100%; margin: 10px 0;" controls></audio>
+			</div>
 		</div>
 		<button type="submit">Ajouter</button>
 	</form>

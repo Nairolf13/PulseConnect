@@ -148,4 +148,49 @@ document.addEventListener('DOMContentLoaded', function () {
         document.querySelector('.cancel-delete').addEventListener('click', closeModal);
         
     });
+
+    const fileInput = document.getElementById('fileInput');
+    const fileLabel = document.getElementById('fileLabel');
+    const imagePreview = document.getElementById('imagePreview');
+    const videoPreview = document.getElementById('videoPreview');
+    const audioPreview = document.getElementById('audioPreview');
+
+    if (fileInput && fileLabel) {
+        fileInput.addEventListener('change', function() {
+            // Reset all previews
+            imagePreview.style.display = 'none';
+            videoPreview.style.display = 'none';
+            audioPreview.style.display = 'none';
+
+            if (this.files && this.files[0]) {
+                const file = this.files[0];
+                const fileName = file.name;
+                const fileType = file.type;
+                const fileURL = URL.createObjectURL(file);
+
+                // Update file name
+                fileLabel.textContent = fileName;
+
+                // Determine file type and show appropriate preview
+                if (fileType.startsWith('image/')) {
+                    imagePreview.src = fileURL;
+                    imagePreview.onload = () => {
+                        imagePreview.style.display = 'block';
+                    };
+                } else if (fileType.startsWith('video/') || fileName.toLowerCase().endsWith('.mp4')) {
+                    videoPreview.src = fileURL;
+                    videoPreview.onloadedmetadata = () => {
+                        videoPreview.style.display = 'block';
+                    };
+                } else if (fileType.startsWith('audio/') || fileName.toLowerCase().endsWith('.mp3')) {
+                    audioPreview.src = fileURL;
+                    audioPreview.onloadedmetadata = () => {
+                        audioPreview.style.display = 'block';
+                    };
+                }
+            } else {
+                fileLabel.textContent = 'Aucun fichier sélectionné';
+            }
+        });
+    }
 });

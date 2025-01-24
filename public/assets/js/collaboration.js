@@ -13,8 +13,20 @@ function toggleComments(fileId) {
 
 function toggleSidebar() {
     const sidebar = document.querySelector('.sidebar-container');
-    sidebar.classList.toggle('visible');
+
+    if (sidebar) {
+        sidebar.classList.toggle('visible');
+
+        if (window.getComputedStyle(sidebar).display === 'none') {
+            sidebar.style.display = 'block'; 
+        } else {
+            sidebar.style.display = ''; 
+        }
+    } else {
+        console.error('Element .sidebar-container introuvable');
+    }
 }
+
 
 document.addEventListener('DOMContentLoaded', function () {
     const projectContainer = document.getElementById('project-container');
@@ -39,15 +51,12 @@ document.addEventListener('DOMContentLoaded', function () {
             actionsMenu.style.display = actionsMenu.style.display === 'none' ? 'block' : 'none';
         });
 
-        
-
         document.addEventListener('click', (event) => {
             if (!actionsMenu.contains(event.target) && !toggleBtn.contains(event.target)) {
                 actionsMenu.style.display = 'none';
             }
         });
         
-
         editBtn.addEventListener('click', () => {
             originalName = fileName.textContent;
             originalDescription = fileDescription.textContent;
@@ -95,20 +104,17 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         deleteBtn.addEventListener('click', () => {
-            // Référence au modal
             const deleteModal = document.getElementById('deleteModal');
             const deleteForm = document.getElementById('deleteForm');
         
-            // Afficher le modal
             deleteModal.style.display = 'block';
             
             if (deleteModal.style.display === 'block'){
                 actionsMenu.style.display = 'none';
             }
         
-            // Préparer la soumission du formulaire lors de la confirmation
             deleteForm.onsubmit = async function (event) {
-                event.preventDefault(); // Empêche le rechargement de la page
+                event.preventDefault(); 
         
                 try {
                     const response = await fetch(`/project/${projectId}/file/${fileId}/delete`, {
@@ -117,7 +123,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     const data = await response.json();
         
                     if (response.ok && data.success) {
-                        item.remove(); // Supprime l'élément de la liste
+                        item.remove(); 
                     } else {
                         throw new Error(data.error || 'Erreur lors de la suppression');
                     }
@@ -125,26 +131,23 @@ document.addEventListener('DOMContentLoaded', function () {
                     console.error('Erreur:', error);
                     alert(error.message);
                 } finally {
-                    closeModal(); // Fermer le modal après l'action
+                    closeModal(); 
                 }
             };
         });
         
-        // Fonction pour fermer le modal
         function closeModal() {
             const modal = document.getElementById('deleteModal');
             modal.style.display = 'none'; 
         }
         
-        // Fermer le modal en cliquant en dehors
         window.onclick = function (event) {
             const modal = document.getElementById('deleteModal');
             if (event.target === modal) {
-                closeModal(); // Appelle la fonction de fermeture
+                closeModal(); 
             }
         };
         
-        // Ajouter un événement au bouton "Annuler"
         document.querySelector('.cancel-delete').addEventListener('click', closeModal);
         
     });

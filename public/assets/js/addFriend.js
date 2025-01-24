@@ -28,3 +28,4 @@ document.addEventListener('DOMContentLoaded', function() {
 
     searchInput.addEventListener('input', debounce(filterUsers, 300));
 });
+ 

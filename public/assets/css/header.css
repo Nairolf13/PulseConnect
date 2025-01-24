@@ -165,7 +165,7 @@ ul.nav-list li img {
 }
 
   
-@media (min-width: 960px) {
+@media (min-width: 985px) {
     header {
         position: fixed;
         top: 10%;

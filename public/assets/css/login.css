@@ -190,7 +190,7 @@ div {
     left: 85%;                
     transform: translateY(-50%);
     cursor: pointer;           
-    width: 1.5vw;               
+    width: 1vw;               
     pointer-events: all;  
 }
 

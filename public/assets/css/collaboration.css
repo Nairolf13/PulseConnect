@@ -361,7 +361,12 @@ audio {
 textarea {
     width: 100%;
     height: 70px;
+    border-radius: 5px;
 }
+ input{
+    border-radius: 5px;
+ }
+
 
 .toggle-comments-btn {
     background-color: aquamarine;
@@ -411,6 +416,7 @@ form button[type="submit"] {
     background-color: black;
     color: white;
     margin-top: 23px;
+   
 }
 
 form select {
@@ -657,6 +663,113 @@ form button[type="button"] {
     margin-left: 10px;
 }
 
+/* Custom File Input Styling */
+input[type="file"] {
+    position: relative;
+    width: 95%;
+    margin: 0 auto;
+    display: block;
+    text-align: center;
+}
+
+input[type="file"]::file-selector-button {
+    margin: 0 auto 10px;
+    display: block;
+}
+
+/* Center the file name text */
+input[type="file"]::-webkit-file-name-view-button {
+    text-align: center;
+    margin: 0 auto;
+    display: block;
+    width: 100%;
+}
+
+input[type="file"]::-webkit-file-upload-button {
+    margin: 0 auto 10px;
+    display: block;
+    text-align: center;
+}
+
+input[type="file"]::-webkit-file-name-button {
+    text-align: center;
+}
+
+input[type="file"]::file-text {
+    text-align: center;
+}
+
+input[type="file"] {
+    position: relative;
+    width: 100%;
+    background-color: #1a1a1a;
+    border: 1px solid black;
+    border-radius: 5px;
+    color: #a0a0a0;
+    padding: 10px;
+    cursor: pointer;
+    display: block;
+    text-align: left;
+}
+
+input[type="file"]::-webkit-file-upload-button {
+    margin-bottom: 10px;
+    border: none;
+    background-color: aquamarine;
+    color: black;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: block;
+    width: auto;
+    text-align: center;
+}
+
+input[type="file"]::-webkit-file-upload-button:hover {
+    background-color: #2bc2d9;
+}
+
+/* File Input Container Styling */
+.file-input-container {
+    margin-bottom: 10px;
+}
+
+.file-name {
+    color: #a0a0a0;
+    background-color: #1a1a1a;
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 5px 10px;
+    margin-top: 5px;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+}
+
+/* Sidebar Form Centering */
+.members-list form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.members-list form > * {
+    width: 95%;
+    text-align: center;
+}
+
+.members-list form input,
+.members-list form select,
+.members-list form textarea,
+.members-list form button {
+    margin: 10px 0;
+    text-align: center;
+}
+
 @media (max-width: 768px) {
     .main-content {
         flex-direction: column;
@@ -755,7 +868,7 @@ form button[type="button"] {
         margin-bottom: 10px;
     }
 
-    
+
 }
 
 @media (min-width: 768px) and (max-width:1250px) {

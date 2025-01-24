@@ -13,14 +13,11 @@ function toggleComments(fileId) {
 
 function toggleSidebar() {
     const sidebar = document.querySelector('.sidebar-container');
-
     if (sidebar) {
-        sidebar.classList.toggle('visible');
-
-        if (window.getComputedStyle(sidebar).display === 'none') {
+        if (sidebar.style.display === 'none' || sidebar.style.display === '') {
             sidebar.style.display = 'block'; 
         } else {
-            sidebar.style.display = ''; 
+            sidebar.style.display = 'none'; 
         }
     } else {
         console.error('Element .sidebar-container introuvable');

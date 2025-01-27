@@ -40,3 +40,4 @@ async function handleFetch(url, data) {
 }
 
 export { showErrorModal, showSuccessModal, handleFetch };
+

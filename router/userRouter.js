@@ -76,7 +76,7 @@ const sendWelcomeEmail = async (to, firstName) => {
         });
         console.log("Email de bienvenue envoyé");
     } catch (error) {
-        console.error("Erreur lors de l'envoi de l'email : ", error);
+        console.error("Erreur lors de l'envoi de l'email :", error);
     }
 };
 
@@ -133,7 +133,7 @@ const sendPasswordResetEmail = async (to, firstName, resetLink) => {
     </head>
     <body>
         <div class="container">
-            <img src="http://51.91.208.111:4000/assets/imgs/PulseConnect.png" alt="Logo PulseConnect" class="logo">
+            <img src="process.env.URLVPS/assets/imgs/PulseConnect.png" alt="Logo PulseConnect" class="logo">
             <h1>Réinitialisation de mot de passe</h1>
             <p>Bonjour ${firstName},</p>
             <p>Vous avez demandé une réinitialisation de mot de passe pour votre compte PulseConnect.</p>
@@ -302,6 +302,10 @@ userRouter.post('/forgot-password', async (req, res) => {
         const resetToken = crypto.randomBytes(32).toString('hex')
         const expiresAt = new Date(Date.now() + 3600000)
 
+        await prisma.passwordResetTokens.deleteMany({
+            where: { email: user.mail }
+        });
+
         await prisma.passwordResetTokens.create({
             data: {
                 email: user.mail,
@@ -310,7 +314,8 @@ userRouter.post('/forgot-password', async (req, res) => {
             }
         });
 
-        const resetLink = `${process.env.URLVPS}reset-password?token=${resetToken}`;
+        const resetLink = `${process.env.URLVPS}/reset-password`;
+
         await sendPasswordResetEmail(mail, user.firstName, resetLink);
 
         res.json({ message: "Nous avons envoyé un email de réinitialisation !" });
@@ -318,55 +323,125 @@ userRouter.post('/forgot-password', async (req, res) => {
         res.status(400).json({ error: error.message });
     }
 });
-userRouter.get('/reset-password', (req, res) => {
-    const { token } = req.query; 
-    res.render('pages/reset-password.twig', { token });
-});
 
-userRouter.post('/reset-password', async (req, res) => { 
-    const { email } = req.body;
+userRouter.get('/reset-password', async (req, res) => {
+    const { token } = req.query;
+    
+    if (!token) {
+        return res.render('pages/forgot-password.twig', { 
+            title: 'Erreur',
+            error: 'Aucun token de réinitialisation fourni.' 
+        });
+    }
 
     try {
-        const user = await prisma.users.findUnique({
-            where: { mail: email }
-        });
-
-        if (!user) {
-            return res.status(404).json({
-                error: "Aucun utilisateur trouvé avec cet email."
-            });
-        }
-
-        await prisma.passwordResetTokens.deleteMany({
-            where: { email }
-        });
-
-        const resetToken = crypto.randomBytes(32).toString('hex');
-        const expiresAt = new Date(Date.now() + 3600000); 
-
-        await prisma.passwordResetTokens.create({
-            data: {
-                email,
-                token: resetToken,
-                expiresAt
+        const passwordResetToken = await prisma.passwordResetTokens.findFirst({
+            where: { 
+                token: token,
+                expiresAt: { gt: new Date() } 
             }
         });
 
-        const resetLink = `${process.env.URLVPS}reset-password?token=${resetToken}`;
-        await sendPasswordResetEmail(email, user.firstName, resetLink);
+        if (!passwordResetToken) {
+            return res.render('pages/forgot-password.twig', { 
+                title: 'Lien expiré',
+                error: 'Le lien de réinitialisation est invalide ou a expiré.' 
+            });
+        }
 
-        res.json({
-            success: true,
-            message: "Un email de réinitialisation a été envoyé."
+        res.render('pages/reset-password.twig', { 
+            title: 'Réinitialisation de mot de passe',
+            token 
         });
     } catch (error) {
-        console.error("Erreur lors de la création du jeton de réinitialisation :", error);
-        res.status(500).json({
-            error: "Une erreur est survenue. Veuillez réessayer plus tard."
+        console.error('Erreur lors de la validation du token :', error);
+        res.render('pages/forgot-password.twig', { 
+            title: 'Erreur',
+            error: 'Une erreur est survenue. Veuillez réessayer.' 
         });
     }
 });
 
+userRouter.post('/reset-password', async (req, res) => { 
+    console.log("Route /reset-password atteinte !");
+    console.log("Body reçu :", req.body);
+
+    try {
+        const { email, token, newPassword, confirmPassword } = req.body;
+
+        if (email) {
+            const user = await prisma.users.findUnique({
+                where: { mail: email }
+            });
+
+            if (!user) {
+                return res.status(404).json({ error: "Aucun utilisateur trouvé avec cet email." });
+            }
+
+            const resetToken = crypto.randomBytes(32).toString('hex');
+            const expiresAt = new Date(Date.now() + 3600000); 
+
+            await prisma.passwordResetTokens.deleteMany({
+                where: { email: user.mail }
+            });
+
+            await prisma.passwordResetTokens.create({
+                data: {
+                    email: user.mail,
+                    token: resetToken,
+                    expiresAt
+                }
+            });
+
+            const resetLink = `${process.env.URLVPS}/reset-password?token=${resetToken}`;
+
+            await sendPasswordResetEmail(email, user.firstName, resetLink);
+
+            return res.json({ message: "Un lien de réinitialisation a été envoyé à votre email." });
+        }
+
+        if (!token) {
+            return res.status(400).json({ error: "Token manquant." });
+        }
+
+        const passwordResetToken = await prisma.passwordResetTokens.findFirst({
+            where: { 
+                token,
+                expiresAt: { gt: new Date() } 
+            }
+        });
+
+        if (!passwordResetToken) {
+            return res.status(400).json({ error: "Token invalide ou expiré." });
+        }
+
+        const user = await prisma.users.findUnique({
+            where: { mail: passwordResetToken.email }
+        });
+
+        if (!user) {
+            return res.status(404).json({ error: "Aucun utilisateur trouvé avec cet email." });
+        }
+
+        if (newPassword !== confirmPassword) {
+            return res.status(400).json({ error: "Les mots de passe ne correspondent pas." });
+        }
+
+        await prisma.users.update({
+            where: { id_user: user.id_user },
+            data: { password: newPassword }
+        });
+
+        await prisma.passwordResetTokens.deleteMany({
+            where: { email: user.mail }
+        });
+
+        res.json({ message: "Mot de passe réinitialisé avec succès !" });
+    } catch (error) {
+        console.error("Erreur lors de la réinitialisation du mot de passe :", error);
+        res.status(500).json({ error: "Une erreur est survenue. Veuillez réessayer plus tard." });
+    }
+});
 
 
 
@@ -533,7 +608,8 @@ userRouter.post("/update", authguard, upload.single('picture'), async (req, res)
         };
 
         if (req.body.password && req.body.password.trim() !== "") {
-            updateData.password = req.body.password;
+            const hashedPassword = await bcrypt.hash(req.body.password, 10);
+            updateData.password = hashedPassword;
         }
 
         await prisma.users.update({

@@ -467,7 +467,7 @@ form button[type="submit"] {
 }
 
 form button:hover[type="submit"] {
-    background-color: #701010;
+    background-color: #2bc2d9;
 }
 
 form button[type="button"] {

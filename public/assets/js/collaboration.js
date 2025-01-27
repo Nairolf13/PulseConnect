@@ -157,7 +157,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (fileInput && fileLabel) {
         fileInput.addEventListener('change', function() {
-            // Reset all previews
             imagePreview.style.display = 'none';
             videoPreview.style.display = 'none';
             audioPreview.style.display = 'none';
@@ -168,10 +167,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 const fileType = file.type;
                 const fileURL = URL.createObjectURL(file);
 
-                // Update file name
                 fileLabel.textContent = fileName;
 
-                // Determine file type and show appropriate preview
                 if (fileType.startsWith('image/')) {
                     imagePreview.src = fileURL;
                     imagePreview.onload = () => {

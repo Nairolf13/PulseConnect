@@ -75,11 +75,9 @@ select {
 }
 
 .select2-container--default .select2-results__option--highlighted[aria-selected] {
-
     background-color: #3d3d3d;
 }
 
-/* Spacing between genre select and file input */
 .select2-container {
     margin-bottom: 25px;
 }
@@ -112,7 +110,6 @@ button:hover {
     margin-top: 10px;
 }
 
-/* Custom File Input Styling */
 .custom-file {
     display: flex;
     flex-direction: column;
@@ -150,7 +147,6 @@ button:hover {
     position: relative;
 }
 
-/* File Preview Styling */
 .file-preview {
     display: flex;
     justify-content: center;

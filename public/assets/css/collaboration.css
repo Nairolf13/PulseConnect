@@ -257,9 +257,9 @@ body {
 
 .file-actions {
     position: absolute;
-    top: 10px;
-    right: 10px;
-    z-index: 10;
+    top: 2%;
+    right: 2%;
+    z-index: 1000;
 }
 
 .file-item h4 {
@@ -415,6 +415,11 @@ form label {
 form select {
     width: 100%;
     margin-top: 5px;
+    color: black;
+}
+
+form select option {
+    color: black;
 }
 
 form input[type="text"],
@@ -449,6 +454,7 @@ form button {
 form button:hover {
     background-color: #80ffe6;
 }
+
 
 #textTitle {
     margin-bottom: -22px;
@@ -999,4 +1005,19 @@ form textarea {
     margin-top: 23px;
     resize: vertical;
     min-height: 100px;
+}
+
+.select2-container--default .select2-results__option {
+    background-color: white;
+    color: black;
+}
+
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+    background-color: #3d3d3d;
+    color: white;
+}
+
+.select2-container--default .select2-results__option:hover {
+    background-color: #3d3d3d;
+    color: white;
 }

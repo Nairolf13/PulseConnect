@@ -79,6 +79,91 @@ const sendWelcomeEmail = async (to, firstName) => {
         console.error("Erreur lors de l'envoi de l'email : ", error);
     }
 };
+
+const sendPasswordResetEmail = async (to, firstName, resetLink) => {
+    const htmlContent = `
+    <!DOCTYPE html>
+    <html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Réinitialisation de mot de passe</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 20px;
+                background-color: #f8f9fa;
+            }
+            .container {
+                max-width: 600px;
+                margin: auto;
+                background: #ffffff;
+                border-radius: 8px;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+                padding: 20px;
+            }
+            h1 {
+                color: #333;
+                font-size: 24px;
+            }
+            p {
+                color: #555;
+                font-size: 16px;
+            }
+            .footer {
+                margin-top: 20px;
+                font-size: 14px;
+                color: #888;
+            }
+            .logo {
+                width: 150px; 
+                margin-bottom: 20px;
+            }
+            .reset-button {
+                display: inline-block;
+                background-color: #66FFD4;
+                color: black;
+                padding: 12px 24px;
+                text-decoration: none;
+                border-radius: 5px;
+                margin: 20px 0;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <img src="http://51.91.208.111:4000/assets/imgs/PulseConnect.png" alt="Logo PulseConnect" class="logo">
+            <h1>Réinitialisation de mot de passe</h1>
+            <p>Bonjour ${firstName},</p>
+            <p>Vous avez demandé une réinitialisation de mot de passe pour votre compte PulseConnect.</p>
+            <p>Cliquez sur le bouton ci-dessous pour réinitialiser votre mot de passe :</p>
+            <div style="text-align: center;">
+                <a href="${resetLink}" class="reset-button">Réinitialiser mon mot de passe</a>
+            </div>
+            <p>Si vous n'avez pas demandé cette réinitialisation, ignorez simplement cet email.</p>
+            <p>Ce lien est valide pendant 1 heure.</p>
+            <div class="footer">
+                <p>Cordialement,</p>
+                <p>L'équipe PulseConnect</p>
+            </div>
+        </div>
+    </body>
+    </html>
+    `;
+
+    try {
+        await transporter.sendMail({
+            from: `"PulseConnect" <${process.env.EMAIL_USER}>`,
+            to,
+            subject: "Réinitialisation de mot de passe",
+            html: htmlContent 
+        });
+        console.log("Email de réinitialisation de mot de passe envoyé");
+    } catch (error) {
+        console.error("Erreur lors de l'envoi de l'email de réinitialisation : ", error);
+    }
+};
  
 userRouter.get('/', async (req, res) => {  
     try {
@@ -225,15 +310,10 @@ userRouter.post('/forgot-password', async (req, res) => {
             }
         });
 
-        const resetLink = `http://localhost:3000/reset-password?token=${resetToken}`;
-        await sendEmail(mail, "Réinitialisation de mot de passe", `
-        Bonjour,
-        Vous avez demandé une réinitialisation de votre mot de passe. Cliquez sur le lien suivant pour réinitialiser votre mot de passe : 
-        ${resetLink}
-        Si vous n'avez pas fait cette demande, ignorez cet email.
-      `);
+        const resetLink = `http://localhost:4000/reset-password?token=${resetToken}`;
+        await sendPasswordResetEmail(mail, user.firstName, resetLink);
 
-        res.json({ message: "Email de réinitialisation envoyé !" });
+        res.json({ message: "Nous avons envoyé un email de réinitialisation !" });
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
@@ -257,13 +337,12 @@ userRouter.post('/reset-password', async (req, res) => {
             });
         }
 
-        // Delete any existing tokens for this email
         await prisma.passwordResetTokens.deleteMany({
             where: { email }
         });
 
         const resetToken = crypto.randomBytes(32).toString('hex');
-        const expiresAt = new Date(Date.now() + 3600000);  // 1 hour expiration
+        const expiresAt = new Date(Date.now() + 3600000); 
 
         await prisma.passwordResetTokens.create({
             data: {
@@ -273,14 +352,8 @@ userRouter.post('/reset-password', async (req, res) => {
             }
         });
 
-        const resetLink = `http://localhost:3000/reset-password?token=${resetToken}`;
-        await sendEmail(email, "Réinitialisation de mot de passe", `
-        Bonjour,
-        Vous avez demandé une réinitialisation de votre mot de passe. Cliquez sur le lien suivant pour réinitialiser votre mot de passe : 
-        ${resetLink}
-        Ce lien expirera dans 1 heure.
-        Si vous n'avez pas fait cette demande, ignorez cet email.
-      `);
+        const resetLink = `http://localhost:4000/reset-password?token=${resetToken}`;
+        await sendPasswordResetEmail(email, user.firstName, resetLink);
 
         res.json({
             success: true,

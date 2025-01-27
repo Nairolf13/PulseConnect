@@ -25,7 +25,7 @@ const sendEmail = async (to, subject, text) => {
         await transporter.sendMail({
             from: `"PulseConnect" <${process.env.EMAIL_USER}>`,
             to,
-            subject:"Bienvenue chez PulseConnect",
+            subject:"PulseConnect",
             text
         });
         console.log("Email envoyé avec succès !");

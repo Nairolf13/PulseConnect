@@ -796,12 +796,11 @@ input[type="file"]::-webkit-file-upload-button:hover {
     text-align: center;
 }
 
-/* Custom File Input Styling */
 .custom-file {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 25px; /* Increased margin */
+    margin-bottom: 25px; 
     position: relative;
 }
 
@@ -834,7 +833,6 @@ input[type="file"]::-webkit-file-upload-button:hover {
     position: relative;
 }
 
-/* File Preview Styling */
 .file-preview {
     display: flex;
     justify-content: center;

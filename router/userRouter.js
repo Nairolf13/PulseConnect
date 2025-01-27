@@ -247,18 +247,24 @@ userRouter.post('/reset-password', async (req, res) => {
     const { email } = req.body;
 
     try {
-        const existingToken = await prisma.passwordResetTokens.findUnique({
-            where: { email }
+        const user = await prisma.users.findUnique({
+            where: { mail: email }
         });
 
-        if (existingToken) {
-            return res.status(400).json({
-                error: "Un jeton de réinitialisation existe déjà pour cet email. Veuillez vérifier votre boîte de réception ou attendre un moment."
+        if (!user) {
+            return res.status(404).json({
+                error: "Aucun utilisateur trouvé avec cet email."
             });
         }
 
+        // Delete any existing tokens for this email
+        await prisma.passwordResetTokens.deleteMany({
+            where: { email }
+        });
+
         const resetToken = crypto.randomBytes(32).toString('hex');
-        const expiresAt = new Date(Date.now() + 3600000);  
+        const expiresAt = new Date(Date.now() + 3600000);  // 1 hour expiration
+
         await prisma.passwordResetTokens.create({
             data: {
                 email,
@@ -267,9 +273,18 @@ userRouter.post('/reset-password', async (req, res) => {
             }
         });
 
+        const resetLink = `http://localhost:3000/reset-password?token=${resetToken}`;
+        await sendEmail(email, "Réinitialisation de mot de passe", `
+        Bonjour,
+        Vous avez demandé une réinitialisation de votre mot de passe. Cliquez sur le lien suivant pour réinitialiser votre mot de passe : 
+        ${resetLink}
+        Ce lien expirera dans 1 heure.
+        Si vous n'avez pas fait cette demande, ignorez cet email.
+      `);
+
         res.json({
             success: true,
-            message: "Un jeton de réinitialisation a été envoyé à votre email."
+            message: "Un email de réinitialisation a été envoyé."
         });
     } catch (error) {
         console.error("Erreur lors de la création du jeton de réinitialisation :", error);

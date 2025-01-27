@@ -310,7 +310,7 @@ userRouter.post('/forgot-password', async (req, res) => {
             }
         });
 
-        const resetLink = `http://localhost:4000/reset-password?token=${resetToken}`;
+        const resetLink = `http://51.91.208.111:4000/reset-password?token=${resetToken}`;
         await sendPasswordResetEmail(mail, user.firstName, resetLink);
 
         res.json({ message: "Nous avons envoyé un email de réinitialisation !" });
@@ -352,7 +352,7 @@ userRouter.post('/reset-password', async (req, res) => {
             }
         });
 
-        const resetLink = `http://localhost:4000/reset-password?token=${resetToken}`;
+        const resetLink = `http://51.91.208.111:4000/reset-password?token=${resetToken}`;
         await sendPasswordResetEmail(email, user.firstName, resetLink);
 
         res.json({

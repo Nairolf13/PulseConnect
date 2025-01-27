@@ -74,7 +74,6 @@ const sendWelcomeEmail = async (to, firstName) => {
             subject: "Bienvenue chez PulseConnect",
             html: htmlContent 
         });
-        console.log("Email de bienvenue envoyé");
     } catch (error) {
         console.error("Erreur lors de l'envoi de l'email :", error);
     }
@@ -261,7 +260,6 @@ userRouter.post('/register', async (req, res) => {
             }
         });
 
-        console.log("Utilisateur enregistré :", user);
 
         sendWelcomeEmail(user.mail, user.firstName).catch(err => {
             console.error("Erreur lors de l'envoi de l'email :", err);
@@ -363,8 +361,7 @@ userRouter.get('/reset-password', async (req, res) => {
 });
 
 userRouter.post('/reset-password', async (req, res) => { 
-    console.log("Route /reset-password atteinte !");
-    console.log("Body reçu :", req.body);
+  
 
     try {
         const { email, token, newPassword, confirmPassword } = req.body;

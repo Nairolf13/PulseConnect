@@ -65,6 +65,7 @@ h1 {
     margin-bottom: 15px;
     padding: 15px;
     border-radius: 8px;
+    position: relative;
 }
 
 .project-members {
@@ -105,7 +106,7 @@ img {
 
 .project-item a {
     position: relative;
-    left: 75%;
+    left: 36%;
     background-color: aquamarine;
     padding: 10px;
     border-radius: 8px;
@@ -137,28 +138,65 @@ img {
 }
 
 .menu-dropdown {
-    position: relative;
-    left: 50%;
-    top: 30%;
-    transform: translateX(-50%);
-    background-color: #1e1e1e;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    text-align: center;
+    position: absolute;
+    top: 25%;
+    right: 21%;
+    background-color: #2a2a2a;
+    border: 1px solid #3d3d3d;
+    border-radius: 5px;
+    padding: 15px;
     z-index: 1000;
-    width: 300px;
-    max-width: 300px;
+    min-width: 250px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    animation: dropdown-fade 0.3s ease;
 }
 
-.menu-dropdown h2{
-    color: #a0a0a0;
-    font-size: 1rem;
-    font-weight: 500;
-    line-height: 1.2;
+.menu-dropdown h2 {
+    color: white;
+    font-size: 1em;
+    margin-bottom: 15px;
+    text-align: center;
 }
 
+.menu-dropdown .edit-project,
+.menu-dropdown .delete {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
 
+.menu-dropdown .edit-project {
+    background-color: aquamarine;
+    color: black;
+}
+
+.menu-dropdown .delete {
+    background-color: #f44336;
+    color: white;
+}
+
+.menu-dropdown .edit-project:hover {
+    background-color:#17a2b8;
+}
+
+.menu-dropdown .delete:hover {
+    background-color: #d32f2f;
+}
+
+@keyframes dropdown-fade {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 
 .menu-btn {
     position: absolute;
@@ -188,22 +226,17 @@ img {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    /* ajuste l'espace entre le nom et le bouton */
     padding: 10px 0;
 }
 
 .Btn {
     display: flex;
     align-items: center;
-    /* Centrage vertical des éléments */
     justify-content: center;
-    /* Centre l'icône initialement */
     width: 45px;
-    /* Taille initiale du bouton circulaire */
     height: 45px;
     border: none;
     border-radius: 50%;
-    /* Bouton circulaire */
     cursor: pointer;
     position: relative;
     overflow: hidden;
@@ -215,11 +248,8 @@ img {
 .sign {
     display: flex;
     align-items: center;
-    /* Centrage vertical de l'icône */
     justify-content: center;
-    /* Centrage horizontal dans l'espace alloué */
     transition: transform 0.3s ease;
-    /* Animation fluide pour déplacer l'icône */
 }
 
 .sign svg {
@@ -310,6 +340,7 @@ img {
 }
 
 .follower-item {
+    cursor: pointer;
     border: 1px solid white;
     border-radius: 8px;
     padding: 5px;
@@ -318,8 +349,12 @@ img {
 
 .selected-followers-container {
     display: flex;
-
-    gap: 10px;
+    flex-wrap: wrap;  
+    max-width: 100%;  
+    gap: 10px;  
+    align-items: center;  
+    overflow: hidden;  
+    margin-left: 20px;
 }
 
 .selected-follower {
@@ -328,6 +363,8 @@ img {
     border: 1px solid #ccc;
     padding: 5px;
     border-radius: 5px;
+    max-width: 120px;
+    min-width: 120px;
 }
 
 .selected-follower img {
@@ -380,6 +417,129 @@ img {
     cursor: pointer;
 }
 
+.add-participant-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: #2a2a2a;
+    border: 1px solid #3d3d3d;
+    border-radius: 5px;
+    padding: 15px;
+    z-index: 1000;
+    width: 300px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    animation: dropdown-appear 0.3s ease;
+}
+
+.add-participant-dropdown h3 {
+    color: white;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.participant-search {
+    margin-bottom: 15px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 8px;
+    background-color: #3a3a3a;
+    border: 1px solid #4d4d4d;
+    color: white;
+    border-radius: 3px;
+}
+
+.follower-list {
+    margin-left: 180px;
+    padding: 10px;
+    max-height: 183.5px;
+    overflow-y: auto;
+}
+
+.follower-item {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.follower-item:hover {
+    background-color: #3d3d3d;
+}
+
+.follower-item img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.show-more-followers {
+    text-align: center;
+    color: #888;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.selected-participants {
+    margin-bottom: 15px;
+}
+
+.selected-participants h4 {
+    color: white;
+    margin-bottom: 10px;
+}
+
+.selected-participants-list {
+    display: flex;
+    gap: 10px;
+}
+
+.dropdown-actions {
+    display: flex;
+    justify-content: space-between;
+}
+
+.dropdown-actions button {
+    width: 48%;
+    padding: 10px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.confirm-add-participants {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.cancel-add-participants {
+    background-color: #f44336;
+    color: white;
+}
+
+.confirm-add-participants:hover {
+    background-color: #45a049;
+}
+
+.cancel-add-participants:hover {
+    background-color: #d32f2f;
+}
+
+@keyframes dropdown-appear {
+    from {
+        opacity: 0;
+        transform: scale(0.7);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
 @media (max-width: 768px) {
     .projects-container {
         left: 0;
@@ -421,4 +581,33 @@ img {
         width: 0;
         padding-right: 0;
     }
+}
+
+#searchUser-55{
+    margin-left: 159px;
+    border-radius: 5px;
+}
+
+.follower-list::-webkit-scrollbar {
+    width: 8px; 
+}
+
+.follower-list::-webkit-scrollbar-track {
+    background: #3a3a3a; 
+    border-radius: 10px;
+}
+
+.follower-list::-webkit-scrollbar-thumb {
+    background: #4d4d4d; 
+    border-radius: 10px;
+    transition: background 0.3s ease;
+}
+
+.follower-list::-webkit-scrollbar-thumb:hover {
+    background: #5d5d5d; 
+}
+
+.follower-list {
+    scrollbar-width: thin;
+    scrollbar-color: #4d4d4d #3a3a3a;
 }

@@ -80,11 +80,43 @@
 							</div>
 						{% endif %}
 
+						{% if project.role == 'owner' %}
+							<div class="add-participant-dropdown" id="add-participant-dropdown-{{ project.id_project }}" style="display: none;">
+								<h3>Ajouter des participants</h3>
+								<div class="participant-search">
+									<input type="text" id="searchUser-{{ project.id_project }}" placeholder="Rechercher un utilisateur" class="search-input">
+									<div id="followerList-{{ project.id_project }}" class="follower-list">
+										{% set limitedFollowers = followers|slice(0, 3) %}
+										{% for follower in limitedFollowers %}
+											<div class="follower-item" data-user-id="{{ follower.id_user }}">
+												<img src="{{ follower.picture }}" alt="Photo de profil">
+												<span>{{ follower.userName }}</span>
+											</div>
+										{% endfor %}
+										{% if followers|length > 3 %}
+											<div class="show-more-followers">
+												<span>+{{ followers|length - 3 }} autres</span>
+											</div>
+										{% endif %}
+									</div>
+								</div>
+								<div class="selected-participants">
+									<h4>Participants sélectionnés (max 3)</h4>
+									<div id="selectedParticipantsContainer-{{ project.id_project }}" class="selected-participants-list"></div>
+								</div>
+								<div class="dropdown-actions">
+									<button class="confirm-add-participants" data-project-id="{{ project.id_project }}">Ajouter</button>
+									<button class="cancel-add-participants">Annuler</button>
+								</div>
+							</div>
+						{% endif %}
+
 						<div id="btn-update">
+							<a href="/project/{{ project.id_project }}" class="view-project-link">Voir le projet</a>
 							<button class="save-changes" style="display: none;">Enregistrer</button>
 							<button class="cancel-changes" style="display: none;">Annuler</button>
 						</div>
-						<a href="/project/{{ project.id_project }}">Voir le projet</a>
+						
 					</li>
 					<div id="confirmModal" class="modal">
 						<div class="modal-content">

@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const searchInput = document.querySelector(`#searchUser-${projectId}`);
         const followerList = document.querySelector(`#followerList-${projectId}`);
         const selectedFollowersInput = document.querySelector(`#selectedFollowers-${projectId}`);
+        const viewProjectLink = item.querySelector('.view-project-link');
 
         let originalTitle, originalDescription;
         let selectedFollowers = new Map();
@@ -74,6 +75,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 cancelChangesBtn.style.display = 'inline-block';
                 menuDropdown.style.display = 'none';
 
+                // Cacher le lien "Voir le projet"
+                if (viewProjectLink) {
+                    viewProjectLink.style.display = 'none';
+                }
+
                 if (searchContainer) {
                     searchContainer.style.display = 'block';
                     searchInput.style.display = 'block';
@@ -113,6 +119,12 @@ document.addEventListener('DOMContentLoaded', function () {
                         participantButtons.forEach(btn => btn.style.display = 'none');
                         saveChangesBtn.style.display = 'none';
                         cancelChangesBtn.style.display = 'none';
+
+                        // Réafficher le lien "Voir le projet"
+                        if (viewProjectLink) {
+                            viewProjectLink.style.display = 'inline-block';
+                        }
+
                         if (searchInput) searchInput.style.display = 'none';
                         if (searchContainer) searchContainer.style.display = 'none';
                         selectedFollowers.clear();
@@ -140,6 +152,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 participantButtons.forEach(btn => btn.style.display = 'none');
                 saveChangesBtn.style.display = 'none';
                 cancelChangesBtn.style.display = 'none';
+
+                // Réafficher le lien "Voir le projet"
+                if (viewProjectLink) {
+                    viewProjectLink.style.display = 'inline-block';
+                }
+
                 if (searchInput) searchInput.style.display = 'none';
                 if (searchContainer) searchContainer.style.display = 'none';
                 selectedFollowers.clear();

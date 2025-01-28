@@ -91,12 +91,15 @@ select {
     align-items: center;
     padding: 5px;
     border: none;
-    width: 64%;
+    width: 65%;
     box-sizing: border-box;
     background-color: #000000;
     color: #ffffff;
     font-size: 0.9em;
     overflow-wrap: break-word;
+}
+select#genre{
+    margin-right: 4px;
 }
 
 textarea {

@@ -674,6 +674,10 @@ form button[type="button"] {
     color: #a0a0a0;
 }
 
+.file-description{
+    margin-left: 11px;
+}
+
 .confirm-delete {
     background-color: red;
     color: white;

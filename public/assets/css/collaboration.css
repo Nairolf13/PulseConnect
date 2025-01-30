@@ -1,6 +1,5 @@
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
     color: white;
     background-color: black;
     display: flex;
@@ -828,13 +827,17 @@ input[type="file"]::-webkit-file-upload-button:hover {
 .custom-file::before {
     content: 'Choisir un fichier';
     display: inline-block;
-    background-color: aquamarine;
+    background-color: #88c0fc;
     color: black;
     padding: 10px;
     border-radius: 5px;
     cursor: pointer;
     z-index: 1;
     position: relative;
+}
+
+.custom-file:hover::before {
+    background-color: #2bc2d9;
 }
 
 .file-preview {
@@ -962,10 +965,6 @@ input[type="file"]::-webkit-file-upload-button:hover {
 
    
 }
-
-/* @media (max-width: 960px) {
-   
-} */
 
 @media(max-width:986px) {
 

@@ -1,3 +1,5 @@
+
+
 body {
     background-color: black;
     display: flex;
@@ -5,7 +7,6 @@ body {
     align-items: flex-start;
     min-height: 100vh;
     margin: 0;
-    font-family: Arial, sans-serif;
     transition: transform 0.2s ease;
 }
 
@@ -89,6 +90,7 @@ main {
 }
 
 .container li h2 {
+    margin-top: 10px;
     font-size: 18px;
     font-weight: bold;
     margin-bottom: 10px;

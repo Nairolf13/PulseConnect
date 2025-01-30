@@ -217,7 +217,6 @@ contentRouter.post('/like/:assetId', authguard, async (req, res) => {
         const assetId = parseInt(req.params.assetId, 10);
         const userId = req.session.users.id_user;
 
-        // Vérifier si l'utilisateur a déjà aimé cet asset
         const existingLike = await prisma.likes.findFirst({
             where: { id_user: userId, id_asset: assetId },
         });
@@ -225,31 +224,26 @@ contentRouter.post('/like/:assetId', authguard, async (req, res) => {
         let likeCount = 0;
 
         if (existingLike) {
-            // Si l'utilisateur a déjà aimé, on supprime le like
             await prisma.likes.delete({ where: { id: existingLike.id } });
-            likeCount = -1; // Indiquer qu'on a retiré un like
+            likeCount = -1; 
         } else {
-            // Sinon, on crée un nouveau like
             await prisma.likes.create({
                 data: {
                     id_user: userId,
                     id_asset: assetId,
                 },
             });
-            likeCount = 1; // Indiquer qu'on a ajouté un like
+            likeCount = 1;
         }
 
-        // Récupérer le nombre de likes mis à jour pour cet asset
         const updatedLikeCount = await prisma.likes.count({
             where: { id_asset: assetId },
         });
 
-        // Retourner la réponse en JSON
         res.json({ success: true, likeCount: updatedLikeCount });
     } catch (error) {
         console.error("Erreur lors du like/délike :", error);
 
-        // Renvoi d'une réponse JSON d'erreur avec un code 500
         res.status(500).json({ success: false, message: "Erreur lors du like/délike." });
     }
 });
@@ -258,23 +252,20 @@ contentRouter.get('/likes/users/:assetId', async (req, res) => {
     try {
         const assetId = parseInt(req.params.assetId, 10);
 
-        // Requête pour récupérer les utilisateurs qui ont liké
         const likes = await prisma.likes.findMany({
             where: { id_asset: assetId },
             include: { Users: { select: { userName: true, firstName: true, lastName: true } } },
         });
 
-        const users = likes.map(like => like.Users); // On récupère les utilisateurs associés au like
+        const users = likes.map(like => like.Users); 
 
         if (users.length > 0) {
-            // Retourner la liste des utilisateurs uniquement si la réponse est encore ouverte
             return res.json({ users: users });
         } else {
-            return res.json({ users: [] }); // Retourner une réponse vide si aucun utilisateur
+            return res.json({ users: [] });
         }
     } catch (error) {
         console.error("Erreur lors de la récupération des utilisateurs ayant liké:", error);
-        // En cas d'erreur, assurez-vous de renvoyer une seule fois une réponse
         return res.status(500).json({ success: false, message: "Erreur lors de la récupération des utilisateurs." });
     }
 });
@@ -366,7 +357,7 @@ contentRouter.get('/comments/count/:assetId', async (req, res) => {
 contentRouter.put('/comment/:commentId', authguard, async (req, res) => {
     try {
         const commentId = parseInt(req.params.commentId, 10);
-        const userId = req.session.users.id_user; // ID de l'utilisateur connecté
+        const userId = req.session.users.id_user; 
         const { content } = req.body;
 
         const comment = await prisma.commentaires.findUnique({
@@ -414,7 +405,6 @@ contentRouter.delete('/comment/:commentId', authguard, async (req, res) => {
             where: { id: commentId },
         });
 
-        // Compter les commentaires restants
         const remainingComments = await prisma.commentaires.count({
             where: { id_asset: comment.id_asset },
         });

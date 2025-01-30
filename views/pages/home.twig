@@ -24,7 +24,10 @@
 				{% else %}
 					{% for content in contents %}
 						<li>
-							<p>{{ content.Users.userName }}</p>
+							<div class="author" id="author-{{ content.id }}">	
+								<a href="/personalContent"><img src="{{ content.Users.picture }}" alt="Photo de profil" class="profile-pic" onerror="this.src='/../../assets/imgs/Pp.webp'"/></a>
+								<p>{{ content.Users.userName }}</p>
+							</div>
 							<h2>{{ content.name }}</h2>
 							<p>{{ content.description }}</p>
 
@@ -66,7 +69,6 @@
 								<button id="shareButton-{{ content.id }}" class="share-button">
 									<img src="/../../assets/imgs/share.png" alt="Partager" style="width: 20px; height: 20px;">
 								</button>
-
 							</div>
 
 							<div class="comments-container" id="comments-{{ content.id }}" style="display: none;">
@@ -83,7 +85,6 @@
 														<button id="deleteCommentBtn">Supprimer</button>
 													</div>
 												</div>
-
 											</div>
 											<p>
 												<strong>{{ comment.Users.userName }}</strong>:

@@ -173,23 +173,12 @@ section {
     transition: box-shadow 0.3s ease-in-out;
 }
 
-.container audio,
-.container video {
-    width: 100%;
-    border-radius: 10px;
-    margin-top: 10px;
-}
 
 .container li:hover {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
     transition: box-shadow 0.3s ease-in-out;
 }
 
-.container video {
-    width: 100%;
-    border-radius: 10px;
-    margin-top: 10px;
-}
 
 .slider-container {
     overflow: hidden;
@@ -215,6 +204,11 @@ section {
     background-color: #1e1e1e;
     border-radius: 10px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    justify-content: center;
+    align-items: center;
+    width: 299px;
+    height: 200px;
+    overflow: hidden;
 }
 
 .slider h3,
@@ -226,10 +220,22 @@ section {
 
 audio,
 video {
-    min-height: 140px;
+    max-height: 125px;
+    min-height: 125px;
     width: 80%;
     border-radius: 10px;
     margin-top: 10px;
+    object-fit: cover; /* Ajuste sans distorsion */
+    border-radius: 10px;
+}
+
+.items video {
+    display: block;
+    width: 100%; /* Remplit le conteneur */
+    max-width: 400px; /* Ajuste selon ton design */
+    height: 250px; /* Taille fixe pour uniformiser */
+    object-fit: cover; /* Ajuste le contenu sans distorsion */
+    border-radius: 10px;
 }
 
 .prev,

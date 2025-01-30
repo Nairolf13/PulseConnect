@@ -326,49 +326,56 @@ window.addEventListener('click', (event) => {
 });
 
 
-
-
-
-
-
-// Récupérer la modal et ses boutons
 const optionsModal = document.getElementById('optionsModal');
 const editCommentBtn = document.getElementById('editCommentBtn');
 const deleteCommentBtn = document.getElementById('deleteCommentBtn');
 const closeModalBtn = document.getElementById('closeModalBtn');
-
-// Variables pour gérer la suppression
 const deleteModal = document.getElementById('deleteModal');
 const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
 const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
 
-// Variable pour stocker l'ID du commentaire en cours de traitement
 let currentCommentId = null;
 
-// Ouvrir la modal pour les options
 document.querySelectorAll('.options-btn').forEach(button => {
     button.addEventListener('click', (event) => {
         const comment = event.target.closest('.comment');
         currentCommentId = comment.getAttribute('id').replace('comment-', '');
 
-        // Afficher la modal
         optionsModal.style.display = 'flex';
     });
 });
 
-// Modifier un commentaire directement
 editCommentBtn.addEventListener('click', () => {
     const commentElement = document.querySelector(`#comment-${currentCommentId} .comment-content`);
-
-    // Passer en mode édition
     const currentText = commentElement.textContent;
+
+    const editContainer = document.createElement('div');
+    editContainer.className = 'edit-container';
+
     const input = document.createElement('textarea');
     input.value = currentText;
     input.className = 'edit-comment-input';
-    commentElement.replaceWith(input);
+    input.style.width = '100%';
+    input.style.height = 'auto';
+    input.style.overflow = 'hidden';
+    input.style.resize = 'none';
+    input.addEventListener('input', () => {
+        input.style.height = 'auto';
+        input.style.height = input.scrollHeight + 'px';
+    });
+    
+    const saveButton = document.createElement('button');
+    saveButton.textContent = 'Enregistrer';
+    saveButton.className = 'save-comment-btn';
 
-    // Gérer la validation de la modification
-    input.addEventListener('blur', async () => {
+    editContainer.appendChild(input);
+    editContainer.appendChild(saveButton);
+    
+    commentElement.replaceWith(editContainer);
+    input.focus();
+    input.dispatchEvent(new Event('input'));
+
+    saveButton.addEventListener('click', async () => {
         const updatedText = input.value;
 
         try {
@@ -385,30 +392,25 @@ editCommentBtn.addEventListener('click', () => {
                 const newContentElement = document.createElement('p');
                 newContentElement.textContent = updatedComment.content;
                 newContentElement.className = 'comment-content';
-                input.replaceWith(newContentElement);
+                editContainer.replaceWith(newContentElement);
             } else {
                 alert("Erreur lors de la modification du commentaire.");
-                input.replaceWith(commentElement); // Revenir au texte d'origine en cas d'erreur
+                editContainer.replaceWith(commentElement);
             }
         } catch (error) {
             console.error("Erreur :", error);
-            input.replaceWith(commentElement); // Revenir au texte d'origine en cas d'erreur
+            editContainer.replaceWith(commentElement);
         }
     });
 
-    // Focus sur le champ pour édition
-    input.focus();
-    optionsModal.style.display = 'none'; // Fermer la modal
+    optionsModal.style.display = 'none';
 });
 
-// Supprimer un commentaire avec confirmation
 deleteCommentBtn.addEventListener('click', () => {
-    deleteModal.style.display = 'flex'; // Ouvrir la modal de confirmation
-    optionsModal.style.display = 'none'; // Fermer la modal d'options
+    deleteModal.style.display = 'flex'; 
+    optionsModal.style.display = 'none'; 
 });
 
-// Confirmer la suppression
-// Confirmer la suppression
 confirmDeleteBtn.addEventListener('click', async () => {
     try {
         const response = await fetch(`/comment/${currentCommentId}`, {
@@ -416,33 +418,28 @@ confirmDeleteBtn.addEventListener('click', async () => {
         });
 
         if (response.ok) {
-            // Sauvegarder la position actuelle de la page
             const scrollPosition = window.scrollY;
 
-            // Rafraîchir la page et revenir à la position actuelle
             window.location.reload();
-            window.scrollTo(0, scrollPosition); // Revenir à la position sauvegardée
+            window.scrollTo(0, scrollPosition); 
         } else {
             alert("Erreur lors de la suppression du commentaire.");
         }
     } catch (error) {
         console.error("Erreur :", error);
     }
-    deleteModal.style.display = 'none'; // Fermer la modal de confirmation
+    deleteModal.style.display = 'none'; 
 });
 
 
-// Annuler la suppression
 cancelDeleteBtn.addEventListener('click', () => {
-    deleteModal.style.display = 'none'; // Fermer la modal de confirmation
+    deleteModal.style.display = 'none';
 });
 
-// Fermer la modal d'options
 closeModalBtn.addEventListener('click', () => {
     optionsModal.style.display = 'none';
 });
 
-// Fermer la modal si l'utilisateur clique en dehors
 window.addEventListener('click', (event) => {
     if (event.target === optionsModal) {
         optionsModal.style.display = 'none';

@@ -367,11 +367,11 @@ userRouter.get('/reset-password', async (req, res) => {
 });
 
 userRouter.post('/reset-password', async (req, res) => {
-
-
     try {
         const { email, token, newPassword, confirmPassword } = req.body;
 
+        const passwordRegex = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[A-Za-z0-9!@#$%^&*]{12,}$/;
+        
         if (email) {
             const user = await prisma.users.findUnique({
                 where: { mail: email }
@@ -382,7 +382,7 @@ userRouter.post('/reset-password', async (req, res) => {
             }
 
             const resetToken = crypto.randomBytes(32).toString('hex');
-            const expiresAt = new Date(Date.now() + 3600000);
+            const expiresAt = new Date(Date.now() + 3600000); // 1 heure
 
             await prisma.passwordResetTokens.deleteMany({
                 where: { email: user.mail }
@@ -410,7 +410,7 @@ userRouter.post('/reset-password', async (req, res) => {
         const passwordResetToken = await prisma.passwordResetTokens.findFirst({
             where: {
                 token,
-                expiresAt: { gt: new Date() }
+                expiresAt: { gt: new Date() } 
             }
         });
 
@@ -430,6 +430,12 @@ userRouter.post('/reset-password', async (req, res) => {
             return res.status(400).json({ error: "Les mots de passe ne correspondent pas." });
         }
 
+        if (!passwordRegex.test(newPassword)) {
+            return res.status(400).json({
+                error: "Le mot de passe doit contenir au moins 12 caractères, une majuscule, un chiffre, et un caractère spécial !"
+            });
+        }
+
         await prisma.users.update({
             where: { id_user: user.id_user },
             data: { password: newPassword }
@@ -439,13 +445,12 @@ userRouter.post('/reset-password', async (req, res) => {
             where: { email: user.mail }
         });
 
-        res.json({ message: "Mot de passe réinitialisé avec succès !" });
+        return res.json({ message: "Mot de passe réinitialisé avec succès !" });
     } catch (error) {
         console.error("Erreur lors de la réinitialisation du mot de passe :", error);
         res.status(500).json({ error: "Une erreur est survenue. Veuillez réessayer plus tard." });
     }
 });
-
 
 
 userRouter.get("/login", (req, res) => {

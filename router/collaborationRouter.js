@@ -94,7 +94,9 @@ collaborationRouter.get('/collaboration', authguard, async (req, res) => {
             }
         });
 
-        res.render('pages/addCollaboration.twig', { users: uniqueUsers });
+        res.render('pages/addCollaboration.twig', {
+            title: "Créer un projet" , 
+            users: uniqueUsers });
 
     } catch (err) {
         console.error(err);
@@ -306,7 +308,9 @@ collaborationRouter.get("/project/:id_project", authguard, async (req, res) => {
                 : [],
         };
 
-        res.render("pages/collaboration.twig", { project: projectDetails, genres: genresEnum });
+        res.render("pages/collaboration.twig", {
+            title: projectDetails.name,
+            project: projectDetails, genres: genresEnum });
     } catch (err) {
         console.error(err);
         res.status(500).send("Erreur lors de la récupération du projet");
@@ -404,7 +408,7 @@ collaborationRouter.get('/myProjects', authguard, async (req, res) => {
 
 
         res.render('pages/projects.twig', {
-            title: 'My Projects',
+            title: 'Mes projets',
             projects: projectDetails,
         });
     } catch (error) {

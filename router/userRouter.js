@@ -72,7 +72,7 @@ const sendWelcomeEmail = async (to, firstName) => {
             from: `"PulseConnect" <${process.env.EMAIL_USER}>`,
             to,
             subject: "Bienvenue chez PulseConnect",
-            html: htmlContent 
+            html: htmlContent
         });
     } catch (error) {
         console.error("Erreur lors de l'envoi de l'email :", error);
@@ -156,15 +156,15 @@ const sendPasswordResetEmail = async (to, firstName, resetLink) => {
             from: `"PulseConnect" <${process.env.EMAIL_USER}>`,
             to,
             subject: "Réinitialisation de mot de passe",
-            html: htmlContent 
+            html: htmlContent
         });
         console.log("Email de réinitialisation de mot de passe envoyé");
     } catch (error) {
         console.error("Erreur lors de l'envoi de l'email de réinitialisation : ", error);
     }
 };
- 
-userRouter.get('/', async (req, res) => {  
+
+userRouter.get('/', async (req, res) => {
     try {
 
         const topUsers = await prisma.users.findMany({
@@ -176,33 +176,39 @@ userRouter.get('/', async (req, res) => {
                     _count: 'desc',
                 },
             },
-            take: 5, 
+            take: 5,
         });
 
         const topLikedPosts = await prisma.assets.findMany({
             include: {
-                likes: true,  
-                Users: true  
+                likes: true,
+                Users: true
             },
             orderBy: {
                 likes: {
                     _count: 'desc',
                 },
             },
-            take: 6, 
+            take: 6,
         });
-        
-        res.render('pages/welcome.twig', { topUsers, topLikedPosts });
+
+        res.render('pages/welcome.twig', {
+            title: "PulseConnect",
+            topUsers,
+            topLikedPosts
+        });
     } catch (error) {
         console.error("Erreur lors de la récupération des top artistes et contenus likés : ", error);
         res.status(500).send("Erreur interne du serveur");
     }
 });
-  
-userRouter.get('/register', (req, res) => {  
-    res.render('pages/register.twig')    
-}) 
- 
+
+userRouter.get('/register', (req, res) => {
+    res.render('pages/register.twig',{
+        title: "Inscription - PulseConnect"
+    })
+})
+
 userRouter.post('/register', async (req, res) => {
     try {
         const {
@@ -265,7 +271,7 @@ userRouter.post('/register', async (req, res) => {
             console.error("Erreur lors de l'envoi de l'email :", err);
         });
 
-      
+
         res.redirect('/login');
     } catch (error) {
         console.error("Erreur lors de l'inscription :", error);
@@ -324,44 +330,44 @@ userRouter.post('/forgot-password', async (req, res) => {
 
 userRouter.get('/reset-password', async (req, res) => {
     const { token } = req.query;
-    
+
     if (!token) {
-        return res.render('pages/forgot-password.twig', { 
+        return res.render('pages/forgot-password.twig', {
             title: 'Erreur',
-            error: 'Aucun token de réinitialisation fourni.' 
+            error: 'Aucun token de réinitialisation fourni.'
         });
     }
 
     try {
         const passwordResetToken = await prisma.passwordResetTokens.findFirst({
-            where: { 
+            where: {
                 token: token,
-                expiresAt: { gt: new Date() } 
+                expiresAt: { gt: new Date() }
             }
         });
 
         if (!passwordResetToken) {
-            return res.render('pages/forgot-password.twig', { 
+            return res.render('pages/forgot-password.twig', {
                 title: 'Lien expiré',
-                error: 'Le lien de réinitialisation est invalide ou a expiré.' 
+                error: 'Le lien de réinitialisation est invalide ou a expiré.'
             });
         }
 
-        res.render('pages/reset-password.twig', { 
+        res.render('pages/reset-password.twig', {
             title: 'Réinitialisation de mot de passe',
-            token 
+            token
         });
     } catch (error) {
         console.error('Erreur lors de la validation du token :', error);
-        res.render('pages/forgot-password.twig', { 
+        res.render('pages/forgot-password.twig', {
             title: 'Erreur',
-            error: 'Une erreur est survenue. Veuillez réessayer.' 
+            error: 'Une erreur est survenue. Veuillez réessayer.'
         });
     }
 });
 
-userRouter.post('/reset-password', async (req, res) => { 
-  
+userRouter.post('/reset-password', async (req, res) => {
+
 
     try {
         const { email, token, newPassword, confirmPassword } = req.body;
@@ -376,7 +382,7 @@ userRouter.post('/reset-password', async (req, res) => {
             }
 
             const resetToken = crypto.randomBytes(32).toString('hex');
-            const expiresAt = new Date(Date.now() + 3600000); 
+            const expiresAt = new Date(Date.now() + 3600000);
 
             await prisma.passwordResetTokens.deleteMany({
                 where: { email: user.mail }
@@ -402,9 +408,9 @@ userRouter.post('/reset-password', async (req, res) => {
         }
 
         const passwordResetToken = await prisma.passwordResetTokens.findFirst({
-            where: { 
+            where: {
                 token,
-                expiresAt: { gt: new Date() } 
+                expiresAt: { gt: new Date() }
             }
         });
 
@@ -457,15 +463,15 @@ userRouter.post("/login", async (req, res) => {
             throw { mail: "Cet utilisateur n'est pas inscrit !" };
         }
 
-       
-        if (!(await bcrypt.compare(req.body.password, users.password))) { 
+
+        if (!(await bcrypt.compare(req.body.password, users.password))) {
             throw { password: "Erreur mauvais mot de passe !" };
         }
 
 
-        req.session.users =  {
+        req.session.users = {
             id_user: users.id_user,
-            userName:users.userName
+            userName: users.userName
         }
         res.redirect("/home");
     } catch (error) {
@@ -476,7 +482,7 @@ userRouter.post("/login", async (req, res) => {
     }
 });
 
-userRouter.get("/logout", (req, res) => { 
+userRouter.get("/logout", (req, res) => {
     req.session.destroy()
     res.redirect("/")
 
@@ -485,9 +491,9 @@ userRouter.get("/logout", (req, res) => {
 userRouter.get("/home", authguard, async (req, res) => {
     try {
         const users = await prisma.users.findUnique({
-            where: { id_user: req.session.users.id_user } 
+            where: { id_user: req.session.users.id_user }
         });
-        
+
         const contents = await prisma.assets.findMany({
             where: {
                 isPublic: true
@@ -530,18 +536,19 @@ userRouter.get("/home", authguard, async (req, res) => {
                 }
             }
         });
-        
+
         const contentsWithCommentsAndCounts = contents.map(content => ({
             ...content,
             Commentaires: commentaires.filter(comment => comment.id_asset === content.id),
             commentCount: commentCounts.find(count => count.id_asset === content.id)?._count?.id_asset || 0
         }));
-        
-        res.render("pages/home.twig", { 
-            users, 
-            contents: contentsWithCommentsAndCounts 
+
+        res.render("pages/home.twig", {
+            title: "Accueil - PulseConnect",
+            users,
+            contents: contentsWithCommentsAndCounts
         });
-        
+
     } catch (error) {
         console.error("Erreur lors du rendu de la page d'accueil :", error);
         res.render("pages/home.twig", { error });
@@ -560,11 +567,11 @@ userRouter.get("/update", authguard, async (req, res) => {
         }
         res.render("pages/account.twig", {
             users: req.session.users,
-            users 
+            users
         });
     } catch (error) {
         console.error("Erreur lors de la récupération de l'utilisateur :", error);
-        res.redirect("/login"); 
+        res.redirect("/login");
     }
 });
 

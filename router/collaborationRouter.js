@@ -4,89 +4,48 @@ const authguard = require("../services/authguard");
 const upload = require("../services/downloadExtension");
 const axios = require('axios');
 require('dotenv').config();
-
-
-
 const prisma = new PrismaClient()
 
 const genresEnum = [
-    "Texte",
-    "Pop",
-    "Rock",
-    "HipHop",
-    "Rap",
-    "Jazz",
-    "Classical",
-    "Reggae",
-    "Country",
-    "Electronic",
-    "RnB",
-    "Metal",
-    "Alternative",
-    "Blues",
-    "Indie",
-    "Folk",
-    "Latin",
-    "Soul",
-    "Funk",
-    "Punk",
-    "Disco",
-    "House",
-    "Techno",
-    "Dubstep",
-    "Ambient",
-    "Ska",
-    "Grunge",
-    "Gospel",
-    "Bluegrass",
-    "Swing",
-    "Industrial",
-    "PostRock",
-    "Emo",
-    "KPop",
-    "JPop",
-    "Cumbia",
-    "Salsa",
-    "BossaNova",
-    "Tango",
-    "Afrobeat",
-    "Zydeco",
-    "Trap",
-    "LoFi",
-    "Experimental",
-    "ArtRock",
-    "Shoegaze",
-    "NewWave",
-    "Britpop",
-    "GothicRock",
-    "BaroquePop",
-    "SynthPop",
-    "HardRock",
-    "PowerPop",
-    "SurfRock",
-    "PostPunk",
-    "ChristianRock",
-    "Celtic",
-    "Cajun",
-    "NoiseRock",
-    "StonerRock",
-    "ProgressiveRock",
-    "MelodicPunk",
-    "SkaPunk",
-    "MathRock",
-    "TripHop",
-    "DreamPop",
-    "Grime",
-    "NuMetal",
-    "SouthernRock",
-    "DarkWave",
-    "Vaporwave",
-    "Chiptune",
-    "SeaShanty",
-    "MusicalTheatre",
-    "Soundtrack",
-    "Instrumental"
+    "Texte","Pop","Rock","HipHop","Rap","Jazz","Classical","Reggae","Country", "Electronic","RnB","Metal","Alternative","Blues","Indie","Folk","Latin","Soul","Punk",
+    "Disco","House","Techno", "Dubstep","Ambient","Ska","Grunge","Gospel","Bluegrass","Swing","Industrial","PostRock","Emo","KPop","JPop","Cumbia","Salsa","BossaNova",
+    "Tango", "Afrobeat", "Zydeco", "Trap", "LoFi", "Experimental", "ArtRock", "Shoegaze", "NewWave", "Britpop", "GothicRock", "BaroquePop", "SynthPop", "HardRock",
+    "PowerPop", "SurfRock", "PostPunk", "ChristianRock", "Celtic", "Cajun", "NoiseRock", "StonerRock", "ProgressiveRock", "MelodicPunk", "SkaPunk", "MathRock", "TripHop",
+    "DreamPop", "Grime","NuMetal","SouthernRock","DarkWave", "Vaporwave", "Chiptune", "SeaShanty", "MusicalTheatre", "Soundtrack", "Instrumental"
 ];
+
+collaborationRouter.post('/createProject', authguard, async (req, res) => {
+    const { projectName, description, selectedFollowers } = req.body;
+    const userId = req.session.users.id_user;
+
+    try {
+        const followersArray = Array.isArray(selectedFollowers)
+            ? selectedFollowers
+            : JSON.parse(selectedFollowers || "[]");
+
+
+        const project = await prisma.projects.create({
+            data: {
+                name: projectName,
+                description: description,
+                UsersToProjects: {
+                    create: [
+                        { id_user: userId, role: 'owner' },
+                        ...followersArray.map(followerId => ({
+                            id_user: parseInt(followerId),
+                            role: 'user',
+                        })),
+                    ],
+                },
+            },
+        });
+
+        res.redirect(`/project/${project.id_project}`);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Erreur lors de la création du projet');
+    }
+});
 
 collaborationRouter.get('/collaboration', authguard, async (req, res) => {
     const userId = req.session.userId;
@@ -204,40 +163,6 @@ collaborationRouter.get('/searchFollowers', authguard, async (req, res) => {
     }
 });
 
-
-
-collaborationRouter.post('/createProject', authguard, async (req, res) => {
-    const { projectName, description, selectedFollowers } = req.body;
-    const userId = req.session.users.id_user;
-
-    try {
-        const followersArray = Array.isArray(selectedFollowers)
-            ? selectedFollowers
-            : JSON.parse(selectedFollowers || "[]");
-
-
-        const project = await prisma.projects.create({
-            data: {
-                name: projectName,
-                description: description,
-                UsersToProjects: {
-                    create: [
-                        { id_user: userId, role: 'owner' },
-                        ...followersArray.map(followerId => ({
-                            id_user: parseInt(followerId),
-                            role: 'user',
-                        })),
-                    ],
-                },
-            },
-        });
-
-        res.redirect(`/project/${project.id_project}`);
-    } catch (err) {
-        console.error(err);
-        res.status(500).send('Erreur lors de la création du projet');
-    }
-});
 
 collaborationRouter.post("/project/:id_project/upload", authguard, upload.single('file'), async (req, res) => {
     try {
@@ -524,7 +449,6 @@ collaborationRouter.post('/project/:id/addUser', authguard, async (req, res) => 
     const userId = parseInt(req.body.userId);
 
     try {
-        // Vérifier si le projet existe
         const project = await prisma.projects.findUnique({
             where: { id_project: projectId },
         });
@@ -533,11 +457,10 @@ collaborationRouter.post('/project/:id/addUser', authguard, async (req, res) => 
             return res.status(404).send('Projet non trouvé.');
         }
 
-        // Vérifier si l'utilisateur connecté est le propriétaire du projet
         const userRole = await prisma.usersToProjects.findFirst({
             where: {
                 id_project: projectId,
-                id_user: req.session.userId, // Supposons que c'est ainsi que vous récupérez l'ID de l'utilisateur connecté
+                id_user: req.session.userId, 
                 role: 'owner'
             }
         });
@@ -546,7 +469,6 @@ collaborationRouter.post('/project/:id/addUser', authguard, async (req, res) => 
             return res.status(403).send('Permission refusée. Vous devez être le propriétaire du projet.');
         }
 
-        // Vérifier si l'utilisateur n'est pas déjà dans le projet
         const userExists = await prisma.usersToProjects.findFirst({
             where: {
                 id_project: projectId,
@@ -558,7 +480,6 @@ collaborationRouter.post('/project/:id/addUser', authguard, async (req, res) => 
             return res.status(400).send('Utilisateur déjà dans le projet.');
         }
 
-        // Ajouter l'utilisateur au projet
         await prisma.usersToProjects.create({
             data: {
                 id_project: projectId,
@@ -574,25 +495,9 @@ collaborationRouter.post('/project/:id/addUser', authguard, async (req, res) => 
     }
 });
 
-// collaborationRouter.post('/project/:id/removeUser', authguard, async (req, res) => {
-//     const { userId } = req.body;
-//     const projectId = parseInt(req.params.id);
-
-//     try {
-//         await prisma.usersToProjects.deleteMany({
-//             where: { id_user: userId, id_project: projectId },
-//         });
-
-//         res.status(200).send('Participant supprimé.');
-//     } catch (error) {
-//         console.error(error);
-//         res.status(500).send('Erreur lors de la suppression.');
-//     }
-// });
-
 collaborationRouter.post('/project/:id/removeParticipant', authguard, async (req, res) => {
     const projectId = parseInt(req.params.id);
-    const userId = parseInt(req.body.userId); // Assurez-vous que userId est bien un entier
+    const userId = parseInt(req.body.userId); 
 
     
     try {

@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require('cors');
 const userRouter = require("./router/userRouter");
 const session = require("express-session");
 const dotenv = require("dotenv");
@@ -16,6 +17,7 @@ const app = express();
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use(express.static("./public"));
 app.use(express.urlencoded({ extended: true }));
+app.use(cors({ origin: '*' }));
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(session({

@@ -2,7 +2,7 @@ const collaborationRouter = require("express").Router();
 const { PrismaClient } = require("@prisma/client");
 const authguard = require("../services/authguard");
 const upload = require("../services/downloadExtension");
-const axios = require('axios');
+const cors = require('cors');
 require('dotenv').config();
 const prisma = new PrismaClient()
 
@@ -591,7 +591,7 @@ collaborationRouter.post('/project/delete/:id', authguard, async (req, res) => {
 });
 
 
-collaborationRouter.get('/studio', authguard, (req, res) => {
+collaborationRouter.get('/studio', authguard, cors(), (req, res) => {
     res.render('pages/studio.twig', {
         title: 'Studios d\'enregistrement',
         mapboxApiKey: process.env.MAPBOX,
@@ -599,7 +599,7 @@ collaborationRouter.get('/studio', authguard, (req, res) => {
 });
 
 
-collaborationRouter.get('/studio-data', authguard, async (req, res) => {
+collaborationRouter.get('/studio-data', authguard, cors(), async (req, res) => {
     const { lat, lon, radius } = req.query;
     let bboxQuery;
 

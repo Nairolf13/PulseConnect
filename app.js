@@ -30,8 +30,9 @@ app.use(friendRouter);
 app.use(contentRouter);
 app.use(collaborationRouter)
 app.use(messagerieRouter);
+const HOST = process.env.HOST || '0.0.0.0';
 
 
-app.listen(process.env.PORT, '127.0.0.1',() => {
+app.listen(process.env.PORT, HOST,() => {
     console.log("Application en cours d'éxecution !");
 });

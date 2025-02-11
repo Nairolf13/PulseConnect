@@ -1,5 +1,4 @@
 {% extends "../layouts/base.twig" %}
-
 {% block style %}
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet"/>
 	<link rel="stylesheet" href="/../../assets/css/collaboration.css">
@@ -31,7 +30,6 @@
 								</div>
 							</div>
 							<p class="file-description" contenteditable="false">{{ file.description }}</p>
-
 							{% if file.url %}
 								{% if file.url ends with '.mp3' or file.url ends with '.wav' %}
 									<audio controls>
@@ -49,8 +47,9 @@
 									</div><br>
 								{% endif %}
 
+								
 								<div class="comments" id="comments-{{ file.id }}" style="display: none;">
-									<h4>Commentaires</h4>
+									<h2>Commentaires</h2>
 									{% if file.comments is defined and file.comments is not empty %}
 										<ul>
 											{% for comment in file.comments %}
@@ -79,9 +78,7 @@
 						</div>
 					{% endfor %}
 				</div>
-
 			</div>
-
 			<div class="sidebar-container">
 				<div class="members-list">
 					<form action="/project/{{ project.id_project }}/upload" method="POST" enctype="multipart/form-data">

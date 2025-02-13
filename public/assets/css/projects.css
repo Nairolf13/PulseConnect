@@ -572,7 +572,8 @@ img {
     }
 
     .menu-dropdown{
-        left: 18%;
+        left: 50%;
+        transform: translateX(-50%);
     }
 }
 

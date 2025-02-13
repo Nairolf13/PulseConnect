@@ -563,8 +563,8 @@ img {
         display: grid;
 
     }#followerList-55{
-        margin-right: 87px;
-        margin-left: 98px;
+        width: fit-content; 
+        margin: auto;
     }
     
     .edit-project {
@@ -574,6 +574,10 @@ img {
     .menu-dropdown{
         left: 50%;
         transform: translateX(-50%);
+    }
+
+    #searchUser-3{
+        margin-left: 90px;
     }
 }
 
@@ -596,7 +600,7 @@ img {
 }
 
 #searchUser-55{
-    margin-left: 88px;
+    margin: auto;
     border-radius: 5px;
 }
 

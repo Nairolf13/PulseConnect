@@ -153,6 +153,7 @@ img {
 .menu-dropdown h2 {
     color: white;
     font-size: 1em;
+    margin-top: 10px;
     margin-bottom: 15px;
     text-align: center;
 }
@@ -449,8 +450,13 @@ img {
     border-radius: 3px;
 }
 
+#searchUser-55{
+    margin-left: 90px;
+    border-radius: 5px;
+}
+
 .follower-list {
-    margin-left: 180px;
+    margin-left: 181px;
     padding: 10px;
     max-height: 183.5px;
     overflow-y: auto;
@@ -556,13 +562,19 @@ img {
     .project-members {
         display: grid;
 
+    }#followerList-55{
+        margin-right: 87px;
+        margin-left: 98px;
     }
-
+    
     .edit-project {
         left: 28%;
     }
-}
 
+    .menu-dropdown{
+        left: 18%;
+    }
+}
 
 @media (hover: none) and (pointer: coarse) {
     .Btn:hover {
@@ -583,7 +595,7 @@ img {
 }
 
 #searchUser-55{
-    margin-left: 159px;
+    margin-left: 88px;
     border-radius: 5px;
 }
 
@@ -607,6 +619,7 @@ img {
 }
 
 .follower-list {
+
     scrollbar-width: thin;
     scrollbar-color: #4d4d4d #3a3a3a;
 }

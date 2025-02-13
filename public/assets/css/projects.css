@@ -566,6 +566,10 @@ img {
         width: fit-content; 
         margin: auto;
     }
+    #followerList-3{
+        width: fit-content; 
+        margin: auto;
+    }
     
     .edit-project {
         left: 28%;
@@ -577,7 +581,7 @@ img {
     }
 
     #searchUser-3{
-        margin-left: 90px;
+        margin: auto;
     }
 }
 

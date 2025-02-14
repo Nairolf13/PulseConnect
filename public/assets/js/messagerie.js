@@ -120,19 +120,19 @@ window.onclick = function (event) {
 
 
 
-const currentText = commentElement.textContent;
-commentElement.setAttribute('contenteditable', 'true');
-commentElement.classList.add('editing');
-commentElement.focus();
+// const currentText = commentElement.textContent;
+// commentElement.setAttribute('contenteditable', 'true');
+// commentElement.classList.add('editing');
+// commentElement.focus();
 
-// Gestion de l'enregistrement
-const saveEdit = async () => {
-    const updatedText = commentElement.textContent.trim();
+// // Gestion de l'enregistrement
+// const saveEdit = async () => {
+//     const updatedText = commentElement.textContent.trim();
 
-    if (updatedText === currentText) {
-        // Aucune modification
-        commentElement.removeAttribute('contenteditable');
-        commentElement.classList.remove('editing');
-        return;
-    }
-};
+//     if (updatedText === currentText) {
+//         // Aucune modification
+//         commentElement.removeAttribute('contenteditable');
+//         commentElement.classList.remove('editing');
+//         return;
+//     }
+// };

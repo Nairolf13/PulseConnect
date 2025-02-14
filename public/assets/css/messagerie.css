@@ -186,10 +186,10 @@ img {
 
 .close-button {
     position: absolute;
-    top: 10px;
+    top: 5px;
     right: 10px;
-    font-size: 24px;
-    color: white;
+    font-size: 17px;
+    color: gray;
     cursor: pointer;
 }
 

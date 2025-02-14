@@ -1,12 +1,25 @@
-window.addEventListener("scroll", function () {
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    const lastScrollTop = this.lastScrollTop || 0;
+let lastScrollTop = 0; // Dernière position du scroll
+const header = document.querySelector('.headerRes'); // Sélectionne l'élément header
 
-    if (scrollTop < lastScrollTop && scrollTop === 0) {
-        location.reload();
-    }
-    this.lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+window.addEventListener("scroll", function () {
+  const scrollTop = window.scrollY || document.documentElement.scrollTop;
+
+  // Si l'utilisateur scrolle vers le haut et est tout en haut de la page, recharger la page
+  if (scrollTop < lastScrollTop && scrollTop === 0) {
+    location.reload();
+  }
+
+  // Gestion de l'affichage du header
+  if (scrollTop > lastScrollTop) {
+    header.classList.add('hidden'); // Ajouter la classe 'hidden' quand on scroll vers le bas
+  } else {
+    header.classList.remove('hidden'); // Retirer la classe 'hidden' quand on scroll vers le haut
+  }
+
+  lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; // Met à jour la dernière position du scroll
 });
+
+
 
 document.addEventListener('DOMContentLoaded', function () {
     const observer = new MutationObserver(() => {

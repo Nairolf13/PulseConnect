@@ -162,6 +162,7 @@ h1 {
 }
 
 .modal-content p {
+    margin-top: -15px;
     margin-bottom: 20px;
     color: #a0a0a0;
 }

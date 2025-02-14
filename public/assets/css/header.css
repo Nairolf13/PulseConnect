@@ -94,12 +94,13 @@ ul.nav-list li img {
 }
 
 .modal-content h2 {
-    font-size: 1.5em;
+    font-size: 1em;
     margin-bottom: 20px;
     color: #6c757d;;
 }
 
 .modal-content ul {
+    margin-top: 10px;
     list-style: none;
     padding: 0;
 }
@@ -111,6 +112,8 @@ ul.nav-list li img {
 .modal-content button {
     background-color: aquamarine;
     border: none;
+    min-width: 210px;
+    margin-top: 5px;
     padding: 10px 20px;
     border-radius: 5px;
     cursor: pointer;
@@ -128,7 +131,7 @@ ul.nav-list li img {
     font-weight: bold;
     position: absolute;
     right: 5%;
-    top: 1%;
+    top: 5%;
 }
 
 .close:hover,
@@ -172,14 +175,26 @@ ul.nav-list li img {
     }
 
     .modal-content {
-        top:20%;
+        /* top:20%;
         background-color: #1e1e1e;
         margin: 15% auto;
         padding: 20px;
         border-radius: 8px;
+        border: none;
+        width: 300px;
+        text-align: center;
+        color: white; */
+
+        top: 20%;
+        background-color: #1e1e1e;
+        margin: 15% auto;
+        padding: 20px;
+        border-radius: 8px;
+        border: none;
         width: 300px;
         text-align: center;
         color: white;
+    
     }
 
     ul.nav-list li a p{

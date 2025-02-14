@@ -367,9 +367,8 @@ form {
 }
 
 #picture img {
-    max-width: 600px;
-    width: 600px;
-    height: 600px;
+    width: 100%;
+    max-height: 500px;
 }
 
 form h3 {
@@ -928,8 +927,8 @@ form textarea {
 
     #picture img,
     video {
-        max-width: 98%;
-        width: 95%;
+        max-width: 95%;
+        max-height: 300px;
         margin-left: 8px;
         margin-bottom: 30px;
     }

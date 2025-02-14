@@ -184,7 +184,7 @@ messagerieRouter.get("/conversation/:userId", authguard, async (req, res) => {
                     }
                 }
             },
-            orderBy: { created_at: 'asc' }
+            orderBy: { created_at: 'desc' }
         });
 
         const recipientId = parseInt(userId);

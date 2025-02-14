@@ -259,6 +259,7 @@ collaborationRouter.get("/project/:id_project", authguard, async (req, res) => {
                     }
                 },
                 Assets: {
+                    orderBy: {created_at: 'desc'},
                     include: {
                         commentaire: {
                             include: {

@@ -57,19 +57,16 @@ async function openDeleteModal(userId) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
     
-            // Supprimer visuellement la conversation de la liste
             const conversationItem = document.querySelector(`[data-user-id="${userId}"]`);
             if (conversationItem) {
                 conversationItem.remove();
             }
     
-            modal.style.display = 'none'; // Ferme la modal de suppression
+            modal.style.display = 'none'; 
     
-            // Afficher la modal de succès
             const successModal = document.getElementById('successModal');
             successModal.style.display = 'block';
     
-            // Ajouter un gestionnaire d'événements pour fermer la modal de succès
             const closeSuccessModalButton = document.getElementById('closeSuccessModal');
             const closeModalButton = document.getElementById('closeModalButton');
             closeSuccessModalButton.onclick = closeModalButton.onclick = function () {
@@ -79,7 +76,6 @@ async function openDeleteModal(userId) {
         } catch (error) {
             console.error('Erreur lors de la suppression de la conversation:', error);
     
-            // Afficher une modal d'erreur
             const successModal = document.getElementById('successModal');
             const successMessage = document.getElementById('successMessage');
             successMessage.textContent = `Erreur lors de la suppression : ${error.message}`;
@@ -93,21 +89,21 @@ async function openDeleteModal(userId) {
         }
     };
 
-    const closeButton = document.getElementById('closeModal');
-    const cancelButton = document.getElementById('cancelDeleteButton');
-    
-    // Fermeture via le bouton "×"
-    closeButton.addEventListener('click', function() {
-        modal.style.display = 'none';
-    });
-
-    // Fermeture via le bouton "Annuler"
-    cancelButton.addEventListener('click', function() {
-        modal.style.display = 'none';
-    });
 }
 
 
+const closeButton = document.querySelector('#closeModal');
+const cancelButton = document.getElementById('cancelDeleteButton');
+
+function closeModal() {
+    
+  
+    document.getElementById('deleteConversationModal').style.display = 'none';
+}
+cancelButton.addEventListener('click', function() {
+    
+    document.getElementById('deleteConversationModal').style.display = 'none';
+});
 window.onclick = function (event) {
     const modal = document.getElementById('deleteConversationModal');
     if (event.target === modal) {

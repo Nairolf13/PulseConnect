@@ -136,7 +136,9 @@ document.addEventListener('DOMContentLoaded', function () {
         function closeModal() {
             const modal = document.getElementById('deleteModal');
             modal.style.display = 'none'; 
+            
         }
+        
         
         window.onclick = function (event) {
             const modal = document.getElementById('deleteModal');

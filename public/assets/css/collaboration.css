@@ -443,9 +443,13 @@ form input[type="text"] {
 
 form button[type="submit"] {
     background-color: aquamarine;
-    color: black;
+    color: white;
     border: none;
     cursor: pointer;
+}
+
+#addFile{
+    color: black;
 }
 
 form button:hover[type="submit"] {

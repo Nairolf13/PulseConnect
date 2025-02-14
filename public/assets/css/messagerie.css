@@ -17,11 +17,10 @@ h1 {
 img {
     height: 60px;
     width: 60px;
-    border-radius: 50%;
 }
 
 #searchUser {
-    width: 80%;
+    width: 50%;
     padding: 10px;
     border: 1px solid #ffffff;
     border-radius: 5px;
@@ -83,7 +82,7 @@ img {
 
 .menu-icon {
     position: absolute;
-    right:15%;
+    right:1%;
     cursor:pointer;
     z-index: 900;
 
@@ -202,8 +201,9 @@ img {
     }
 
     #conversationList {
-        width: 70%;
-        margin-left: 300px;
+        position: relative;
+        width: 50%;
+        left: 25%;
     }
 }
 
@@ -216,7 +216,18 @@ img {
         height: 40px;
     }
 
+    #userList {
+        width: 90%;
+    }
+
+    #searchUser {
+        width: 90%;
+    }
+
     .user-item {
+        width: 90%;
+        margin-left: 10px;
+
         justify-content: center;
     }
 

@@ -78,21 +78,41 @@ button:hover {
     text-overflow: ellipsis;
     align-self: flex-start;
     background-color: #363636;
-    padding: 10px;
-    border-radius: 10px;
-    margin-bottom: 10px;
-    color: aquamarine;
-    text-align: left;
-}
-
-.sent {
     align-self: flex-end;
     background-color: aquamarine;
     padding: 10px;
     border-radius: 10px;
     margin-bottom: 10px;
+    color: aquamarine;
     color: black;
-    text-align: right;
+    text-align: left;
+}
+
+.sent {
+    max-width: 60%;
+    word-wrap: break-word;
+    word-break: break-word;
+    align-self: flex-start;
+    background-color: #363636;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    color: aquamarine;
+}
+.received #date{
+    display: flex;
+    justify-self: flex-end;
+}
+.sent #date{
+    display: flex;
+    justify-self: flex-start;
+}
+.sent #texte {
+    display: flex;
+    align-self: flex-start;
+}
+.modified-label{
+margin-bottom: 50px;
 }
 
 .user-info {
@@ -185,9 +205,25 @@ h1 {
 }
 
 input.edit-input[type="text"] {
+    max-width: 435px !important;
     flex: 1;
     padding: 10px;
     border-radius: 5px;
+    padding: 5px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+}
+.edit-input {
+    width: 100%;         /* Prend toute la largeur de la div parente */
+    padding: 5px;
+    box-sizing: border-box; /* Assurez-vous que le padding n'affecte pas la largeur totale */
+}
+.edit-textarea {
+    width: 100%; /* Pour qu'il prenne toute la largeur de la div */
+    padding: 5px;
+    box-sizing: border-box;
+    min-height: 40px; /* Hauteur minimale, peut être ajustée */
+    resize: none; /* Empêche l'utilisateur de redimensionner manuellement */
 }
 
 .save-button {
@@ -223,7 +259,10 @@ input.edit-input[type="text"] {
 }
 
 #texte{
-    width: 80%;
+    width: 100%;
+}
+.received #texte {
+    width: 90%;
 }
 
 #messages>div {
@@ -234,7 +273,7 @@ input.edit-input[type="text"] {
 .options-dots {
     cursor: pointer;
     font-size: 20px;
-    color: aquamarine;
+    color: black;
     position: absolute;
     right: 10px;
     top: 10px;
@@ -248,7 +287,8 @@ input.edit-input[type="text"] {
 .received .options-dots {
     left: auto;
     right: 10px;
-    top:10px;
+  
+    top:2px;
 }
 
 @keyframes modalFadeIn {
@@ -327,5 +367,4 @@ input.edit-input[type="text"] {
     #closeModal {
         cursor: pointer;
     }
-
 }

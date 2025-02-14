@@ -21,7 +21,7 @@
 		{% for message in messages %}
 			<div class="{{ message.senderId == senderId ? 'received' : 'sent' }}" data-message-id="{{ message.id }}">
 				<p id="texte">{{ message.content }}</p>
-				<small>{{ message.created_at | date('l d F') }}
+				<small id="date">{{ message.created_at | date('l d F') }}
 					à
 					{{ message.created_at | date('H:i') }}</small>
 				<span class="options-dots" data-message-id="{{ message.id }}">&#8942;</span>

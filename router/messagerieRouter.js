@@ -30,7 +30,7 @@ messagerieRouter.get("/messagerie", authguard, async (req, res) => {
                 ]
             },
             orderBy: {
-                created_at: "asc"
+                created_at: "desc"
             },
             include: {
                 senderUsers: true,
@@ -184,7 +184,7 @@ messagerieRouter.get("/conversation/:userId", authguard, async (req, res) => {
                     }
                 }
             },
-            orderBy: { created_at: 'desc' }
+            orderBy: { created_at: 'asc' }
         });
 
         const recipientId = parseInt(userId);

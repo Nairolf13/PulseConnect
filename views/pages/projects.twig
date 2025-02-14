@@ -30,7 +30,7 @@
 							<h2 class="editable-title" contenteditable="false">{{ project.name }}</h2>
 							<div class="menu-dropdown" id="menu-dropdown-{{ project.id_project }}" style="display: none;">
 								{% if project.role == 'owner' %}
-									<h2>Que souhaitez-vous faire avec ce projet ?</h2><br>
+									<h2>Que souhaitez-vous ?</h2><br>
 									<button class="edit-project" data-dropdown-id="{{ project.id_project }}">Modifier</button>
 									<form action="/project/delete/{{ project.id_project }}" method="POST" class="delete-form">
 										<button type="submit" class="delete" alt="Delete">Supprimer</button>

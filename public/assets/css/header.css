@@ -145,6 +145,15 @@ ul.nav-list li img {
     color: gray;
 }
 
+#containerHeader nav {
+    transition: opacity 0.3s ease-in-out;
+  }
+  
+  .nav-scrolled {
+    opacity: 0.3; 
+  }
+  
+
 
 @media (max-width: 768px) {
     header {
@@ -175,16 +184,6 @@ ul.nav-list li img {
     }
 
     .modal-content {
-        /* top:20%;
-        background-color: #1e1e1e;
-        margin: 15% auto;
-        padding: 20px;
-        border-radius: 8px;
-        border: none;
-        width: 300px;
-        text-align: center;
-        color: white; */
-
         top: 20%;
         background-color: #1e1e1e;
         margin: 15% auto;
@@ -200,7 +199,7 @@ ul.nav-list li img {
     ul.nav-list li a p{
         position: absolute;
         top: -5%;
-        left: 20%;
+        left: 16%;
         width: 32px;
         font-size: 8px;
     }

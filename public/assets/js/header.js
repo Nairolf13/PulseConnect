@@ -27,4 +27,16 @@ document.addEventListener('DOMContentLoaded', function () {
     publishPostButton.addEventListener('click', function () {
         window.location.href = '/addcontent';
     });
+
+window.addEventListener('scroll', function() {
+    if (window.innerWidth <= 980) {  
+        const header = document.getElementById('containerHeader');
+        if (window.scrollY > 50) {  
+            header.classList.add('nav-scrolled');
+        } else {
+            header.classList.remove('nav-scrolled'); 
+        }
+    }
+});
+
 });

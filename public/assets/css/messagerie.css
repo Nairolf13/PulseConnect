@@ -191,6 +191,7 @@ img {
     font-size: 17px;
     color: gray;
     cursor: pointer;
+    z-index: 1000;
 }
 
 

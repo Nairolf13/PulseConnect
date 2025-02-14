@@ -85,8 +85,6 @@ async function openDeleteModal(userId) {
             successMessage.textContent = `Erreur lors de la suppression : ${error.message}`;
             successModal.style.display = 'block';
 
-            
-    
             const closeSuccessModalButton = document.getElementById('closeSuccessModal');
             const closeModalButton = document.getElementById('closeModalButton');
             closeSuccessModalButton.onclick = closeModalButton.onclick = function () {
@@ -94,16 +92,21 @@ async function openDeleteModal(userId) {
             };
         }
     };
+
+    const closeButton = document.getElementById('closeModal');
+    const cancelButton = document.getElementById('cancelDeleteButton');
     
-
-    document.getElementById('cancelDeleteButton').onclick = function () {
+    // Fermeture via le bouton "×"
+    closeButton.addEventListener('click', function() {
         modal.style.display = 'none';
-    };
+    });
 
-    document.getElementById('closeModal').onclick = function () {
+    // Fermeture via le bouton "Annuler"
+    cancelButton.addEventListener('click', function() {
         modal.style.display = 'none';
-    };
+    });
 }
+
 
 window.onclick = function (event) {
     const modal = document.getElementById('deleteConversationModal');
@@ -117,22 +120,3 @@ window.onclick = function (event) {
 
 
 
-
-
-
-// const currentText = commentElement.textContent;
-// commentElement.setAttribute('contenteditable', 'true');
-// commentElement.classList.add('editing');
-// commentElement.focus();
-
-// // Gestion de l'enregistrement
-// const saveEdit = async () => {
-//     const updatedText = commentElement.textContent.trim();
-
-//     if (updatedText === currentText) {
-//         // Aucune modification
-//         commentElement.removeAttribute('contenteditable');
-//         commentElement.classList.remove('editing');
-//         return;
-//     }
-// };

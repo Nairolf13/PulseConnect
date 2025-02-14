@@ -4,6 +4,16 @@ $(document).ready(function () {
     let currentMessage;
     let startX;
 
+    function scrollToBottom() {
+        const lastMessage = messagesContainer.lastElementChild;
+        if (lastMessage) {
+            lastMessage.scrollIntoView({ behavior: "smooth", block: "end" });
+        }
+    }
+
+    // Appeler scrollToBottom pour faire défiler vers le bas dès que la page est prête
+    scrollToBottom();
+
     // Ouvrir la modale pour éditer ou supprimer le message
     function showModal(message) {
         currentMessage = message;
@@ -149,35 +159,6 @@ saveButton.addEventListener('click', async () => {
         });
     });
 
-    // // Ajuster l'affichage en fonction du clavier (mobile)
-    // function adjustForKeyboard(isOpen) {
-    //     if (isOpen) {
-    //         messagesContainer.classList.add('keyboard-open');
-    //     } else {
-    //         messagesContainer.classList.remove('keyboard-open');
-    //     }
-    //     // setTimeout(scrollToBottom, 300);
-    // }
-
-    // window.addEventListener('resize', function () {
-    //     const keyboardOpen = window.innerHeight < document.documentElement.clientHeight;
-    //     adjustForKeyboard(keyboardOpen);
-    // });
-
-    // // Fonction pour faire défiler les messages vers le bas
-    // function scrollToBottom() {
-    //     const lastMessage = messagesContainer.lastElementChild;
-    //     if (lastMessage) lastMessage.scrollIntoView({ behavior: "smooth", block: "end" });
-    // }
-
-    // // Ajout d'événements pour la gestion de la barre de saisie
-    // messageInput.addEventListener('focus', function () {
-    //     document.body.classList.add('keyboard-open');
-    //     scrollToBottom();
-    // });
-
-    // messageInput.addEventListener('blur', function () {
-    //     document.body.classList.remove('keyboard-open');
-    // });
+    
 
 });

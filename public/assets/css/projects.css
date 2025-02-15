@@ -150,10 +150,9 @@ img {
 }
 
 .menu-dropdown h2 {
-    color: white;
+    color: #aaa;
     font-size: 1em;
     margin-top: 10px;
-    margin-bottom: 15px;
     text-align: center;
 }
 
@@ -285,6 +284,19 @@ img {
     margin-right: 5px;
 }
 
+.modal-body {
+    color: #aaa;
+    position: absolute;
+    left: 15%;
+    top: 0%;
+    width: 72%;
+}
+
+#confirmDelete-confirmModal{
+    margin-top: 60px;
+    background-color: red;
+    color: white;
+}
 
 .Btn:active {
     transform: translate(2px, 2px);
@@ -403,9 +415,12 @@ img {
 }
 
 .closeModal {
+    position: absolute;
     color: #aaa;
     float: right;
-    font-size: 28px;
+    right: 3%;
+    top: 0;
+    font-size: 20px;
     font-weight: bold;
 }
 
@@ -575,6 +590,7 @@ img {
     }
 
     .menu-dropdown{
+        width: 300px;
         left: 50%;
         transform: translateX(-50%);
     }

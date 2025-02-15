@@ -589,6 +589,14 @@ img {
         left: 28%;
     }
 
+    .close-dropdown{
+        color: #aaa;
+        cursor: pointer;
+        position: absolute;
+        right: 3%;
+        top: 0%;
+    }
+
     .menu-dropdown{
         width: 300px;
         left: 50%;

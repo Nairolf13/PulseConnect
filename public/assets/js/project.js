@@ -212,6 +212,20 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             });
         }
+
+        const closeDropdown = document.querySelectorAll('.close-dropdown');
+closeDropdown.forEach(btn => {
+    btn.addEventListener('click', () => {
+        const dropdownId = btn.id.split('-')[2]; // Assurez-vous que l'ID est correctement extrait
+        const dropdown = document.getElementById(`menu-dropdown-${dropdownId}`);
+        
+        if (dropdown) { // Vérifiez si l'élément existe
+            dropdown.style.display = 'none';
+        } else {
+            console.error(`Dropdown with ID menu-dropdown-${dropdownId} not found.`);
+        }
+    });
+});
     });
 
     function showModal(modalId, message, userId, projectId) {

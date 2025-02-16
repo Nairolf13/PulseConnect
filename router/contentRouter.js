@@ -38,22 +38,32 @@ contentRouter.get('/addContent', authguard, async (req, res) => {
 
 contentRouter.post('/addContent', authguard, uploadAndGenerateThumbnail, async (req, res) => {
     try {
-        const userId = req.session.users.id_user;
-        const file = req.file;
+        console.log("✅ Requête reçue !");
+        console.log("📝 Corps de la requête:", req.body);
+        console.log("📂 Fichier reçu:", req.file);
 
+        const userId = req.session.users.id_user;
+        console.log("👤 ID Utilisateur:", userId);
+
+        const file = req.file;
         if (!file) {
+            console.log("❌ Aucun fichier trouvé !");
             return res.status(400).send('Aucun fichier uploadé.');
         }
 
         const fileExt = path.extname(file.filename).toLowerCase();
+        console.log("📄 Extension du fichier:", fileExt);
+
         const isVideo = ['.mp4', '.avi', '.mkv', '.mov'].includes(fileExt);
         let thumbnailFilename = null;
 
         if (!genresEnum.includes(req.body.genre)) {
+            console.log("❌ Genre non valide:", req.body.genre);
             return res.status(400).send('Genre non valide.');
         }
 
         if (isVideo) {
+            console.log("🎥 Génération de la miniature...");
             const thumbnailPath = path.join(__dirname, '../uploads/', file.filename.replace(fileExt, '.jpg'));
 
             await new Promise((resolve, reject) => {
@@ -66,12 +76,17 @@ contentRouter.post('/addContent', authguard, uploadAndGenerateThumbnail, async (
                     })
                     .on('end', () => {
                         thumbnailFilename = path.basename(thumbnailPath);
+                        console.log("✅ Miniature générée :", thumbnailFilename);
                         resolve();
                     })
-                    .on('error', (err) => reject(err));
+                    .on('error', (err) => {
+                        console.log("❌ Erreur de génération de miniature :", err);
+                        reject(err);
+                    });
             });
         }
 
+        console.log("🛢 Enregistrement en base de données...");
         await prisma.assets.create({
             data: {
                 id_user: userId,
@@ -84,12 +99,14 @@ contentRouter.post('/addContent', authguard, uploadAndGenerateThumbnail, async (
             },
         });
 
+        console.log("✅ Contenu ajouté avec succès !");
         res.redirect('/home');
     } catch (error) {
-        console.error("Erreur lors de l'ajout du contenu :", error);
+        console.error("🛑 Erreur lors de l'ajout du contenu :", error);
         res.status(500).send("Erreur lors de l'ajout du fichier.");
     }
 });
+
 
 
 contentRouter.get("/personalContent", authguard, async (req, res) => {

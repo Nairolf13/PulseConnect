@@ -4,7 +4,7 @@ const hashPasswordExtension = require("../services/extensions/hashPasswordExtens
 const { transporter, sendEmail } = require('../services/extensions/nodemailer');
 const crypto = require('crypto');
 const bcrypt = require("bcrypt");
-const upload = require("../services/downloadExtension")
+const { upload } = require("../services/downloadExtension");
 const authguard = require("../services/authguard");
 
 const prisma = new PrismaClient().$extends(hashPasswordExtension);

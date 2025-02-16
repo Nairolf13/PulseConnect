@@ -1,111 +1,83 @@
-const contentRouter = require("express").Router();
+const express = require("express");
+const contentRouter = express.Router();
 const { PrismaClient } = require("@prisma/client");
-const upload = require("../services/downloadExtension");
+const path = require("path");
+const ffmpeg = require("fluent-ffmpeg");
+const { upload } = require("../services/downloadExtension");
 const authguard = require("../services/authguard");
 
 const prisma = new PrismaClient();
 
 const genresEnum = [
-    "Texte",
-    "Pop",
-    "Rock",
-    "HipHop",
-    "Rap",
-    "Jazz",
-    "Classical",
-    "Reggae",
-    "Country",
-    "Electronic",
-    "RnB",
-    "Metal",
-    "Alternative",
-    "Blues",
-    "Indie",
-    "Folk",
-    "Latin",
-    "Soul",
-    "Funk",
-    "Punk",
-    "Disco",
-    "House",
-    "Techno",
-    "Dubstep",
-    "Ambient",
-    "Ska",
-    "Grunge",
-    "Gospel",
-    "Bluegrass",
-    "Swing",
-    "Industrial",
-    "PostRock",
-    "Emo",
-    "KPop",
-    "JPop",
-    "Cumbia",
-    "Salsa",
-    "BossaNova",
-    "Tango",
-    "Afrobeat",
-    "Zydeco",
-    "Trap",
-    "LoFi",
-    "Experimental",
-    "ArtRock",
-    "Shoegaze",
-    "NewWave",
-    "Britpop",
-    "GothicRock",
-    "BaroquePop",
-    "SynthPop",
-    "HardRock",
-    "PowerPop",
-    "SurfRock",
-    "PostPunk",
-    "ChristianRock",
-    "Celtic",
-    "Cajun",
-    "NoiseRock",
-    "StonerRock",
-    "ProgressiveRock",
-    "MelodicPunk",
-    "SkaPunk",
-    "MathRock",
-    "TripHop",
-    "DreamPop",
-    "Grime",
-    "NuMetal",
-    "SouthernRock",
-    "DarkWave",
-    "Vaporwave",
-    "Chiptune",
-    "SeaShanty",
-    "MusicalTheatre",
-    "Soundtrack",
-    "Instrumental"
+    "Texte", "Pop", "Rock", "HipHop", "Rap", "Jazz", "Classical", "Reggae", "Country", "Electronic", "RnB", "Metal",
+    "Alternative", "Blues", "Indie", "Folk", "Latin", "Soul", "Funk", "Punk", "Disco", "House", "Techno", "Dubstep",
+    "Ambient", "Ska", "Grunge", "Gospel", "Bluegrass", "Swing", "Industrial", "PostRock", "Emo", "KPop", "JPop",
+    "Cumbia", "Salsa", "BossaNova", "Tango", "Afrobeat", "Zydeco", "Trap", "LoFi", "Experimental", "ArtRock",
+    "Shoegaze", "NewWave", "Britpop", "GothicRock", "BaroquePop", "SynthPop", "HardRock", "PowerPop", "SurfRock",
+    "PostPunk", "ChristianRock", "Celtic", "Cajun", "NoiseRock", "StonerRock", "ProgressiveRock", "MelodicPunk",
+    "SkaPunk", "MathRock", "TripHop", "DreamPop", "Grime", "NuMetal", "SouthernRock", "DarkWave", "Vaporwave",
+    "Chiptune", "SeaShanty", "MusicalTheatre", "Soundtrack", "Instrumental"
 ];
 
 contentRouter.get('/addContent', authguard, async (req, res) => {
-    const users = await prisma.users.findUnique({
-        where: { id_user: req.session.users.id_user }
-    });
-    res.render('pages/addContent.twig', { genres: genresEnum });
-    users
+    try {
+        const user = await prisma.users.findUnique({
+            where: { id_user: req.session.users.id_user }
+        });
+
+        if (!user) {
+            return res.status(404).send("Utilisateur non trouvé.");
+        }
+
+        res.render('pages/addContent.twig', { genres: genresEnum });
+    } catch (error) {
+        console.error("Erreur lors de la récupération des données utilisateur :", error);
+        res.status(500).send("Erreur serveur.");
+    }
 });
 
 contentRouter.post('/addContent', authguard, upload.single('mediaFile'), async (req, res) => {
     try {
         const userId = req.session.users.id_user;
-        const file_url = req.file ? req.file.path : null;
+        const file = req.file;
 
-        if (!file_url) {
+        if (!file) {
             return res.status(400).send('Aucun fichier uploadé.');
+        }
+
+        const fileExt = path.extname(file.filename).toLowerCase();
+        const isVideo = ['.mp4', '.avi', '.mkv', '.mov'].includes(fileExt);
+        let thumbnailFilename = null;
+
+        if (!genresEnum.includes(req.body.genre)) {
+            return res.status(400).send('Genre non valide.');
+        }
+
+        if (isVideo) {
+            const thumbnailPath = path.join(__dirname, '../uploads/', file.filename.replace(fileExt, '.jpg'));
+
+            await new Promise((resolve, reject) => {
+                ffmpeg(path.join(__dirname, '../uploads/', file.filename))
+                    .screenshots({
+                        timestamps: ['00:00:05'], 
+                        filename: path.basename(thumbnailPath),
+                        folder: path.dirname(thumbnailPath),
+                        size: '320x180'
+                    })
+                    .on('end', () => {
+                        thumbnailFilename = path.basename(thumbnailPath);
+                        resolve();
+                    })
+                    .on('error', (err) => reject(err));
+            });
         }
 
         await prisma.assets.create({
             data: {
                 id_user: userId,
                 isPublic: true,
-                url: req.file.filename,
+                url: file.filename,
+                thumbnail_url: thumbnailFilename, 
                 name: req.body.name,
                 genre: req.body.genre,
                 description: req.body.description
@@ -115,9 +87,12 @@ contentRouter.post('/addContent', authguard, upload.single('mediaFile'), async (
         res.redirect('/home');
     } catch (error) {
         console.error("Erreur lors de l'ajout du contenu :", error);
-        res.status(500).send('Erreur lors de l\'ajout du fichier.');
+        res.status(500).send("Erreur lors de l'ajout du fichier.");
     }
 });
+
+module.exports = contentRouter;
+
 
 contentRouter.get("/personalContent", authguard, async (req, res) => {
     try {

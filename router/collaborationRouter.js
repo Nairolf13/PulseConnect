@@ -1,7 +1,7 @@
 const collaborationRouter = require("express").Router();
 const { PrismaClient } = require("@prisma/client");
 const authguard = require("../services/authguard");
-const upload = require("../services/downloadExtension");
+const { uploadAndGenerateThumbnail } = require("../services/downloadExtension");
 const cors = require('cors');
 require('dotenv').config();
 const prisma = new PrismaClient()
@@ -166,7 +166,7 @@ collaborationRouter.get('/searchFollowers', authguard, async (req, res) => {
 });
 
 
-collaborationRouter.post("/project/:id_project/upload", authguard, upload.single('file'), async (req, res) => {
+collaborationRouter.post("/project/:id_project/upload", authguard, uploadAndGenerateThumbnail, async (req, res) => {
     try {
         const { id_project } = req.params;  
         const userId = req.session.users.id_user;  

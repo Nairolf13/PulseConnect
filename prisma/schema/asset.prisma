@@ -10,6 +10,7 @@ model Assets {
   isPublic         Boolean?           @default(true)
   price            Decimal?           @db.Decimal(10, 2)
   url              String?            @db.VarChar(255)
+  thumbnail_url    String?            @db.VarChar(255)
   created_at       DateTime?          @default(now()) @db.DateTime(0)
   Users            Users?             @relation(fields: [id_user], references: [id_user], onDelete:Cascade , map: "Assets_ibfk_1")
   Projects         Projects?          @relation(fields: [id_project], references: [id_project], onDelete:Cascade , map: "Assets_ibfk_2")

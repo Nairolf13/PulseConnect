@@ -176,9 +176,10 @@
         videos.forEach(video => {
             let touchStartY = 0;
             let touchEndY = 0;
+            let isFullscreen = false;
 
             video.addEventListener("click", function (event) {
-                if (!document.fullscreenElement) {
+                if (!isFullscreen) {
                     if (video.paused) {
                         video.play();
                     } else {
@@ -194,6 +195,14 @@
                     video.webkitRequestFullscreen();
                 } else if (video.msRequestFullscreen) {
                     video.msRequestFullscreen();
+                }
+
+                isFullscreen = true;
+            });
+
+            document.addEventListener("fullscreenchange", function () {
+                if (!document.fullscreenElement) {
+                    isFullscreen = false;
                 }
             });
 
@@ -220,6 +229,7 @@
                     }
                 }
 
+                isFullscreen = false;
                 setTimeout(() => {
                     checkVisibility();
                 }, 500);
@@ -236,11 +246,12 @@
                     video.pause();
                 }
 
-                event.stopPropagation(); 
+                event.stopPropagation();
             });
         });
     });
 </script>
+
 
 
 	<script src="/../../assets/js/collaboration.js"></script>

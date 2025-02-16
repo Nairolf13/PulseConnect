@@ -60,7 +60,7 @@ input[type="file"],
 select {
     width: 100%;
     padding: 10px;
-    margin-bottom: 15px;
+    margin-bottom: 40px;
     border: 1px solid #3d3d3d;
     border-radius: 5px;
     background-color: #1e1e1e;
@@ -167,4 +167,11 @@ button:hover {
         top: -10%;
       
     }
+
+    .file-preview img,
+.file-preview video,
+.file-preview audio {
+    max-width: 100%;
+    max-height: 120px;
+}
 }

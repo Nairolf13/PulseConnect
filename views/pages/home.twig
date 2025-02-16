@@ -143,5 +143,23 @@
 	{% include "../partials/error.twig" %}
 	{% block script %}
 		<script src="/../../assets/js/home.js"></script>
+		<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let videos = document.querySelectorAll("video"); // Sélectionne toutes les vidéos
+
+        videos.forEach(video => {
+            // Aller directement à 5 secondes pour l'aperçu
+            video.currentTime = 1;
+
+            // Quand l'utilisateur appuie sur Play, la vidéo recommence du début
+            video.addEventListener("play", function () {
+                if (video.currentTime > 0) {
+                    video.currentTime = 0;
+                }
+            });
+        });
+    });
+</script>
+
 	{% endblock %}
 {% endblock %}

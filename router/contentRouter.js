@@ -91,8 +91,6 @@ contentRouter.post('/addContent', authguard, uploadAndGenerateThumbnail, async (
     }
 });
 
-module.exports = contentRouter;
-
 
 contentRouter.get("/personalContent", authguard, async (req, res) => {
     try {

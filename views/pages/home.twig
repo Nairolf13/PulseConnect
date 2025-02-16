@@ -144,77 +144,78 @@
 	{% block script %}
 		<script src="/../../assets/js/home.js"></script>
 		<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const videos = document.querySelectorAll(".video");
+		document.addEventListener("DOMContentLoaded", function () {
+    const videos = document.querySelectorAll(".video");
 
-        // Vérifier si une vidéo est visible à 50% de l'écran
-        function checkVisibility() {
-            videos.forEach(video => {
-                const rect = video.getBoundingClientRect();
-                const halfVisible = rect.top < window.innerHeight / 2 && rect.bottom > window.innerHeight / 2;
+    function checkVisibility() {
+        videos.forEach(video => {
+            const rect = video.getBoundingClientRect();
+            const halfVisible = rect.top < window.innerHeight / 2 && rect.bottom > window.innerHeight / 2;
 
-                if (halfVisible) {
+            if (halfVisible) {
+                video.play();
+            } else {
+                video.pause();
+            }
+        });
+    }
+
+    window.addEventListener("scroll", checkVisibility);
+    checkVisibility();
+
+    // One-Tap Fullscreen + Swipe Down pour quitter
+    videos.forEach(video => {
+        let touchStartY = 0;
+        let touchEndY = 0;
+
+        // ✅ On bascule entre Play et Pause seulement si on n'entre pas en plein écran
+        video.addEventListener("pointerup", function () {
+            if (!document.fullscreenElement) {
+                if (video.paused) {
                     video.play();
                 } else {
                     video.pause();
                 }
-            });
-        }
+            }
 
-        // Activer/désactiver l'autoplay au scroll
-        window.addEventListener("scroll", checkVisibility);
-        checkVisibility(); // Vérifier au chargement de la page
-
-        // One-Tap Fullscreen + Swipe Down pour quitter
-        videos.forEach(video => {
-            let touchStartY = 0; // Position de départ du toucher
-            let touchEndY = 0;   // Position de fin du toucher
-
-            video.addEventListener("pointerup", function () {
-                if (video.paused) {
-                    video.play();
-                }
-
-                // Entrer en mode plein écran
-                if (video.requestFullscreen) {
-                    video.requestFullscreen();
-                } else if (video.webkitRequestFullscreen) { // Safari
-                    video.webkitRequestFullscreen();
-                } else if (video.msRequestFullscreen) { // IE
-                    video.msRequestFullscreen();
-                }
-            });
-
-            // Détecter le début du toucher
-            video.addEventListener("touchstart", function (event) {
-                touchStartY = event.touches[0].clientY;
-            });
-
-            // Détecter le mouvement du doigt (Swipe Down)
-            video.addEventListener("touchmove", function (event) {
-                touchEndY = event.touches[0].clientY;
-
-                // Vérifier si l'utilisateur a fait un glissement vers le bas (seuil de 50px)
-                if (touchEndY - touchStartY > 50) {
-                    exitFullscreen();
-                }
-            });
-
-            // Fonction pour quitter le plein écran
-            function exitFullscreen() {
-                if (document.fullscreenElement || document.webkitFullscreenElement) {
-                    if (document.exitFullscreen) {
-                        document.exitFullscreen();
-                    } else if (document.webkitExitFullscreen) { // Safari
-                        document.webkitExitFullscreen();
-                    } else if (document.msExitFullscreen) { // IE
-                        document.msExitFullscreen();
-                    }
-                }
+            // ✅ Activer le plein écran
+            if (video.requestFullscreen) {
+                video.requestFullscreen();
+            } else if (video.webkitRequestFullscreen) {
+                video.webkitRequestFullscreen();
+            } else if (video.msRequestFullscreen) {
+                video.msRequestFullscreen();
             }
         });
+
+        // Détecter le début du toucher
+        video.addEventListener("touchstart", function (event) {
+            touchStartY = event.touches[0].clientY;
+        });
+
+        // Détecter le mouvement du doigt (Swipe Down)
+        video.addEventListener("touchmove", function (event) {
+            touchEndY = event.touches[0].clientY;
+
+            if (touchEndY - touchStartY > 50) {
+                exitFullscreen();
+            }
+        });
+
+        function exitFullscreen() {
+            if (document.fullscreenElement || document.webkitFullscreenElement) {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+            }
+        }
     });
-</script>
+});
+	</script>
 
 	{% endblock %}
 {% endblock %}

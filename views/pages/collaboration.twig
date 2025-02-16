@@ -1,6 +1,6 @@
 {% extends "../layouts/base.twig" %}
 {% block style %}
-<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet"/>
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet"/>
 	<link rel="stylesheet" href="/../../assets/css/collaboration.css">
 {% endblock %}
 
@@ -24,6 +24,7 @@
 									<button class="toggle-actions-btn" id="toggle-actions-btn-{{ file.id }}">...</button>
 								</div>
 								<div class="actions-menu" style="display: none;">
+									<span class="closeMenu">x</span>
 									<h2>Que voulez-vous faire ?</h2>
 									<button class="edit-file-btn">Modifier</button>
 									<button class="delete-file-btn">Supprimer</button>
@@ -47,7 +48,7 @@
 									</div><br>
 								{% endif %}
 
-								
+
 								<div class="comments" id="comments-{{ file.id }}" style="display: none;">
 									<h2>Commentaires</h2>
 									{% if file.comments is defined and file.comments is not empty %}
@@ -150,82 +151,89 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 	<script>
 		$(document).ready(function () {
-			$('#genre').select2({placeholder: 'Sélectionnez un genre', allowClear: true});
-		});
+$('#genre').select2({placeholder: 'Sélectionnez un genre', allowClear: true});
+});
 	</script>
 	<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const videos = document.querySelectorAll(".video");
+		document.addEventListener("DOMContentLoaded", function () {
+const videos = document.querySelectorAll(".video");
 
-        function checkVisibility() {
-            videos.forEach(video => {
-                const rect = video.getBoundingClientRect();
-                const isVisible = rect.top < window.innerHeight * 0.75 && rect.bottom > window.innerHeight * 0.25;
+function checkVisibility() {
+videos.forEach(video => {
+const rect = video.getBoundingClientRect();
+const isVisible = rect.top<window.innerHeight * 0.75 && rect.bottom> window.innerHeight * 0.25;
 
-                if (isVisible) {
-                    if (video.paused) video.play();
-                } else {
-                    video.pause();
-                }
-            });
-        }
+if (isVisible) {
+if (video.paused) 
+video.play();
 
-        window.addEventListener("scroll", checkVisibility);
-        checkVisibility();
+} else {
+video.pause();
+}
+});
+}
 
-        videos.forEach(video => {
-            let isFullscreen = false;
-            let touchStartY = 0;
-            let lastTap = 0;
+window.addEventListener("scroll", checkVisibility);
+checkVisibility();
 
-            video.addEventListener("touchend", function (event) {
-                const now = new Date().getTime();
-                const tapLength = now - lastTap;
-                
-                // Empêcher le comportement sur les contrôles natifs
-                if (event.target !== video) return;
+videos.forEach(video => {
+let isFullscreen = false;
+let touchStartY = 0;
+let lastTap = 0;
 
-                if (tapLength < 300 && tapLength > 0) {
-                    enterFullscreen(video);
-                } else {
-                    if (!isFullscreen) {
-                        video.paused ? video.play() : video.pause();
-                    }
-                }
-                lastTap = now;
-            });
+video.addEventListener("touchend", function (event) {
+const now = new Date().getTime();
+const tapLength = now - lastTap;
 
-            document.addEventListener("fullscreenchange", function () {
-                isFullscreen = !!document.fullscreenElement;
-                videos.forEach(v => v.muted = !isFullscreen);
-            });
-
-            video.addEventListener("touchstart", function (event) {
-                touchStartY = event.touches[0].clientY;
-            });
-
-            video.addEventListener("touchmove", function (event) {
-                if (event.touches[0].clientY - touchStartY > 50) {
-                    exitFullscreen();
-                }
-            });
-
-            function enterFullscreen(video) {
-                if (video.requestFullscreen) video.requestFullscreen();
-                else if (video.webkitRequestFullscreen) video.webkitRequestFullscreen();
-                else if (video.msRequestFullscreen) video.msRequestFullscreen();
-                isFullscreen = true;
-                video.muted = false;
-            }
-
-            function exitFullscreen() {
-                if (document.fullscreenElement) document.exitFullscreen();
-            }
-        });
-    });
-</script>
+// Empêcher le comportement sur les contrôles natifs
+if (event.target !== video) 
+return;
 
 
+if (tapLength < 300 && tapLength > 0) {
+enterFullscreen(video);
+} else {
+if (! isFullscreen) {
+video.paused ? video.play() : video.pause();
+}
+} lastTap = now;
+});
+
+document.addEventListener("fullscreenchange", function () {
+isFullscreen = !!document.fullscreenElement;
+videos.forEach(v => v.muted = ! isFullscreen);
+});
+
+video.addEventListener("touchstart", function (event) {
+touchStartY = event.touches[0].clientY;
+});
+
+video.addEventListener("touchmove", function (event) {
+if (event.touches[0].clientY - touchStartY > 50) {
+exitFullscreen();
+}
+});
+
+function enterFullscreen(video) {
+if (video.requestFullscreen) 
+video.requestFullscreen();
+ else if (video.webkitRequestFullscreen) 
+video.webkitRequestFullscreen();
+ else if (video.msRequestFullscreen) 
+video.msRequestFullscreen();
+
+isFullscreen = true;
+video.muted = false;
+}
+
+function exitFullscreen() {
+if (document.fullscreenElement) 
+document.exitFullscreen();
+
+}
+});
+});
+	</script>
 
 
 	<script src="/../../assets/js/collaboration.js"></script>

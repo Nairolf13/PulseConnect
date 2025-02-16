@@ -659,6 +659,13 @@ form button[type="button"] {
     margin-left: 11px;
 }
 
+.closeMenu{
+    position: relative;
+    left: 50%;
+    color: #aaa;
+    cursor: pointer;
+}
+
 .confirm-delete {
     background-color: red !important;
     color: white;

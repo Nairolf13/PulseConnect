@@ -26,7 +26,6 @@ function toggleSidebar() {
 
 
 
-
 document.addEventListener('DOMContentLoaded', function () {
     const projectContainer = document.getElementById('project-container');
     const projectId = projectContainer.dataset.projectId;
@@ -140,6 +139,13 @@ document.addEventListener('DOMContentLoaded', function () {
             modal.style.display = 'none'; 
             
         }
+     
+
+        document.querySelectorAll('.closeMenu').forEach(button => {
+            button.addEventListener('click', function() {
+                this.closest('.actions-menu').style.display = 'none';
+            });
+        });
         
         
         window.onclick = function (event) {
@@ -148,7 +154,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 closeModal(); 
             }
         };
-        
+      
         document.querySelector('.cancel-delete').addEventListener('click', closeModal);
         
     });

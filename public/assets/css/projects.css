@@ -451,6 +451,14 @@ img {
     text-align: center;
 }
 
+.close-dropdown{
+    position: absolute;
+    right: 2%;
+    top: 2%;
+    cursor: pointer;
+    color: #aaa;
+}
+
 .participant-search {
     margin-bottom: 15px;
 }

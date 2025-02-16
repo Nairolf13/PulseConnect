@@ -3,7 +3,7 @@ const contentRouter = express.Router();
 const { PrismaClient } = require("@prisma/client");
 const path = require("path");
 const ffmpeg = require("fluent-ffmpeg");
-const { upload } = require("../services/downloadExtension");
+const { uploadAndGenerateThumbnail } = require("../services/downloadExtension");
 const authguard = require("../services/authguard");
 
 const prisma = new PrismaClient();
@@ -36,7 +36,7 @@ contentRouter.get('/addContent', authguard, async (req, res) => {
     }
 });
 
-contentRouter.post('/addContent', authguard, upload.single('mediaFile'), async (req, res) => {
+contentRouter.post('/addContent', authguard, uploadAndGenerateThumbnail, async (req, res) => {
     try {
         const userId = req.session.users.id_user;
         const file = req.file;

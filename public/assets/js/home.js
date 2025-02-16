@@ -17,53 +17,6 @@ window.addEventListener("scroll", function () {
     lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; 
 });
 
-
-document.addEventListener("DOMContentLoaded", function () {
-    const videos = document.querySelectorAll(".video");
-    let touchStartY = 0; 
-    let touchEndY = 0; 
-
-    videos.forEach(video => {
-        video.addEventListener("pointerup", function () {
-            if (video.paused) {
-                video.play();
-            }
-
-            if (video.requestFullscreen) {
-                video.requestFullscreen();
-            } else if (video.webkitRequestFullscreen) { 
-                video.webkitRequestFullscreen();
-            } else if (video.msRequestFullscreen) { 
-                video.msRequestFullscreen();
-            }
-        });
-
-        video.addEventListener("touchstart", function (event) {
-            touchStartY = event.touches[0].clientY;
-        });
-
-        video.addEventListener("touchmove", function (event) {
-            touchEndY = event.touches[0].clientY;
-
-            if (touchEndY - touchStartY > 80) {
-                exitFullscreen();
-            }
-        });
-    });
-
-    function exitFullscreen() {
-        if (document.fullscreenElement || document.webkitFullscreenElement) {
-            if (document.exitFullscreen) {
-                document.exitFullscreen();
-            } else if (document.webkitExitFullscreen) { 
-                document.webkitExitFullscreen();
-            } else if (document.msExitFullscreen) { 
-                document.msExitFullscreen();
-            }
-        }
-    }
-});
-
 document.addEventListener('DOMContentLoaded', function () {
     const observer = new MutationObserver(() => {
         attachEventListeners();

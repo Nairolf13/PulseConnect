@@ -783,7 +783,6 @@ input[type="file"]::-webkit-file-upload-button:hover {
     border: 1px solid #3d3d3d;
     border-radius: 5px;
     margin: 10px 0;
-    text-align: center;
 }
 
 .custom-file {

@@ -166,15 +166,23 @@
         videos.forEach(video => {
             let isFullscreen = false;
             let touchStartY = 0;
+            let lastTap = 0;
 
-            video.addEventListener("click", function () {
-                if (!isFullscreen) {
-                    video.paused ? video.play() : video.pause();
+            video.addEventListener("touchend", function (event) {
+                const now = new Date().getTime();
+                const tapLength = now - lastTap;
+                
+                // Empêcher le comportement sur les contrôles natifs
+                if (event.target !== video) return;
+
+                if (tapLength < 300 && tapLength > 0) {
+                    enterFullscreen(video);
+                } else {
+                    if (!isFullscreen) {
+                        video.paused ? video.play() : video.pause();
+                    }
                 }
-            });
-
-            video.addEventListener("dblclick", function () {
-                enterFullscreen(video);
+                lastTap = now;
             });
 
             document.addEventListener("fullscreenchange", function () {
@@ -204,9 +212,9 @@
                 if (document.fullscreenElement) document.exitFullscreen();
             }
         });
-
     });
 </script>
+
 
 	{% endblock %}
 {% endblock %}

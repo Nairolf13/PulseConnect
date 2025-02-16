@@ -173,13 +173,11 @@
         window.addEventListener("scroll", checkVisibility);
         checkVisibility();
 
-        // One-Tap Fullscreen + Swipe Down pour quitter
         videos.forEach(video => {
             let touchStartY = 0;
             let touchEndY = 0;
 
-            // ✅ Basculer entre Play/Pause si on n'est pas en plein écran
-            video.addEventListener("pointerup", function () {
+            video.addEventListener("click", function (event) {
                 if (!document.fullscreenElement) {
                     if (video.paused) {
                         video.play();
@@ -187,8 +185,9 @@
                         video.pause();
                     }
                 }
+            });
 
-                // ✅ Activer le mode plein écran
+            video.addEventListener("dblclick", function () {
                 if (video.requestFullscreen) {
                     video.requestFullscreen();
                 } else if (video.webkitRequestFullscreen) {
@@ -198,12 +197,10 @@
                 }
             });
 
-            // Détecter le début du toucher
             video.addEventListener("touchstart", function (event) {
                 touchStartY = event.touches[0].clientY;
             });
 
-            // Détecter le mouvement du doigt (Swipe Down)
             video.addEventListener("touchmove", function (event) {
                 touchEndY = event.touches[0].clientY;
 
@@ -223,14 +220,12 @@
                     }
                 }
 
-                // ✅ Empêcher la pause immédiate après la sortie du plein écran
                 setTimeout(() => {
                     checkVisibility();
                 }, 500);
             }
         });
 
-        // ✅ Fixer les icônes Play/Pause pour qu'ils ne déclenchent pas le plein écran
         document.querySelectorAll(".video-controls").forEach(control => {
             control.addEventListener("click", function (event) {
                 let video = this.closest(".video-container").querySelector(".video");
@@ -241,11 +236,12 @@
                     video.pause();
                 }
 
-                event.stopPropagation(); // Empêche le clic de se propager à la vidéo
+                event.stopPropagation(); 
             });
         });
     });
 </script>
+
 
 	<script src="/../../assets/js/collaboration.js"></script>
 {% endblock %}

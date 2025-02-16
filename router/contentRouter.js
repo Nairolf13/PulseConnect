@@ -2,7 +2,10 @@ const express = require("express");
 const contentRouter = express.Router();
 const { PrismaClient } = require("@prisma/client");
 const path = require("path");
-const ffmpeg = require("fluent-ffmpeg");
+const ffmpeg = require('fluent-ffmpeg');
+const ffmpegInstaller = require('@ffmpeg-installer/ffmpeg'); 
+
+ffmpeg.setFfmpegPath(ffmpegInstaller.path);
 const { uploadAndGenerateThumbnail } = require("../services/downloadExtension");
 const authguard = require("../services/authguard");
 

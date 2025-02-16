@@ -143,12 +143,14 @@ button:hover {
     cursor: pointer;
     z-index: 1;
     position: relative;
+    top: 5%;
 }
 
 .file-preview {
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-bottom: 100px;
 }
 
 .file-preview img,
@@ -163,6 +165,7 @@ button:hover {
 
 @media (max-width: 768px) {
     form {
+        min-height: 65vh;
         position: absolute;
         top: -10%;
       

@@ -39,7 +39,7 @@
 							{% endif %}
 
 							{% if content.url and (content.url ends with '.mp4' or content.url ends with '.avi' or content.url ends with '.mkv' or content.url ends with '.mov') %}
-								<video class="custom-video" controls playsinline>
+								<video class="video" controls autoplay muted loop playsinline>
 									<source src="./uploads/{{ content.url }}" type="video/mp4">
 									Votre navigateur ne supporte pas l'élément vidéo.
 								</video>
@@ -144,34 +144,40 @@
 	{% block script %}
 		<script src="/../../assets/js/home.js"></script>
 		<script>
-	document.addEventListener("DOMContentLoaded", function () {
-        let videos = document.querySelectorAll(".custom-video");
+        document.addEventListener("DOMContentLoaded", function () {
+            const videos = document.querySelectorAll(".video");
 
-        videos.forEach((video) => {
-            function setPreview() {
-                video.currentTime = 1;
+            // Vérifie si une vidéo est visible à au moins 50%
+            function checkVisibility() {
+                videos.forEach(video => {
+                    const rect = video.getBoundingClientRect();
+                    const halfVisible = rect.top < window.innerHeight / 2 && rect.bottom > window.innerHeight / 2;
+                    
+                    if (halfVisible) {
+                        video.play();
+                    } else {
+                        video.pause();
+                    }
+                });
             }
 
-            // Attendre que les métadonnées soient chargées pour avancer à 5s
-            video.addEventListener("loadedmetadata", function () {
-                setPreview();
-            });
+            // Détecter le scroll pour activer/désactiver la lecture
+            window.addEventListener("scroll", checkVisibility);
+            checkVisibility(); // Vérifier au chargement de la page
 
-            // Redémarrer la vidéo à 0s lors de la lecture
-            video.addEventListener("play", function () {
-                if (video.currentTime > 0) {
-                    video.currentTime = 0;
-                }
-            });
-
-            // Vérification mobile : remettre l'aperçu après la pause
-            video.addEventListener("pause", function () {
-                if (video.currentTime > 0 && video.currentTime < 2) {
-                    setPreview();
-                }
+            // Mettre en plein écran au clic au lieu de mettre pause
+            videos.forEach(video => {
+                video.addEventListener("click", function () {
+                    if (video.requestFullscreen) {
+                        video.requestFullscreen();
+                    } else if (video.webkitRequestFullscreen) { // Safari
+                        video.webkitRequestFullscreen();
+                    } else if (video.msRequestFullscreen) { // Internet Explorer
+                        video.msRequestFullscreen();
+                    }
+                });
             });
         });
-    });
-</script>
+    </script>
 	{% endblock %}
 {% endblock %}

@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         const userItem = document.createElement('div');
                         userItem.className = 'user-item';
                         userItem.innerHTML = `
-                            <img src="${user.picture}" alt="${user.userName}" onerror="this.src='/../../assets/imgs/Pp.webp';">
+                            <img src="${user.picture}" alt="${user.userName}">
                             <span>${user.userName}</span>
                         `;
                         userItem.addEventListener('click', () => {

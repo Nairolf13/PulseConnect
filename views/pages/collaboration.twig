@@ -154,77 +154,98 @@
 		});
 	</script>
 	<script>
-		document.addEventListener("DOMContentLoaded", function () {
-    const videos = document.querySelectorAll(".video");
+    document.addEventListener("DOMContentLoaded", function () {
+        const videos = document.querySelectorAll(".video");
 
-    function checkVisibility() {
+        function checkVisibility() {
+            videos.forEach(video => {
+                const rect = video.getBoundingClientRect();
+                const halfVisible = rect.top < window.innerHeight / 2 && rect.bottom > window.innerHeight / 2;
+
+                if (halfVisible) {
+                    video.play();
+                } else {
+                    video.pause();
+                }
+            });
+        }
+
+        window.addEventListener("scroll", checkVisibility);
+        checkVisibility();
+
+        // One-Tap Fullscreen + Swipe Down pour quitter
         videos.forEach(video => {
-            const rect = video.getBoundingClientRect();
-            const halfVisible = rect.top < window.innerHeight / 2 && rect.bottom > window.innerHeight / 2;
+            let touchStartY = 0;
+            let touchEndY = 0;
 
-            if (halfVisible) {
-                video.play();
-            } else {
-                video.pause();
+            // ✅ Basculer entre Play/Pause si on n'est pas en plein écran
+            video.addEventListener("pointerup", function () {
+                if (!document.fullscreenElement) {
+                    if (video.paused) {
+                        video.play();
+                    } else {
+                        video.pause();
+                    }
+                }
+
+                // ✅ Activer le mode plein écran
+                if (video.requestFullscreen) {
+                    video.requestFullscreen();
+                } else if (video.webkitRequestFullscreen) {
+                    video.webkitRequestFullscreen();
+                } else if (video.msRequestFullscreen) {
+                    video.msRequestFullscreen();
+                }
+            });
+
+            // Détecter le début du toucher
+            video.addEventListener("touchstart", function (event) {
+                touchStartY = event.touches[0].clientY;
+            });
+
+            // Détecter le mouvement du doigt (Swipe Down)
+            video.addEventListener("touchmove", function (event) {
+                touchEndY = event.touches[0].clientY;
+
+                if (touchEndY - touchStartY > 50) {
+                    exitFullscreen();
+                }
+            });
+
+            function exitFullscreen() {
+                if (document.fullscreenElement || document.webkitFullscreenElement) {
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen();
+                    } else if (document.webkitExitFullscreen) {
+                        document.webkitExitFullscreen();
+                    } else if (document.msExitFullscreen) {
+                        document.msExitFullscreen();
+                    }
+                }
+
+                // ✅ Empêcher la pause immédiate après la sortie du plein écran
+                setTimeout(() => {
+                    checkVisibility();
+                }, 500);
             }
         });
-    }
 
-    window.addEventListener("scroll", checkVisibility);
-    checkVisibility();
+        // ✅ Fixer les icônes Play/Pause pour qu'ils ne déclenchent pas le plein écran
+        document.querySelectorAll(".video-controls").forEach(control => {
+            control.addEventListener("click", function (event) {
+                let video = this.closest(".video-container").querySelector(".video");
 
-    // One-Tap Fullscreen + Swipe Down pour quitter
-    videos.forEach(video => {
-        let touchStartY = 0;
-        let touchEndY = 0;
-
-        // ✅ On bascule entre Play et Pause seulement si on n'entre pas en plein écran
-        video.addEventListener("pointerup", function () {
-            if (!document.fullscreenElement) {
                 if (video.paused) {
                     video.play();
                 } else {
                     video.pause();
                 }
-            }
 
-            // ✅ Activer le plein écran
-            if (video.requestFullscreen) {
-                video.requestFullscreen();
-            } else if (video.webkitRequestFullscreen) {
-                video.webkitRequestFullscreen();
-            } else if (video.msRequestFullscreen) {
-                video.msRequestFullscreen();
-            }
+                event.stopPropagation(); // Empêche le clic de se propager à la vidéo
+            });
         });
-
-        // Détecter le début du toucher
-        video.addEventListener("touchstart", function (event) {
-            touchStartY = event.touches[0].clientY;
-        });
-
-        // Détecter le mouvement du doigt (Swipe Down)
-        video.addEventListener("touchmove", function (event) {
-            touchEndY = event.touches[0].clientY;
-
-            if (touchEndY - touchStartY > 50) {
-                exitFullscreen();
-            }
-        });
-
-        function exitFullscreen() {
-            if (document.fullscreenElement || document.webkitFullscreenElement) {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                } else if (document.webkitExitFullscreen) {
-                    document.webkitExitFullscreen();
-                } else if (document.msExitFullscreen) {
-                    document.msExitFullscreen();
-                }
-            }
-        }
     });
-});
-	</script>
+</script>
+
 	<script src="/../../assets/js/collaboration.js"></script>
 {% endblock %}

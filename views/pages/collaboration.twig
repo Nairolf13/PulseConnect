@@ -37,7 +37,7 @@
 										Votre navigateur ne supporte pas l'élément audio.
 									</audio>
 								{% elseif file.url ends with '.mp4' or file.url ends with '.avi' %}
-									<video controls playsinline>
+									<video class="custom-video" controls playsinline>
 										<source src="/uploads/{{ file.url }}" type="video/mp4">
 										Votre navigateur ne supporte pas l'élément vidéo.
 									</video>
@@ -152,6 +152,37 @@
 		$(document).ready(function () {
 			$('#genre').select2({placeholder: 'Sélectionnez un genre', allowClear: true});
 		});
+	</script>
+	<script>
+			document.addEventListener("DOMContentLoaded", function () {
+        let videos = document.querySelectorAll(".custom-video");
+
+        videos.forEach((video) => {
+            // Fonction pour forcer l'affichage à 5s avant lecture
+            function setPreview() {
+                video.currentTime = 5;
+            }
+
+            // Attendre que les métadonnées soient chargées pour avancer à 5s
+            video.addEventListener("loadedmetadata", function () {
+                setPreview();
+            });
+
+            // Redémarrer la vidéo à 0s lors de la lecture
+            video.addEventListener("play", function () {
+                if (video.currentTime > 0) {
+                    video.currentTime = 0;
+                }
+            });
+
+            // Vérification mobile : remettre l'aperçu après la pause
+            video.addEventListener("pause", function () {
+                if (video.currentTime > 0 && video.currentTime < 5) {
+                    setPreview();
+                }
+            });
+        });
+    });
 	</script>
 	<script src="/../../assets/js/collaboration.js"></script>
 {% endblock %}

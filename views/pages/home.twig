@@ -39,7 +39,7 @@
 							{% endif %}
 
 							{% if content.url and (content.url ends with '.mp4' or content.url ends with '.avi' or content.url ends with '.mkv' or content.url ends with '.mov') %}
-								<video controls playsinline>
+								<video class="custom-video" controls playsinline>
 									<source src="./uploads/{{ content.url }}" type="video/mp4">
 									Votre navigateur ne supporte pas l'élément vidéo.
 								</video>
@@ -144,22 +144,34 @@
 	{% block script %}
 		<script src="/../../assets/js/home.js"></script>
 		<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        let videos = document.querySelectorAll("video"); // Sélectionne toutes les vidéos
+	document.addEventListener("DOMContentLoaded", function () {
+        let videos = document.querySelectorAll(".custom-video");
 
-        videos.forEach(video => {
-            // Aller directement à 5 secondes pour l'aperçu
-            video.currentTime = 1;
+        videos.forEach((video) => {
+            function setPreview() {
+                video.currentTime = 1;
+            }
 
-            // Quand l'utilisateur appuie sur Play, la vidéo recommence du début
+            // Attendre que les métadonnées soient chargées pour avancer à 5s
+            video.addEventListener("loadedmetadata", function () {
+                setPreview();
+            });
+
+            // Redémarrer la vidéo à 0s lors de la lecture
             video.addEventListener("play", function () {
                 if (video.currentTime > 0) {
                     video.currentTime = 0;
                 }
             });
+
+            // Vérification mobile : remettre l'aperçu après la pause
+            video.addEventListener("pause", function () {
+                if (video.currentTime > 0 && video.currentTime < 2) {
+                    setPreview();
+                }
+            });
         });
     });
 </script>
-
 	{% endblock %}
 {% endblock %}

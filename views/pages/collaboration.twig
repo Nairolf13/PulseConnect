@@ -214,17 +214,32 @@ exitFullscreen();
 }
 });
 
-function enterFullscreen(video) {
-if (video.requestFullscreen) 
-video.requestFullscreen();
- else if (video.webkitRequestFullscreen) 
-video.webkitRequestFullscreen();
- else if (video.msRequestFullscreen) 
-video.msRequestFullscreen();
+video.addEventListener("click", function() {
+    video.muted = false;
+    video.volume = 1;
+});
 
-isFullscreen = true;
-video.muted = false;
+function enterFullscreen(video) {
+    if (video.requestFullscreen) {
+        video.requestFullscreen();
+    } else if (video.webkitRequestFullscreen) {
+        video.webkitRequestFullscreen();
+    } else if (video.msRequestFullscreen) {
+        video.msRequestFullscreen();
+    }
+
+    isFullscreen = true;
+
+    // 🔥 Nouvelle ligne : Activer le son après l'interaction utilisateur
+    video.muted = false;
+    video.volume = 1; // S'assurer que le volume est au maximum
+
+    // 🔥 Ajouter un "play()" après un "setTimeout" pour garantir que le son s'active
+    setTimeout(() => {
+        video.play().catch(error => console.warn("Lecture refusée :", error));
+    }, 100);
 }
+
 
 function exitFullscreen() {
 if (document.fullscreenElement) 

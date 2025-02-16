@@ -166,7 +166,7 @@ button:hover {
 @media (max-width: 768px) {
     form {
         position: absolute;
-        top: -5%;
+        top: -10%;
         width: 80%;
     }
 }

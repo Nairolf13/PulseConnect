@@ -18,7 +18,7 @@
 	<div id="conversationList">
 		{% for user in users %}
 			<div class="user-item" data-user-id="{{ user.userId }}" onclick="window.location.href='/conversation/{{ user.userId }}'">
-				<img src="{{ user.profilePicture }}" alt="{{ user.username }}">
+			<img src="{{ users.picture }}" alt="Photo de profil" class="profile-pic" onerror="this.src='/../../assets/imgs/Pp.webp'"/>
 				<div id="user-info">
 					<span class="username">{{ user.username }}</span>
 					<span class="last-message">{{ user.lastMessage }}</span>

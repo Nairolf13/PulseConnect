@@ -283,7 +283,6 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('search').addEventListener('input', debounce(async () => {
         const query = document.getElementById('search').value.trim();
         if (!query) {
-            resetMap();
             return;
         }
         await searchStudio(query);  // Appeler searchStudio avec le query saisi
@@ -299,7 +298,7 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
             const results = await geocode(query); // Utiliser le géocodage pour la recherche
             if (results.length) {
-                resetMap();  // Réinitialiser la carte avant d'afficher les résultats
+                // resetMap();  // Réinitialiser la carte avant d'afficher les résultats
                 const [firstResult] = results;
                 map.setView([firstResult.center[1], firstResult.center[0]], 12);  // Zoomer sur la première ville trouvée
 

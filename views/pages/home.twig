@@ -143,78 +143,99 @@
 	{% include "../partials/error.twig" %}
 	{% block script %}
 		<script src="/../../assets/js/home.js"></script>
-	<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const videos = document.querySelectorAll(".video");
+		<script>
+	document.addEventListener("DOMContentLoaded", function () {
+    const videos = document.querySelectorAll(".video");
 
-        function checkVisibility() {
-            videos.forEach(video => {
-                const rect = video.getBoundingClientRect();
-                const isVisible = rect.top < window.innerHeight * 0.75 && rect.bottom > window.innerHeight * 0.25;
-
-                if (isVisible) {
-                    if (video.paused) video.play();
-                } else {
-                    video.pause();
-                }
-            });
-        }
-
-        window.addEventListener("scroll", checkVisibility);
-        checkVisibility();
-
+    function checkVisibility() {
         videos.forEach(video => {
-            let isFullscreen = false;
-            let touchStartY = 0;
-            let lastTap = 0;
+            const rect = video.getBoundingClientRect();
+            const halfVisible = rect.top < window.innerHeight / 2 && rect.bottom > window.innerHeight / 2;
 
-            video.addEventListener("touchend", function (event) {
-                const now = new Date().getTime();
-                const tapLength = now - lastTap;
-                
-                // Empêcher le comportement sur les contrôles natifs
-                if (event.target !== video) return;
+            if (halfVisible) {
+                video.play();
+            } else {
+                video.pause();
+            }
+        });
+    }
 
-                if (tapLength < 300 && tapLength > 0) {
-                    enterFullscreen(video);
-                } else {
-                    if (!isFullscreen) {
-                        video.paused ? video.play() : video.pause();
-                    }
-                }
-                lastTap = now;
-            });
+    window.addEventListener("scroll", checkVisibility);
+    checkVisibility();
 
-            document.addEventListener("fullscreenchange", function () {
-                isFullscreen = !!document.fullscreenElement;
-                videos.forEach(v => v.muted = !isFullscreen);
-            });
+    videos.forEach(video => {
+        let touchStartY = 0;
+        let touchEndY = 0;
+        
+        video.dataset.userMuted = video.muted; 
 
-            video.addEventListener("touchstart", function (event) {
-                touchStartY = event.touches[0].clientY;
-            });
+        function enterFullscreen() {
+            video.dataset.userMuted = video.muted; 
 
-            video.addEventListener("touchmove", function (event) {
-                if (event.touches[0].clientY - touchStartY > 50) {
-                    exitFullscreen();
-                }
-            });
-
-            function enterFullscreen(video) {
-                if (video.requestFullscreen) video.requestFullscreen();
-                else if (video.webkitRequestFullscreen) video.webkitRequestFullscreen();
-                else if (video.msRequestFullscreen) video.msRequestFullscreen();
-                isFullscreen = true;
-                video.muted = false;
+            if (video.requestFullscreen) {
+                video.requestFullscreen();
+            } else if (video.webkitRequestFullscreen) {
+                video.webkitRequestFullscreen();
+            } else if (video.msRequestFullscreen) {
+                video.msRequestFullscreen();
             }
 
-            function exitFullscreen() {
-                if (document.fullscreenElement) document.exitFullscreen();
+            video.muted = false;
+            video.volume = 1;
+        }
+
+        function exitFullscreen() {
+            if (document.fullscreenElement || document.webkitFullscreenElement) {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+            }
+
+            video.muted = (video.dataset.userMuted === "true");
+            setTimeout(checkVisibility, 500);
+        }
+
+        video.addEventListener("click", function () {
+            enterFullscreen();
+        });
+
+        video.addEventListener("dblclick", function () {
+            enterFullscreen();
+        });
+
+        document.addEventListener("fullscreenchange", function () {
+            if (!document.fullscreenElement) {
+                exitFullscreen();
+            }
+        });
+
+        video.addEventListener("touchstart", function (event) {
+            touchStartY = event.touches[0].clientY;
+        });
+
+        video.addEventListener("touchmove", function (event) {
+            touchEndY = event.touches[0].clientY;
+            if (touchEndY - touchStartY > 50) {
+                exitFullscreen();
             }
         });
     });
+
+    document.querySelectorAll(".mute-btn").forEach(button => {
+        button.addEventListener("click", function (event) {
+            let video = this.closest(".video-container").querySelector(".video");
+
+            video.muted = !video.muted;
+            video.dataset.userMuted = video.muted.toString(); 
+
+            event.stopPropagation();
+        });
+    });
+});
 </script>
-
-
 	{% endblock %}
 {% endblock %}

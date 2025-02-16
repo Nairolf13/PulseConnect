@@ -1,3 +1,4 @@
+
 document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('searchUser');
     const userList = document.createElement('div');
@@ -16,10 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         const userItem = document.createElement('div');
                         userItem.className = 'user-item';
                         userItem.innerHTML = `
-                            <img src="${user.picture}" 
-                                 alt="Photo de ${user.userName}" 
-                                 class="profile-pic" 
-                                 onerror="this.src='/../../assets/imgs/Pp.webp'"/>
+                            <img src="${user.picture}" alt="${user.userName}" onerror="this.src='/../../assets/imgs/Pp.webp';">
                             <span>${user.userName}</span>
                         `;
                         userItem.addEventListener('click', () => {
@@ -34,8 +32,6 @@ document.addEventListener('DOMContentLoaded', function() {
             userList.style.display = 'none';
         }
     });
-});
-
 
     document.addEventListener('click', function(e) {
         if (e.target !== searchInput && !userList.contains(e.target)) {

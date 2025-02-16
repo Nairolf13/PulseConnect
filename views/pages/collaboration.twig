@@ -160,10 +160,10 @@
         function checkVisibility() {
             videos.forEach(video => {
                 const rect = video.getBoundingClientRect();
-                const halfVisible = rect.top < window.innerHeight / 2 && rect.bottom > window.innerHeight / 2;
+                const isVisible = rect.top < window.innerHeight * 0.75 && rect.bottom > window.innerHeight * 0.25;
 
-                if (halfVisible) {
-                    video.play();
+                if (isVisible) {
+                    if (video.paused) video.play();
                 } else {
                     video.pause();
                 }
@@ -174,37 +174,22 @@
         checkVisibility();
 
         videos.forEach(video => {
-            let touchStartY = 0;
-            let touchEndY = 0;
             let isFullscreen = false;
+            let touchStartY = 0;
 
-            video.addEventListener("click", function (event) {
+            video.addEventListener("click", function () {
                 if (!isFullscreen) {
-                    if (video.paused) {
-                        video.play();
-                    } else {
-                        video.pause();
-                    }
+                    video.paused ? video.play() : video.pause();
                 }
             });
 
             video.addEventListener("dblclick", function () {
-                if (video.requestFullscreen) {
-                    video.requestFullscreen();
-                } else if (video.webkitRequestFullscreen) {
-                    video.webkitRequestFullscreen();
-                } else if (video.msRequestFullscreen) {
-                    video.msRequestFullscreen();
-                }
-
-                isFullscreen = true;
-				video.muted = false;
+                enterFullscreen(video);
             });
 
             document.addEventListener("fullscreenchange", function () {
-                if (!document.fullscreenElement) {
-                    isFullscreen = false;
-                }
+                isFullscreen = !!document.fullscreenElement;
+                videos.forEach(v => v.muted = !isFullscreen);
             });
 
             video.addEventListener("touchstart", function (event) {
@@ -212,46 +197,27 @@
             });
 
             video.addEventListener("touchmove", function (event) {
-                touchEndY = event.touches[0].clientY;
-
-                if (touchEndY - touchStartY > 50) {
+                if (event.touches[0].clientY - touchStartY > 50) {
                     exitFullscreen();
                 }
             });
 
-            function exitFullscreen() {
-                if (document.fullscreenElement || document.webkitFullscreenElement) {
-                    if (document.exitFullscreen) {
-                        document.exitFullscreen();
-                    } else if (document.webkitExitFullscreen) {
-                        document.webkitExitFullscreen();
-                    } else if (document.msExitFullscreen) {
-                        document.msExitFullscreen();
-                    }
-                }
+            function enterFullscreen(video) {
+                if (video.requestFullscreen) video.requestFullscreen();
+                else if (video.webkitRequestFullscreen) video.webkitRequestFullscreen();
+                else if (video.msRequestFullscreen) video.msRequestFullscreen();
+                isFullscreen = true;
+                video.muted = false;
+            }
 
-                isFullscreen = false;
-                setTimeout(() => {
-                    checkVisibility();
-                }, 500);
+            function exitFullscreen() {
+                if (document.fullscreenElement) document.exitFullscreen();
             }
         });
 
-        document.querySelectorAll(".video-controls").forEach(control => {
-            control.addEventListener("click", function (event) {
-                let video = this.closest(".video-container").querySelector(".video");
-
-                if (video.paused) {
-                    video.play();
-                } else {
-                    video.pause();
-                }
-
-                event.stopPropagation();
-            });
-        });
     });
 </script>
+
 
 
 

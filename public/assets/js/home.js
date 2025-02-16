@@ -1,25 +1,68 @@
-let lastScrollTop = 0; // Dernière position du scroll
-const header = document.querySelector('.headerRes'); // Sélectionne l'élément header
+let lastScrollTop = 0; 
+const header = document.querySelector('.headerRes');
 
 window.addEventListener("scroll", function () {
-  const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
 
-  // Si l'utilisateur scrolle vers le haut et est tout en haut de la page, recharger la page
-  if (scrollTop < lastScrollTop && scrollTop === 0) {
-    location.reload();
-  }
+    if (scrollTop < lastScrollTop && scrollTop === 0) {
+        location.reload();
+    }
 
-  // Gestion de l'affichage du header
-  if (scrollTop > lastScrollTop) {
-    header.classList.add('hidden'); // Ajouter la classe 'hidden' quand on scroll vers le bas
-  } else {
-    header.classList.remove('hidden'); // Retirer la classe 'hidden' quand on scroll vers le haut
-  }
+    if (scrollTop > lastScrollTop) {
+        header.classList.add('hidden'); 
+    } else {
+        header.classList.remove('hidden'); 
+    }
 
-  lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; // Met à jour la dernière position du scroll
+    lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; 
 });
 
 
+document.addEventListener("DOMContentLoaded", function () {
+    const videos = document.querySelectorAll(".video");
+    let touchStartY = 0; 
+    let touchEndY = 0; 
+
+    videos.forEach(video => {
+        video.addEventListener("pointerup", function () {
+            if (video.paused) {
+                video.play();
+            }
+
+            if (video.requestFullscreen) {
+                video.requestFullscreen();
+            } else if (video.webkitRequestFullscreen) { 
+                video.webkitRequestFullscreen();
+            } else if (video.msRequestFullscreen) { 
+                video.msRequestFullscreen();
+            }
+        });
+
+        video.addEventListener("touchstart", function (event) {
+            touchStartY = event.touches[0].clientY;
+        });
+
+        video.addEventListener("touchmove", function (event) {
+            touchEndY = event.touches[0].clientY;
+
+            if (touchEndY - touchStartY > 80) {
+                exitFullscreen();
+            }
+        });
+    });
+
+    function exitFullscreen() {
+        if (document.fullscreenElement || document.webkitFullscreenElement) {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) { 
+                document.webkitExitFullscreen();
+            } else if (document.msExitFullscreen) { 
+                document.msExitFullscreen();
+            }
+        }
+    }
+});
 
 document.addEventListener('DOMContentLoaded', function () {
     const observer = new MutationObserver(() => {
@@ -36,12 +79,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
 function attachEventListeners() {
     document.querySelectorAll('.comment-toggle-btn').forEach(button => {
-        button.removeEventListener('click', toggleComments); 
+        button.removeEventListener('click', toggleComments);
         button.addEventListener('click', toggleComments);
     });
 
     document.querySelectorAll('.share-button').forEach(button => {
-        button.removeEventListener('click', toggleShareModal); 
+        button.removeEventListener('click', toggleShareModal);
         button.addEventListener('click', toggleShareModal);
     });
 }
@@ -168,15 +211,15 @@ function showCopyMessage(contentId) {
 
 
 document.querySelectorAll('.like-button').forEach(button => {
- 
+
     button.addEventListener('click', async (event) => {
         event.preventDefault();
 
         if (window.isProcessing) return;
-        window.isProcessing = true; 
+        window.isProcessing = true;
 
         const assetId = button.dataset.assetId;
-        const likeCountElement = button.querySelector('.like-count'); 
+        const likeCountElement = button.querySelector('.like-count');
 
         try {
             const response = await fetch(`/like/${assetId}`, {
@@ -186,7 +229,7 @@ document.querySelectorAll('.like-button').forEach(button => {
                 },
             });
 
-            const data = await response.json(); 
+            const data = await response.json();
 
             if (response.ok) {
                 likeCountElement.textContent = data.likeCount;
@@ -205,11 +248,11 @@ document.querySelectorAll('.like-button').forEach(button => {
 
 
 document.querySelectorAll('.like-button').forEach(button => {
-    let timeoutId;  
-    const MIN_PRESS_DURATION = 200; 
-    let isLiked = false; 
-    let isTouching = false; 
-    let isPressing = false;  
+    let timeoutId;
+    const MIN_PRESS_DURATION = 200;
+    let isLiked = false;
+    let isTouching = false;
+    let isPressing = false;
     let modalOpen = false;
 
     const openModal = async (assetId) => {
@@ -233,7 +276,7 @@ document.querySelectorAll('.like-button').forEach(button => {
 
             const modal = document.getElementById('likeModal');
             modal.style.display = 'block';
-            modalOpen = true; 
+            modalOpen = true;
         } catch (error) {
             console.error("Erreur lors de la récupération des utilisateurs ayant liké:", error);
         }
@@ -253,7 +296,7 @@ document.querySelectorAll('.like-button').forEach(button => {
                     'Content-Type': 'application/json',
                 },
             });
-            
+
             if (response.ok) {
                 isLiked = !isLiked;
                 button.classList.toggle('liked', isLiked);
@@ -269,9 +312,9 @@ document.querySelectorAll('.like-button').forEach(button => {
 
     button.addEventListener('touchstart', (event) => {
         if ('ontouchstart' in window) {
-            button.removeEventListener('click', handleLikeClick); 
+            button.removeEventListener('click', handleLikeClick);
         }
-        
+
         if (!isTouching) {
             isTouching = true;
             timeoutId = setTimeout(() => {
@@ -285,7 +328,7 @@ document.querySelectorAll('.like-button').forEach(button => {
         if (isTouching) {
             isTouching = false;
             clearTimeout(timeoutId);
-            if (!isPressing && !modalOpen) { 
+            if (!isPressing && !modalOpen) {
                 if ('ontouchstart' in window) {
                     button.addEventListener('click', handleLikeClick);
                 }
@@ -306,7 +349,7 @@ document.querySelectorAll('.like-button').forEach(button => {
 
     button.addEventListener('mouseup', () => {
         clearTimeout(timeoutId);
-        if (!isPressing && !modalOpen) { 
+        if (!isPressing && !modalOpen) {
             handleLikeClick(event);
         }
         isPressing = false;
@@ -327,14 +370,14 @@ document.querySelectorAll('.like-button').forEach(button => {
 document.querySelector('.close').addEventListener('click', () => {
     const modal = document.getElementById('likeModal');
     modal.style.display = 'none';
-    modalOpen = false; 
+    modalOpen = false;
 });
 
 window.addEventListener('click', (event) => {
     const modal = document.getElementById('likeModal');
     if (event.target === modal) {
         modal.style.display = 'none';
-        modalOpen = false; 
+        modalOpen = false;
     }
 });
 
@@ -376,14 +419,14 @@ editCommentBtn.addEventListener('click', () => {
         input.style.height = 'auto';
         input.style.height = input.scrollHeight + 'px';
     });
-    
+
     const saveButton = document.createElement('button');
     saveButton.textContent = 'Enregistrer';
     saveButton.className = 'save-comment-btn';
 
     editContainer.appendChild(input);
     editContainer.appendChild(saveButton);
-    
+
     commentElement.replaceWith(editContainer);
     input.focus();
     input.dispatchEvent(new Event('input'));
@@ -420,8 +463,8 @@ editCommentBtn.addEventListener('click', () => {
 });
 
 deleteCommentBtn.addEventListener('click', () => {
-    deleteModal.style.display = 'flex'; 
-    optionsModal.style.display = 'none'; 
+    deleteModal.style.display = 'flex';
+    optionsModal.style.display = 'none';
 });
 
 confirmDeleteBtn.addEventListener('click', async () => {
@@ -434,14 +477,14 @@ confirmDeleteBtn.addEventListener('click', async () => {
             const scrollPosition = window.scrollY;
 
             window.location.reload();
-            window.scrollTo(0, scrollPosition); 
+            window.scrollTo(0, scrollPosition);
         } else {
             alert("Erreur lors de la suppression du commentaire.");
         }
     } catch (error) {
         console.error("Erreur :", error);
     }
-    deleteModal.style.display = 'none'; 
+    deleteModal.style.display = 'none';
 });
 
 

@@ -153,41 +153,5 @@
 			$('#genre').select2({placeholder: 'Sélectionnez un genre', allowClear: true});
 		});
 	</script>
-	<script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const videos = document.querySelectorAll(".video");
-
-            // Vérifie si une vidéo est visible à au moins 50%
-            function checkVisibility() {
-                videos.forEach(video => {
-                    const rect = video.getBoundingClientRect();
-                    const halfVisible = rect.top < window.innerHeight / 2 && rect.bottom > window.innerHeight / 2;
-                    
-                    if (halfVisible) {
-                        video.play();
-                    } else {
-                        video.pause();
-                    }
-                });
-            }
-
-            // Détecter le scroll pour activer/désactiver la lecture
-            window.addEventListener("scroll", checkVisibility);
-            checkVisibility(); // Vérifier au chargement de la page
-
-            // Mettre en plein écran au clic au lieu de mettre pause
-            videos.forEach(video => {
-                video.addEventListener("click", function () {
-                    if (video.requestFullscreen) {
-                        video.requestFullscreen();
-                    } else if (video.webkitRequestFullscreen) { // Safari
-                        video.webkitRequestFullscreen();
-                    } else if (video.msRequestFullscreen) { // Internet Explorer
-                        video.msRequestFullscreen();
-                    }
-                });
-            });
-        });
-    </script>
 	<script src="/../../assets/js/collaboration.js"></script>
 {% endblock %}

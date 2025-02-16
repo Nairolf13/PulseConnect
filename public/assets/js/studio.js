@@ -215,22 +215,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
             map.fitBounds(currentRouteLayer.getBounds());
 
-            // Afficher les étapes de l'itinéraire
-            showRouteSteps(route.legs[0].steps);
         } catch (error) {
             console.error("Erreur lors de la récupération des directions :", error);
         }
-    }
-    function showRouteSteps(steps) {
-        let stepsHtml = '<ul>';
-        steps.forEach(step => {
-            stepsHtml += `<li>${step.maneuver.instruction}</li>`;
-        });
-        stepsHtml += '</ul>';
-
-        const directionsContainer = document.getElementById('directions-container');
-        directionsContainer.innerHTML = stepsHtml;
-        directionsContainer.style.display = 'block';
     }
 
     // Gestion du bouton d'itinéraire dans le popup

@@ -132,7 +132,7 @@ const sendPasswordResetEmail = async (to, firstName, resetLink) => {
     </head>
     <body>
         <div class="container">
-            <img src="process.env.URLVPS/assets/imgs/PulseConnect.png" alt="Logo PulseConnect" class="logo">
+            <img src="process.env.URLVPS/public/assets/imgs/PulseConnect.png" alt="Logo PulseConnect" class="logo">
             <h1>Réinitialisation de mot de passe</h1>
             <p>Bonjour ${firstName},</p>
             <p>Vous avez demandé une réinitialisation de mot de passe pour votre compte PulseConnect.</p>

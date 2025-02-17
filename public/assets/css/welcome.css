@@ -212,6 +212,10 @@ section {
     padding: 0;
     margin: 0;
     list-style-type: none;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+
 }
 
 .slider li {
@@ -337,7 +341,7 @@ video {
     }
 
     .slider ul {
-        width: 950px;
+        width: 100%;
         
     }
 

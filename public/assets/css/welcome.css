@@ -37,6 +37,12 @@ body {
     cursor: pointer;
     margin-right: 20px;
 }
+.description {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    word-break: break-word;
+}
 
 .burger-menu span {
     height: 3px;

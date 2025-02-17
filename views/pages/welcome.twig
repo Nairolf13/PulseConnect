@@ -63,7 +63,7 @@
 					{% for post in topLikedPosts %}
 						<li>
 							<h4>{{ post.name }}</h4>
-							<p>
+							<p class="description">
 								{% if post.description %}
 									{{ post.description }}{% else %}Utilisateur inconnu
 								{% endif %}

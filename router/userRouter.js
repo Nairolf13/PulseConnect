@@ -46,14 +46,19 @@ const sendWelcomeEmail = async (to, firstName) => {
                 color: #888;
             }
             .logo {
-                width: 150px; /* Ajustez la taille du logo selon vos besoins */ 
+                width: 150px; 
                 margin-bottom: 20px;
+                position: relative;
+                left: 50%;
+                transform: translateX(-50%);
             }
         </style>
     </head>
     <body>
         <div class="container">
+            <div style="text-align: center;">
             <img src="${process.env.URLVPS}/assets/imgs/PulseConnect.png" alt="Logo PulseConnect" class="logo">
+            </div>
             <h1>Bienvenue chez PulseConnect, ${firstName} !</h1>
             <p>Merci de vous être inscrit sur notre plateforme. Nous sommes ravis de vous compter parmi nous !</p>
             <p>Pour commencer, explorez nos fonctionnalités et n'hésitez pas à nous contacter si vous avez des questions.</p>
@@ -132,7 +137,9 @@ const sendPasswordResetEmail = async (to, firstName, resetLink) => {
     </head>
     <body>
         <div class="container">
+            <div style="text-align: center;">
             <img src="${process.env.URLVPS}/assets/imgs/PulseConnect.png" alt="Logo PulseConnect" class="logo">
+            </div>
             <h1>Réinitialisation de mot de passe</h1>
             <p>Bonjour ${firstName},</p>
             <p>Vous avez demandé une réinitialisation de mot de passe pour votre compte PulseConnect.</p>
@@ -204,7 +211,7 @@ userRouter.get('/', async (req, res) => {
 });
 
 userRouter.get('/register', (req, res) => {
-    res.render('pages/register.twig',{
+    res.render('pages/register.twig', {
         title: "Inscription - PulseConnect"
     })
 })
@@ -371,7 +378,7 @@ userRouter.post('/reset-password', async (req, res) => {
         const { email, token, newPassword, confirmPassword } = req.body;
 
         const passwordRegex = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[A-Za-z0-9!@#$%^&*]{12,}$/;
-        
+
         if (email) {
             const user = await prisma.users.findUnique({
                 where: { mail: email }
@@ -410,7 +417,7 @@ userRouter.post('/reset-password', async (req, res) => {
         const passwordResetToken = await prisma.passwordResetTokens.findFirst({
             where: {
                 token,
-                expiresAt: { gt: new Date() } 
+                expiresAt: { gt: new Date() }
             }
         });
 

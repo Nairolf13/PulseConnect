@@ -16,28 +16,41 @@ function showSuccessModal(successMessage) {
     });
 }
 
-async function handleFetch(url, data) {
+async function handleFetch(url, method = 'POST', data = null) {
     try {
-        const response = await fetch(url, {
-            method: 'POST',
+        const options = {
+            method,
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(data),
-        });
+        };
 
-        const result = await response.json();
+        if (data) {
+            options.body = JSON.stringify(data);
+        }
+
+        const response = await fetch(url, options);
+
+        let result;
+        try {
+            result = await response.json();
+        } catch (jsonError) {
+            result = { error: "Réponse invalide du serveur." };
+        }
+
+        console.log("Réponse du serveur :", result); 
 
         if (response.ok) {
-            showSuccessModal(result.message);
+            showSuccessModal(result.message || "Succès !");
         } else {
-            showErrorModal(result.error);
+            showErrorModal(result.error || "Une erreur est survenue.");
         }
     } catch (error) {
-        console.error("Erreur lors de la requête : ", error);
-        showErrorModal("Une erreur inattendue est survenue. Veuillez réessayer.");
+        console.error("Erreur lors de la requête :", error);
+        showErrorModal("Impossible de se connecter au serveur.");
     }
 }
+
 
 export { showErrorModal, showSuccessModal, handleFetch };
 

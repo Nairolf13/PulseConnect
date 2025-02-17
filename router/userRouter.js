@@ -337,6 +337,8 @@ userRouter.post('/forgot-password', async (req, res) => {
 
 userRouter.get('/reset-password', async (req, res) => {
     const { token } = req.query;
+    console.log("Token reçu :", token);
+
 
     if (!token) {
         return res.render('pages/forgot-password.twig', {
@@ -399,7 +401,7 @@ userRouter.post('/reset-password', async (req, res) => {
                 data: {
                     email: user.mail,
                     token: resetToken,
-                    expiresAt
+                    expiresAt: expiresAt
                 }
             });
 

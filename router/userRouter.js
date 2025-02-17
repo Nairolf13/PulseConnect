@@ -53,7 +53,7 @@ const sendWelcomeEmail = async (to, firstName) => {
     </head>
     <body>
         <div class="container">
-            <img src="process.env.URLVPS/assets/imgs/PulseConnect.png" alt="Logo PulseConnect" class="logo">
+            <img src="${URLVPS}/assets/imgs/PulseConnect.png" alt="Logo PulseConnect" class="logo">
             <h1>Bienvenue chez PulseConnect, ${firstName} !</h1>
             <p>Merci de vous être inscrit sur notre plateforme. Nous sommes ravis de vous compter parmi nous !</p>
             <p>Pour commencer, explorez nos fonctionnalités et n'hésitez pas à nous contacter si vous avez des questions.</p>
@@ -132,7 +132,7 @@ const sendPasswordResetEmail = async (to, firstName, resetLink) => {
     </head>
     <body>
         <div class="container">
-            <img src="process.env.URLVPS/assets/imgs/PulseConnect.png" alt="Logo PulseConnect" class="logo">
+            <img src="${URLVPS}/assets/imgs/PulseConnect.png" alt="Logo PulseConnect" class="logo">
             <h1>Réinitialisation de mot de passe</h1>
             <p>Bonjour ${firstName},</p>
             <p>Vous avez demandé une réinitialisation de mot de passe pour votre compte PulseConnect.</p>

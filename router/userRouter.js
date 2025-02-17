@@ -391,7 +391,8 @@ userRouter.post('/reset-password', async (req, res) => {
             }
 
             const resetToken = crypto.randomBytes(32).toString('hex');
-            const expiresAt = new Date(Date.now() + 3600000); // 1 heure
+            const expiresAt = new Date(Date.now() + 3600000).toISOString();
+            
 
             await prisma.passwordResetTokens.deleteMany({
                 where: { email: user.mail }

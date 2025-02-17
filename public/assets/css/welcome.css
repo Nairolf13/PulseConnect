@@ -297,6 +297,11 @@ video {
     left: 5%;
 }
 
+h4{
+    font-size: 1.3rem;
+   
+}
+
 
 @media (min-width: 769px) {
     .logo {
@@ -342,6 +347,7 @@ video {
 
     .slider ul {
         width: 100%;
+        gap: 1px;
         
     }
 

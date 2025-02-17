@@ -32,7 +32,7 @@
 					{% for user in followingUsers %}
 						<li class="user-card">
 							<div class="user-info">
-								<img src="{{ user.picture }}" alt="Photo de profil" class="profile-pic">
+								<img src="{{ user.picture }}" alt="Photo de profil" class="profile-pic" onerror="this.src='/../../assets/imgs/Pp.webp'>
 								<div class="username-button">
 									<p class="user-name">{{ user.userName }}</p>
 									<form action="/unfollow/{{ user.id_user }}" method="POST">

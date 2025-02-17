@@ -223,7 +223,7 @@ section {
     justify-content: center;
     align-items: center;
     width: 299px;
-    height: 200px;
+    height: 250px;
     overflow: hidden;
 }
 
@@ -236,8 +236,8 @@ section {
 
 audio,
 video {
-    max-height: 125px;
-    min-height: 125px;
+    max-height: 170px;
+    min-height: 170px;
     width: 80%;
     border-radius: 10px;
     margin-top: 10px;
@@ -445,18 +445,25 @@ video {
         width: 100%;
     }
 
+    audio, video{
+        width: 35%;
+    }
+
     .prev,
     .next {
+        position: absolute;
         width: 50px;
         height: 50px;
+        top: 60%;
     }
 
     .prev {
-        left: 70px;
+        left: 33%;
     }
 
     .next {
-        right: 70px;
+        left: 
+        62.5%;
     }
 
     .slider-container {

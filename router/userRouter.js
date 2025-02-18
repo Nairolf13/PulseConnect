@@ -337,7 +337,6 @@ userRouter.post('/forgot-password', async (req, res) => {
 
 userRouter.get('/reset-password', async (req, res) => {
     const { token } = req.query;
-    console.log("Token reçu :", token);
 
 
     if (!token) {

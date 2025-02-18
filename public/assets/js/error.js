@@ -9,7 +9,6 @@ function showErrorModal(errorMessage) {
 function showSuccessModal(successMessage) {
     document.getElementById('successMessage').textContent = successMessage;
     document.getElementById('successModal').style.display = 'block';
-    console.log("jjhjhj");
     
     document.getElementById('closeSuccessModal').addEventListener('click', () => {
         document.getElementById('successModal').style.display = 'none';

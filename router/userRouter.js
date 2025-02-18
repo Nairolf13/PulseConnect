@@ -348,6 +348,9 @@ userRouter.get('/reset-password', async (req, res) => {
     }
 
     try {
+        const test = await prisma.passwordResetTokens.findAll();
+        console.log(test);
+        
         const passwordResetToken = await prisma.passwordResetTokens.findFirst({
             where: {
                 token: token,

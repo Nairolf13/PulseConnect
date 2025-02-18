@@ -348,8 +348,7 @@ userRouter.get('/reset-password', async (req, res) => {
     }
 
     try {
-        const test = await prisma.passwordResetTokens.findMany();
-        console.log(test);
+        
         
         const passwordResetToken = await prisma.passwordResetTokens.findFirst({
             where: {
@@ -422,8 +421,8 @@ userRouter.post('/reset-password', async (req, res) => {
 
         const passwordResetToken = await prisma.passwordResetTokens.findFirst({
             where: {
-                token,
-                expiresAt: { gt: new Date() }
+                token : token,
+           
             }
         });
 

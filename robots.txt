@@ -1,0 +1,22 @@
+User-agent: *
+Disallow: /login/
+Disallow: /register/
+Disallow: /reset-password/
+Disallow: /forgot-password/
+Disallow: /account/
+Disallow: /profil/
+Disallow: /messagerie/
+Disallow: /conversations/
+Disallow: /friends/
+Disallow: /addFriend/
+Disallow: /addCollaboration/
+Disallow: /addContent/
+
+Allow: /home/
+Allow: /blog/
+Allow: /collaboration/
+Allow: /studio/
+Allow: /projects/
+Allow: /welcome/
+
+Sitemap: https://pulseconnect.duckdns.org/sitemap.xml

@@ -39,6 +39,10 @@ contentRouter.get('/addContent', authguard, async (req, res) => {
     }
 });
 
+contentRouter.get('/blog', async (req, res) => {
+    res.render('pages/blog.twig');
+});
+
 contentRouter.post('/addContent', authguard, uploadAndGenerateThumbnail, async (req, res) => {
     try {
         console.log("✅ Requête reçue !");

@@ -23,7 +23,7 @@ function toggleMenu() {
         slider.style.transform = `translateX(-${currentIndex * (100 / itemsToShow)}%)`;
     }
 
-    window.moveSlider = moveSlider; // Permet d'appeler moveSlider dans le HTML
+    window.moveSlider = moveSlider; 
 })();
 
 

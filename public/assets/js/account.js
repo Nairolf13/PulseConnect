@@ -31,7 +31,7 @@ confirmDelete.addEventListener('click', async function() {
     try {
         const response = await fetch('/delete', {
             method: 'GET',
-            credentials: 'include', // Pour inclure les cookies et la session
+            credentials: 'include', 
         });
 
         if (response.redirected) {

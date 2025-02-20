@@ -59,7 +59,7 @@ select {
 }
 
 input:valid {
-    background-color: black; /* Fond noir même si la valeur est valide */
+    background-color: black; 
   }
 
 input::placeholder {

@@ -214,16 +214,16 @@ input.edit-input[type="text"] {
     box-sizing: border-box;
 }
 .edit-input {
-    width: 100%;         /* Prend toute la largeur de la div parente */
+    width: 100%;         
     padding: 5px;
-    box-sizing: border-box; /* Assurez-vous que le padding n'affecte pas la largeur totale */
+    box-sizing: border-box; 
 }
 .edit-textarea {
-    width: 100%; /* Pour qu'il prenne toute la largeur de la div */
+    width: 100%; 
     padding: 5px;
     box-sizing: border-box;
-    min-height: 40px; /* Hauteur minimale, peut être ajustée */
-    resize: none; /* Empêche l'utilisateur de redimensionner manuellement */
+    min-height: 40px;
+    resize: none;
 }
 
 .save-button {

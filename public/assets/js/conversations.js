@@ -11,21 +11,17 @@ $(document).ready(function () {
         }
     }
 
-    // Appeler scrollToBottom pour faire défiler vers le bas dès que la page est prête
     scrollToBottom();
 
-    // Ouvrir la modale pour éditer ou supprimer le message
     function showModal(message) {
         currentMessage = message;
         document.getElementById('confirmationModal').style.display = 'block';
     }
 
-    // Fonction de fermeture de la modale
     $('#closeModal, #cancelDelete').on('click', function () {
         $('#confirmationModal').hide();
     });
 
-    // Gérer la suppression du message
     $('#confirmDelete').on('click', function () {
         const messageId = currentMessage.getAttribute('data-message-id');
         fetch(`/deleteMessage/${messageId}`, { method: 'DELETE' })
@@ -40,35 +36,29 @@ $(document).ready(function () {
             .catch(error => console.error('Erreur:', error));
     });
 
-    // Gérer la modification du message
     $('#editMessage').on('click', function () {
 
         if (currentMessage.querySelector('.save-message-btn')) return;
 
         $('#confirmationModal').hide();
 
-        const messageContent = currentMessage.querySelector('#texte'); // Récupérer le texte à modifier
-        const originalText = messageContent.textContent; // Texte original
+        const messageContent = currentMessage.querySelector('#texte'); 
+        const originalText = messageContent.textContent; 
 
-        // Rendre l'élément directement éditable
         messageContent.setAttribute('contenteditable', 'true');
-        messageContent.classList.add('editable'); // Ajouter une classe pour styliser l'élément édité
+        messageContent.classList.add('editable'); 
 
-        // Créer un bouton "Enregistrer"
         const saveButton = document.createElement('button');
         saveButton.textContent = 'Enregistrer';
         saveButton.className = 'save-message-btn';
 
-        // Créer un bouton "Annuler"
         const cancelButton = document.createElement('button');
         cancelButton.textContent = 'Annuler';
         cancelButton.className = 'cancel-message-btn';
 
-        // Ajouter les boutons sous le message
         currentMessage.appendChild(saveButton);
         currentMessage.appendChild(cancelButton);
 
-        // Appliquer des styles CSS au bouton
         saveButton.style.marginTop = '10px';
         saveButton.style.backgroundColor = '#2bc2d9';
         saveButton.style.color = 'white';
@@ -83,22 +73,17 @@ $(document).ready(function () {
         cancelButton.style.padding = '5px 10px';
         cancelButton.style.cursor = 'pointer';
 
-// Quand l'utilisateur clique sur "Enregistrer"
 saveButton.addEventListener('click', async () => {
-    let newText = messageContent.textContent; // Récupérer le texte modifié
+    let newText = messageContent.textContent;
 
-    // Vérifier si "(modifié)" n'est pas déjà à la fin du message
-    const modifiedLabel = " (modifié)"; // Notez l'espace avant "(modifié)" pour l'espacer
+    const modifiedLabel = " (modifié)"; 
 
-    // Vérifier si "(modifié)" est déjà présent à la fin du message
     if (!newText.endsWith(modifiedLabel)) {
-        // Si "(modifié)" n'est pas à la fin, l'ajouter avec un espace supplémentaire avant
         newText = newText + modifiedLabel;
     }
 
-    messageContent.textContent = newText; // Mettre à jour le texte du message
+    messageContent.textContent = newText; 
 
-    // Mise à jour dans la base de données
     const messageId = currentMessage.getAttribute('data-message-id');
     try {
         const response = await fetch(`/updateMessage/${messageId}`, {
@@ -110,9 +95,9 @@ saveButton.addEventListener('click', async () => {
         });
 
         if (response.ok) {
-            messageContent.removeAttribute('contenteditable'); // Désactiver l'édition
-            saveButton.remove(); // Supprimer le bouton "Enregistrer"
-            cancelButton.remove(); // Supprimer le bouton "Annuler"
+            messageContent.removeAttribute('contenteditable'); 
+            saveButton.remove(); 
+            cancelButton.remove(); 
             console.log('Message mis à jour avec succès');
         } else {
             console.error('Erreur lors de la mise à jour du message');
@@ -126,26 +111,23 @@ saveButton.addEventListener('click', async () => {
 
 
 
-        // Quand l'utilisateur clique sur "Annuler"
         cancelButton.addEventListener('click', () => {
-            messageContent.textContent = originalText; // Rétablir le texte original
-            messageContent.removeAttribute('contenteditable'); // Désactiver l'édition
-            saveButton.remove(); // Supprimer le bouton "Enregistrer"
-            cancelButton.remove(); // Supprimer le bouton "Annuler"
+            messageContent.textContent = originalText; 
+            messageContent.removeAttribute('contenteditable'); 
+            saveButton.remove(); 
+            cancelButton.remove(); 
         });
     });
 
-    // Gestion des actions de clic sur les points de menu
     document.querySelectorAll('#messages > div .options-dots').forEach(dot => {
         dot.addEventListener('click', function (e) {
             e.stopPropagation();
             if (document.getElementById('confirmationModal').style.display !== 'block') {
-                showModal(dot.closest('div')); // Passer le div du message
+                showModal(dot.closest('div')); 
             }
         });
     });
 
-    // Gestion des actions tactiles (pour mobile)
     document.querySelectorAll('#messages > div').forEach(message => {
         message.addEventListener('touchstart', (e) => {
             startX = e.changedTouches[0].clientX;

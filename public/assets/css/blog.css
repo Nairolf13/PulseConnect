@@ -30,6 +30,8 @@ img {
     height: 30px;
     width: 30px;
     margin-bottom: 100px;
+    position: absolute;
+    left: 1%;
 }
 
 h1, h2 {

@@ -75,7 +75,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 cancelChangesBtn.style.display = 'inline-block';
                 menuDropdown.style.display = 'none';
 
-                // Cacher le lien "Voir le projet"
                 if (viewProjectLink) {
                     viewProjectLink.style.display = 'none';
                 }
@@ -120,7 +119,6 @@ document.addEventListener('DOMContentLoaded', function () {
                         saveChangesBtn.style.display = 'none';
                         cancelChangesBtn.style.display = 'none';
 
-                        // Réafficher le lien "Voir le projet"
                         if (viewProjectLink) {
                             viewProjectLink.style.display = 'inline-block';
                         }
@@ -153,7 +151,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 saveChangesBtn.style.display = 'none';
                 cancelChangesBtn.style.display = 'none';
 
-                // Réafficher le lien "Voir le projet"
                 if (viewProjectLink) {
                     viewProjectLink.style.display = 'inline-block';
                 }
@@ -216,10 +213,10 @@ document.addEventListener('DOMContentLoaded', function () {
         const closeDropdown = document.querySelectorAll('.close-dropdown');
 closeDropdown.forEach(btn => {
     btn.addEventListener('click', () => {
-        const dropdownId = btn.id.split('-')[2]; // Assurez-vous que l'ID est correctement extrait
+        const dropdownId = btn.id.split('-')[2]; 
         const dropdown = document.getElementById(`menu-dropdown-${dropdownId}`);
         
-        if (dropdown) { // Vérifiez si l'élément existe
+        if (dropdown) { 
             dropdown.style.display = 'none';
         } else {
             console.error(`Dropdown with ID menu-dropdown-${dropdownId} not found.`);

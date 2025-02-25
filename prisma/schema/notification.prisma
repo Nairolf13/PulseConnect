@@ -1,7 +1,7 @@
 model Notification {
   id          Int       @id @default(autoincrement())
   userId      Int
-  type        String    // Par exemple: "message", "invitation", "collaboration"
+  type        String    
   message     String
   link        String?
   read        Boolean   @default(false)

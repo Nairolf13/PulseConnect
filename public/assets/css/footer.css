@@ -1,12 +1,12 @@
 .footer-container {
     display: flex !important;
     justify-content: space-between !important;
-    width: 98% !important; 
+    width: 98% !important;
     padding: 10px 20px !important;
 }
 
 .footer-left {
-    flex: 1 !important; 
+    flex: 1 !important;
 }
 
 .footer-right {
@@ -15,35 +15,35 @@
 }
 
 .footer-right img {
-    width: 30px !important; 
+    width: 30px !important;
     height: auto !important;
 }
 
 #confidential {
-    color: white ;
-    font-size: 1.1em ;
-    text-decoration: none ;
-    transition: color 0.3sease ;
+    color: white;
+    font-size: 1.1em;
+    text-decoration: none;
+    transition: color 0.3sease;
     position: absolute;
     left: 50%;
     transform: translate(-50%);
 }
 
-#confidential:hover{
-    color: aquamarine ;
+#confidential a:hover {
+    color: aquamarine;
 }
 
-@media (max-width: 769px){
-    .footer-container{
+
+@media (max-width: 769px) {
+    .footer-container {
         flex-direction: column !important;
         align-items: center !important;
         gap: 13px;
     }
 
-    #confidential  {
-        position: absolute;
-        left: 50%;
-        transform: translate(-50%);
-        bottom: -56%;
+    #copy {
+        margin-top: 2rem;
+        margin-bottom: 0;
     }
+
 }

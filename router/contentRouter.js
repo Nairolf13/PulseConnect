@@ -39,6 +39,10 @@ contentRouter.get('/addContent', authguard, async (req, res) => {
     }
 });
 
+contentRouter.get('/confidential', async (req, res) => {
+ res.render('pages/confidentials.twig')
+});
+
 contentRouter.get('/blog', async (req, res) => {
     res.render('pages/blog.twig')
 });

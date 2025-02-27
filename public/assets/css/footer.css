@@ -19,9 +19,31 @@
     height: auto !important;
 }
 
+#confidential {
+    color: white ;
+    font-size: 1.1em ;
+    text-decoration: none ;
+    transition: color 0.3sease ;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%);
+}
+
+#confidential:hover{
+    color: aquamarine ;
+}
+
 @media (max-width: 769px){
     .footer-container{
         flex-direction: column !important;
         align-items: center !important;
+        gap: 13px;
+    }
+
+    #confidential  {
+        position: absolute;
+        left: 50%;
+        transform: translate(-50%);
+        bottom: -56%;
     }
 }

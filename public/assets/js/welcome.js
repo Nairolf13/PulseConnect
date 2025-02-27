@@ -26,12 +26,6 @@ function toggleMenu() {
     window.moveSlider = moveSlider; 
 })();
 
-
-
-
-
-
-
 document.addEventListener("DOMContentLoaded", function () {
     const faqQuestions = document.querySelectorAll(".faq-question");
 

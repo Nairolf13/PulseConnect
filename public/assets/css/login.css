@@ -275,8 +275,6 @@ div {
 
 /* Style pour la section de personnalisation des cookies */
 .cookie-settings {
-    display: none;
-    /* Initialement caché */
     position: fixed;
     top: 20%;
     left: 50%;

@@ -214,11 +214,6 @@ div {
         padding: 1px;
     }
 
-    .cookie-settings {
-    
-        top: 25%;
-     
-    }
 }
 
 
@@ -246,6 +241,8 @@ div {
     #toggleConfirmPassword {
         width: 3vw;
     }
+
+
 }
 
 .cookie-banner {
@@ -278,10 +275,9 @@ div {
     background-color: #2bc2d9;
 }
 
-/* Style pour la section de personnalisation des cookies */
 .cookie-settings {
     position: fixed;
-    top: 33%;
+    top: 30%;
     left: 50%;
     transform: translateX(-50%);
     background-color: #1a1a1a;
@@ -292,7 +288,6 @@ div {
     z-index: 1001;
     width: 400px;
     text-align: center;
-    border: 1px solid aquamarine;
 }
 
 .cookie-settings h3 {
@@ -326,7 +321,6 @@ div {
     background-color: #2bc2d9;
 }
 
-/* Style pour le message d'avertissement */
 #cookie-warning {
     position: absolute;
     font-size: 14px;
@@ -336,12 +330,10 @@ div {
     display: block;
 }
 
-/* Cacher la bannière si le cookie est accepté */
 .hidden {
     display: none;
 }
 
-/* Option pour la bannière si les cookies sont acceptés */
 .cookie-banner.accepted {
     display: none;
 }

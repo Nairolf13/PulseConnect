@@ -367,6 +367,7 @@ div {
 .close-btn {
     color: gray;
     position: absolute;
+    top: 0;
     right: 10px;
     font-size: 20px;
     cursor: pointer;

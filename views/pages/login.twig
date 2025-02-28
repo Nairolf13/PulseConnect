@@ -163,22 +163,22 @@ document.addEventListener("DOMContentLoaded", function() {
         errorModal.style.display = "none"; // Cacher la modal
     });
 
-    // Exemple de requête au serveur
-    fetch('/accept-cookies', {
-        method: 'POST',  // ou POST selon le cas
-        credentials: 'same-origin', // Pour inclure les cookies si nécessaire
-    })
-    .then(response => {
-        if (!response.ok) {
-            return response.text().then(errorText => {
-                showErrorModal(errorText);  // Afficher la modal avec le message d'erreur
-            });
-        }
-        return response.json(); // Traiter la réponse normale
-    })
-    .catch(err => {
-        console.error('Erreur de réseau', err);
-    });
+    // // Exemple de requête au serveur
+    // fetch('/accept-cookies', {
+    //     method: 'POST',  // ou POST selon le cas
+    //     credentials: 'same-origin', // Pour inclure les cookies si nécessaire
+    // })
+    // .then(response => {
+    //     if (!response.ok) {
+    //         return response.text().then(errorText => {
+    //             showErrorModal(errorText);  // Afficher la modal avec le message d'erreur
+    //         });
+    //     }
+    //     return response.json(); // Traiter la réponse normale
+    // })
+    // .catch(err => {
+    //     console.error('Erreur de réseau', err);
+    // });
 });
 
 

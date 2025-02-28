@@ -203,7 +203,6 @@ div {
 
 @media (min-width: 769px) {
 
-
     #form {
         position: absolute;
         bottom: 25%;
@@ -213,6 +212,12 @@ div {
         width: 400px;
         height: 400px;
         padding: 1px;
+    }
+
+    .cookie-settings {
+    
+        top: 25%;
+     
     }
 }
 
@@ -276,7 +281,7 @@ div {
 /* Style pour la section de personnalisation des cookies */
 .cookie-settings {
     position: fixed;
-    top: 20%;
+    top: 33%;
     left: 50%;
     transform: translateX(-50%);
     background-color: #1a1a1a;

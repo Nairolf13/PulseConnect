@@ -13,6 +13,41 @@
 		<section>
 			<img src="/../../assets/imgs/MaskgroupPC.png" alt="Logo">
 		</section>
+		<div id="cookie-banner" class="cookie-banner">
+			Ce site utilise des cookies pour fonctionner.
+			<br>
+			Les cookies obligatoires sont nécessaires pour la connexion.
+			<button id="accept-all">Accepter</button>
+			<button id="customize">Personnaliser</button>
+		</div>
+
+		<div id="cookie-settings" class="cookie-settings hidden">
+			<h3>Paramètres des cookies</h3>
+
+			<!-- Cookie obligatoire, sélectionné par défaut et non modifiable -->
+			<label>
+				<input type="checkbox" id="session" checked disabled>
+				Cookies obligatoires <br>(nécessaires pour le fonctionnement du site)
+			</label><br>
+
+			<!-- Cookies optionnels -->
+			<label>
+				<input type="checkbox" id="analytics">
+				Cookies analytiques
+			</label><br>
+			<label>
+				<input type="checkbox" id="marketing">
+				Cookies marketing
+			</label><br>
+
+			<button id="save-settings">Enregistrer</button>
+		</div>
+
+
+		<p id="cookie-warning" style="color: red; display: none;">
+			Vous devez accepter les cookies obligatoires pour vous connecter.
+		</p>
+
 		<section id="form">
 			<div>
 				<form action="/login" method="POST">
@@ -49,6 +84,59 @@
 
 {% endblock %}
 
-{% block script %}
-	<script src="/../../assets/js/register.js"></script>
+{% block script %} <script src="/../../assets/js/register.js"></script>
+	 <script>
+	    document.addEventListener("DOMContentLoaded", function () {
+	        const cookieBanner = document.getElementById("cookie-banner");
+	        const cookieSettings = document.getElementById("cookie-settings");
+	        const acceptAllBtn = document.getElementById("accept-all");
+	        const customizeBtn = document.getElementById("customize");
+	        const saveSettingsBtn = document.getElementById("save-settings");
+	        const cookieWarning = document.getElementById("cookie-warning");
+	
+	        // Vérifier si les cookies obligatoires ont été acceptés
+	        function cookiesAccepted() {
+	            return document.cookie.includes("session=true");
+	        }
+	
+	        // Si les cookies obligatoires sont acceptés, masquer la bannière
+	        if (cookiesAccepted()) {
+	            cookieBanner.style.display = "none";
+	        }
+	
+	        // Accepter tous les cookies
+	        acceptAllBtn.addEventListener("click", function () {
+	            document.cookie = "session=true; path=/; max-age=31536000"; // Cookie obligatoire
+	            document.cookie = "analytics=true; path=/; max-age=31536000";
+	            document.cookie = "marketing=true; path=/; max-age=31536000";
+	            localStorage.setItem("cookiesAccepted", "true");
+	
+	            fetch("/accept-cookies", { method: "POST" });
+	            cookieBanner.style.display = "none"; // Masquer la bannière après acceptation
+	        });
+	
+	        // Ouvrir la personnalisation des cookies
+	        customizeBtn.addEventListener("click", function () {
+	            cookieBanner.style.display = "none"; // Cacher la bannière
+	            cookieSettings.classList.remove("hidden");
+	        });
+	
+	        // Enregistrer les préférences de cookies
+	        saveSettingsBtn.addEventListener("click", function () {
+	            const analytics = document.getElementById("analytics").checked;
+	            const marketing = document.getElementById("marketing").checked;
+	
+	            document.cookie = "session=true; path=/; max-age=31536000"; // Cookie obligatoire
+	            document.cookie = `analytics=${analytics}; path=/; max-age=31536000`;
+	            document.cookie = `marketing=${marketing}; path=/; max-age=31536000`;
+	
+	            localStorage.setItem("cookiesAccepted", "true");
+	            fetch("/accept-cookies", { method: "POST" });
+	
+	            cookieSettings.classList.add("hidden");
+	            cookieBanner.style.display = "none"; // Masquer la bannière après enregistrement
+	        });
+	    });
+	</script>
+
 {% endblock %}

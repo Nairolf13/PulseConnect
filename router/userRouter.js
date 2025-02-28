@@ -4,6 +4,7 @@ const hashPasswordExtension = require("../services/extensions/hashPasswordExtens
 const { transporter, sendEmail } = require('../services/extensions/nodemailer');
 const crypto = require('crypto');
 const bcrypt = require("bcrypt");
+const checkCookiesAccepted = require("../services/checkCookies");
 const { upload } = require("../services/downloadExtension");
 const authguard = require("../services/authguard");
 
@@ -463,6 +464,15 @@ userRouter.post('/reset-password', async (req, res) => {
     }
 });
 
+userRouter.post("/accept-cookies", (req, res) => {
+    res.cookie("cookiesAccepted", "true", {
+        maxAge: 365 * 24 * 60 * 60 * 1000, // Expire dans 1 an
+        httpOnly: true,
+    });
+
+    res.json({ message: "Cookies acceptés !" });
+});
+
 
 userRouter.get("/login", (req, res) => {
     res.render("pages/login.twig", {
@@ -470,7 +480,7 @@ userRouter.get("/login", (req, res) => {
     });
 });
 
-userRouter.post("/login", async (req, res) => {
+userRouter.post("/login",checkCookiesAccepted, async (req, res) => {
     try {
         const users = await prisma.users.findUnique({
             where: { mail: req.body.mail }
@@ -493,9 +503,10 @@ userRouter.post("/login", async (req, res) => {
     } catch (error) {
         res.render("pages/login.twig", {
             title: "Connexion - PulseConnect",
-            error
+            error: error.message || error
         });
     }
+    
 });
 
 userRouter.get("/logout", (req, res) => {

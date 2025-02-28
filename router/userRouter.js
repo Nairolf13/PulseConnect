@@ -473,6 +473,13 @@ userRouter.post("/accept-cookies", (req, res) => {
     res.status(200).json({ message: "Cookies acceptés !" });
 });
 
+userRouter.get("/check-cookies", (req, res) => {
+    if (req.cookies.cookiesAccepted !== "true") {
+        return res.status(403).json({ error: "Veuillez accepter les cookies pour vous connecter." });
+    }
+    res.status(200).json({ message: "Cookies acceptés" });
+});
+
 
 userRouter.get("/login", (req, res) => {
     res.render("pages/login.twig", {

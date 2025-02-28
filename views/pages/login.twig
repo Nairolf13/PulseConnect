@@ -27,7 +27,8 @@
 			<!-- Cookie obligatoire, sélectionné par défaut et non modifiable -->
 			<label>
 				<input type="checkbox" id="session" checked disabled>
-				Cookies obligatoires <br>(nécessaires pour le fonctionnement du site)
+				Cookies obligatoires
+				<br>(nécessaires pour le fonctionnement du site)
 			</label><br>
 
 			<!-- Cookies optionnels -->
@@ -82,11 +83,11 @@
 	</main>
 
 	<div id="error-modal" class="modal hidden">
-    <div class="modal-content">
-        <span id="close-modal" class="close-btn">&times;</span>
-        <p id="modal-message"></p>
-    </div>
-</div>
+		<div class="modal-content">
+			<span id="close-modal" class="close-btn">&times;</span>
+			<p id="modal-message"></p>
+		</div>
+	</div>
 
 	{% include "../partials/error.twig" %}
 
@@ -94,96 +95,98 @@
 
 {% block script %} <script src="/../../assets/js/register.js"></script>
 	 <script>
-	   document.addEventListener("DOMContentLoaded", function () {
-    const cookieBanner = document.getElementById("cookie-banner");
-    const cookieSettings = document.getElementById("cookie-settings");
-    const acceptAllBtn = document.getElementById("accept-all");
-    const customizeBtn = document.getElementById("customize");
-    const saveSettingsBtn = document.getElementById("save-settings");
-    const cookieWarning = document.getElementById("cookie-warning");
+			   document.addEventListener("DOMContentLoaded", function () {
+		    const cookieBanner = document.getElementById("cookie-banner");
+		    const cookieSettings = document.getElementById("cookie-settings");
+		    const acceptAllBtn = document.getElementById("accept-all");
+		    const customizeBtn = document.getElementById("customize");
+		    const saveSettingsBtn = document.getElementById("save-settings");
+		    const cookieWarning = document.getElementById("cookie-warning");
+		
+		    // Vérifier si les cookies obligatoires ont été acceptés
+		    function cookiesAccepted() {
+		        return document.cookie.includes("session=true");
+		    }
+		
+		    // Si les cookies obligatoires sont acceptés, masquer la bannière
+		    if (cookiesAccepted()) {
+		        cookieBanner.style.display = "none";
+		    }
+		
+		    // Accepter tous les cookies
+		    acceptAllBtn.addEventListener("click", function () {
+		        document.cookie = "session=true; path=/; max-age=31536000"; // Cookie obligatoire
+		        document.cookie = "analytics=true; path=/; max-age=31536000";
+		        document.cookie = "marketing=true; path=/; max-age=31536000";
+		        localStorage.setItem("cookiesAccepted", "true");
+		
+		        fetch("/accept-cookies", { method: "POST" });
+		        cookieBanner.style.display = "none"; // Masquer la bannière après acceptation
+		    });
+		
+		    // Ouvrir la personnalisation des cookies
+		    customizeBtn.addEventListener("click", function () {
+		        console.log("Bouton 'Personnaliser' cliqué");  // Vérifie dans la console
+		        cookieBanner.style.display = "none"; // Cacher la bannière
+		        cookieSettings.classList.remove("hidden"); // Afficher les paramètres des cookies
+		    });
+		
+		    // Enregistrer les préférences de cookies
+		    saveSettingsBtn.addEventListener("click", function () {
+		        const analytics = document.getElementById("analytics").checked;
+		        const marketing = document.getElementById("marketing").checked;
+		
+		        document.cookie = "session=true; path=/; max-age=31536000"; // Cookie obligatoire
+		        document.cookie = `analytics=${analytics}; path=/; max-age=31536000`;
+		        document.cookie = `marketing=${marketing}; path=/; max-age=31536000`;
+		
+		        localStorage.setItem("cookiesAccepted", "true");
+		        fetch("/accept-cookies", { method: "POST" });
+		
+		        cookieSettings.classList.add("hidden"); // Cacher la section de personnalisation
+		        cookieBanner.style.display = "none"; // Masquer la bannière après enregistrement
+		    });
+		});
+		
+		document.addEventListener("DOMContentLoaded", function () {
+    const formSection = document.getElementById("form"); // Sélectionne la section contenant le formulaire
+    const loginForm = formSection ? formSection.querySelector("form") : null; // Trouve le form à l'intérieur
 
-    // Vérifier si les cookies obligatoires ont été acceptés
-    function cookiesAccepted() {
-        return document.cookie.includes("session=true");
-    }
-
-    // Si les cookies obligatoires sont acceptés, masquer la bannière
-    if (cookiesAccepted()) {
-        cookieBanner.style.display = "none";
-    }
-
-    // Accepter tous les cookies
-    acceptAllBtn.addEventListener("click", function () {
-        document.cookie = "session=true; path=/; max-age=31536000"; // Cookie obligatoire
-        document.cookie = "analytics=true; path=/; max-age=31536000";
-        document.cookie = "marketing=true; path=/; max-age=31536000";
-        localStorage.setItem("cookiesAccepted", "true");
-
-        fetch("/accept-cookies", { method: "POST" });
-        cookieBanner.style.display = "none"; // Masquer la bannière après acceptation
-    });
-
-    // Ouvrir la personnalisation des cookies
-    customizeBtn.addEventListener("click", function () {
-        console.log("Bouton 'Personnaliser' cliqué");  // Vérifie dans la console
-        cookieBanner.style.display = "none"; // Cacher la bannière
-        cookieSettings.classList.remove("hidden"); // Afficher les paramètres des cookies
-    });
-
-    // Enregistrer les préférences de cookies
-    saveSettingsBtn.addEventListener("click", function () {
-        const analytics = document.getElementById("analytics").checked;
-        const marketing = document.getElementById("marketing").checked;
-
-        document.cookie = "session=true; path=/; max-age=31536000"; // Cookie obligatoire
-        document.cookie = `analytics=${analytics}; path=/; max-age=31536000`;
-        document.cookie = `marketing=${marketing}; path=/; max-age=31536000`;
-
-        localStorage.setItem("cookiesAccepted", "true");
-        fetch("/accept-cookies", { method: "POST" });
-
-        cookieSettings.classList.add("hidden"); // Cacher la section de personnalisation
-        cookieBanner.style.display = "none"; // Masquer la bannière après enregistrement
-    });
-});
-
-document.addEventListener("DOMContentLoaded", function() {
+    const modalMessage = document.getElementById("modal-message");
     const errorModal = document.getElementById("error-modal");
     const closeModalBtn = document.getElementById("close-modal");
-    const modalMessage = document.getElementById("modal-message");
 
-    // Fonction pour afficher la modal avec un message
     function showErrorModal(message) {
-        modalMessage.textContent = message; // Définir le message d'erreur dans la modal
-        errorModal.style.display = "block"; // Afficher la modal
+        modalMessage.textContent = message;
+        errorModal.style.display = "block";
     }
 
-    // Fermer la modal
-    closeModalBtn.addEventListener("click", function() {
-        errorModal.style.display = "none"; // Cacher la modal
+    closeModalBtn.addEventListener("click", function () {
+        errorModal.style.display = "none";
     });
 
-    // // Exemple de requête au serveur
-    // fetch('/accept-cookies', {
-    //     method: 'POST',  // ou POST selon le cas
-    //     credentials: 'same-origin', // Pour inclure les cookies si nécessaire
-    // })
-    // .then(response => {
-    //     if (!response.ok) {
-    //         return response.text().then(errorText => {
-    //             showErrorModal(errorText);  // Afficher la modal avec le message d'erreur
-    //         });
-    //     }
-    //     return response.json(); // Traiter la réponse normale
-    // })
-    // .catch(err => {
-    //     console.error('Erreur de réseau', err);
-    // });
+    if (loginForm) {
+        loginForm.addEventListener("submit", function (event) {
+            event.preventDefault(); // Empêcher l'envoi du formulaire immédiatement
+
+            fetch("/check-cookies", { method: "GET", credentials: "include" })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(data => {
+                            throw new Error(data.error);
+                        });
+                    }
+                    loginForm.submit(); // Si tout va bien, envoyer le formulaire
+                })
+                .catch(error => {
+                    showErrorModal(error.message);
+                });
+        });
+    }
 });
 
-
-	</script>
-
 	
+		</script>
+
 
 {% endblock %}

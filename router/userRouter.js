@@ -474,7 +474,7 @@ userRouter.post("/accept-cookies", (req, res) => {
 });
 
 
-userRouter.get("/login", (req, res) => {
+userRouter.get("/login",checkCookiesAccepted, (req, res) => {
     res.render("pages/login.twig", {
         title: "Connexion - PulseConnect"
     });

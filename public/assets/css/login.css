@@ -324,7 +324,7 @@ div {
 #cookie-warning {
     position: absolute;
     font-size: 14px;
-    color: red;
+    color: white;
     text-align: center;
     bottom: 22%;
     display: block;
@@ -355,7 +355,7 @@ div {
 /* Contenu de la modal */
 .modal-content {
     background-color: #1e1e1e;
-    padding: 20px;
+    padding: 30px;
     margin: 15% auto;
     width: 30%;
     border-radius: 5px;

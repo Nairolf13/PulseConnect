@@ -80,6 +80,14 @@
 			</div>
 		</section>
 	</main>
+
+	<div id="error-modal" class="modal hidden">
+    <div class="modal-content">
+        <span id="close-modal" class="close-btn">&times;</span>
+        <p id="modal-message"></p>
+    </div>
+</div>
+
 	{% include "../partials/error.twig" %}
 
 {% endblock %}
@@ -139,6 +147,43 @@
     });
 });
 
+document.addEventListener("DOMContentLoaded", function() {
+    const errorModal = document.getElementById("error-modal");
+    const closeModalBtn = document.getElementById("close-modal");
+    const modalMessage = document.getElementById("modal-message");
+
+    // Fonction pour afficher la modal avec un message
+    function showErrorModal(message) {
+        modalMessage.textContent = message; // Définir le message d'erreur dans la modal
+        errorModal.style.display = "block"; // Afficher la modal
+    }
+
+    // Fermer la modal
+    closeModalBtn.addEventListener("click", function() {
+        errorModal.style.display = "none"; // Cacher la modal
+    });
+
+    // Exemple de requête au serveur
+    fetch('/accept-cookies', {
+        method: 'POST',  // ou POST selon le cas
+        credentials: 'same-origin', // Pour inclure les cookies si nécessaire
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.text().then(errorText => {
+                showErrorModal(errorText);  // Afficher la modal avec le message d'erreur
+            });
+        }
+        return response.json(); // Traiter la réponse normale
+    })
+    .catch(err => {
+        console.error('Erreur de réseau', err);
+    });
+});
+
+
 	</script>
+
+	
 
 {% endblock %}

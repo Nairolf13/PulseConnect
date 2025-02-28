@@ -97,7 +97,6 @@ contentRouter.post('/addContent', authguard, uploadAndGenerateThumbnail, async (
             });
         }
 
-        console.log("🛢 Enregistrement en base de données...");
         await prisma.assets.create({
             data: {
                 id_user: userId,
@@ -110,10 +109,8 @@ contentRouter.post('/addContent', authguard, uploadAndGenerateThumbnail, async (
             },
         });
 
-        console.log("✅ Contenu ajouté avec succès !");
         res.redirect('/home');
     } catch (error) {
-        console.error("🛑 Erreur lors de l'ajout du contenu :", error);
         res.status(500).send("Erreur lors de l'ajout du fichier.");
     }
 });

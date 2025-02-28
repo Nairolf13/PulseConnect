@@ -470,7 +470,7 @@ userRouter.post("/accept-cookies", (req, res) => {
         httpOnly: true,
     });
 
-    res.json({ message: "Cookies acceptés !" });
+    res.status(200).json({ message: "Cookies acceptés !" });
 });
 
 

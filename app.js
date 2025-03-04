@@ -9,7 +9,7 @@ const contentRouter = require("./router/contentRouter");
 const messagerieRouter = require("./router/messagerieRouter");
 const bodyParser = require("body-parser");
 const collaborationRouter = require("./router/collaborationRouter");
-const cookieParser = require("cookie-parser"); // Ajout du package cookie-parser
+const cookieParser = require("cookie-parser");
 
 dotenv.config();
 
@@ -18,26 +18,30 @@ const app = express();
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use(express.static("./public"));
 app.use(express.urlencoded({ extended: true }));
-app.use(cors({ origin: "*" }));
+app.use(cors({
+  origin: 'https://pulseconnect.duckdns.org', 
+  methods: ['GET', 'POST', 'PATCH', 'DELETE'], 
+  credentials: true, 
+  allowedHeaders: ['Content-Type', 'Authorization'] 
+}));
 app.use(express.json());
 app.use(bodyParser.json());
-app.use(cookieParser()); // Middleware pour gérer les cookies
+app.use(cookieParser());
 
-// Configuration de la session (cookies obligatoires)
 app.use(
   session({
     secret: process.env.SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
-      httpOnly: true, // Protège contre les attaques XSS
-      secure: process.env.NODE_ENV === "production", // Active secure en prod (HTTPS)
-      maxAge: 24 * 60 * 60 * 1000, // Expiration des cookies en 1 jour
+      httpOnly: true, 
+      secure: process.env.NODE_ENV === "production", 
+      maxAge: 24 * 60 * 60 * 1000,
     },
   })
 );
 
-// Route pour récupérer les préférences de cookies
+
 app.get("/cookies/preferences", (req, res) => {
   res.json({
     analytics: req.cookies.analytics === "true",
@@ -45,7 +49,6 @@ app.get("/cookies/preferences", (req, res) => {
   });
 });
 
-// Route pour enregistrer les préférences des cookies
 app.post("/cookies/preferences", (req, res) => {
   const { analytics, marketing } = req.body;
 

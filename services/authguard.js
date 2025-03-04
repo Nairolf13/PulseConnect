@@ -25,6 +25,4 @@ const authguard = async (req, res, next) => {
 
 } 
 
-  
-
 module.exports = authguard 

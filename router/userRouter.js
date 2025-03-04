@@ -466,7 +466,7 @@ userRouter.post('/reset-password', async (req, res) => {
 
 userRouter.post("/accept-cookies", (req, res) => {
     res.cookie("cookiesAccepted", "true", {
-        maxAge: 365 * 24 * 60 * 60 * 1000, // Expire dans 1 an
+        maxAge: 365 * 24 * 60 * 60 * 1000, 
         httpOnly: true,
     });
 

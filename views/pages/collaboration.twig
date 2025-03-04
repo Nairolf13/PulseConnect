@@ -96,7 +96,7 @@
 							<label for="genre" style=" width: 100px;">Genre :</label>
 							<div>
 								<select id="genre" name="genre" required>
-									<option value="" disabled selected>Sélectionnez un genre</option>
+									<option value="">Sélectionnez un genre</option>
 									{% for genre in genres %}
 										<option value="{{ genre }}">{{ genre }}</option>
 									{% endfor %}

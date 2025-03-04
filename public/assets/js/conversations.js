@@ -1,3 +1,5 @@
+import { showErrorModal, showSuccessModal,handleFetch } from "./error.js";
+
 $(document).ready(function () {
     const messageInput = document.getElementById('messageInput');
     const messagesContainer = document.getElementById('messages');
@@ -31,6 +33,7 @@ $(document).ready(function () {
                     $('#confirmationModal').hide();
                 } else {
                     console.error('Erreur lors de la suppression du message');
+                    showErrorModal('Une erreur est survenue lors de la suppression.');
                 }
             })
             .catch(error => console.error('Erreur:', error));
@@ -99,17 +102,15 @@ saveButton.addEventListener('click', async () => {
             saveButton.remove(); 
             cancelButton.remove(); 
             console.log('Message mis à jour avec succès');
+            showSuccessModal('Message mis à jour avec succès tu as un don'); 
         } else {
             console.error('Erreur lors de la mise à jour du message');
-            alert('Une erreur est survenue lors de la mise à jour.');
+            showErrorModal('Une erreur est survenue lors de la mise à jour.');
         }
     } catch (error) {
         console.error('Erreur:', error);
     }
 });
-
-
-
 
         cancelButton.addEventListener('click', () => {
             messageContent.textContent = originalText; 
@@ -140,7 +141,5 @@ saveButton.addEventListener('click', async () => {
             }
         });
     });
-
-    
 
 });

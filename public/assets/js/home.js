@@ -1,23 +1,27 @@
-let lastScrollTop = 0; 
-const header = document.querySelector('.headerRes');
+import { showErrorModal, showSuccessModal,handleFetch } from "./error.js";
 
-window.addEventListener("scroll", function () {
-    const scrollTop = window.scrollY || document.documentElement.scrollTop;
-
-    if (scrollTop < lastScrollTop && scrollTop === 0) {
-        location.reload();
-    }
-
-    if (scrollTop > lastScrollTop) {
-        header.classList.add('hidden'); 
-    } else {
-        header.classList.remove('hidden'); 
-    }
-
-    lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; 
-});
 
 document.addEventListener('DOMContentLoaded', function () {
+    let lastScrollTop = 0; 
+    const header = document.querySelector('.headerRes');
+    
+    window.addEventListener("scroll", function () {
+        const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    
+        if (scrollTop < lastScrollTop && scrollTop === 0) {
+            location.reload();
+        }
+    
+        if (scrollTop > lastScrollTop) {
+            header.classList.add('hidden'); 
+        } else {
+            header.classList.remove('hidden'); 
+        }
+    
+        lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; 
+    });
+    
+
     const observer = new MutationObserver(() => {
         attachEventListeners();
     });
@@ -403,7 +407,7 @@ editCommentBtn.addEventListener('click', () => {
                 newContentElement.className = 'comment-content';
                 editContainer.replaceWith(newContentElement);
             } else {
-                alert("Erreur lors de la modification du commentaire.");
+                showErrorModal("Erreur lors de la modification du commentaire.");
                 editContainer.replaceWith(commentElement);
             }
         } catch (error) {

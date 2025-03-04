@@ -149,8 +149,8 @@
 		});
 		
 		document.addEventListener("DOMContentLoaded", function () {
-    const formSection = document.getElementById("form"); // Sélectionne la section contenant le formulaire
-    const loginForm = formSection ? formSection.querySelector("form") : null; // Trouve le form à l'intérieur
+    const formSection = document.getElementById("form"); 
+    const loginForm = formSection ? formSection.querySelector("form") : null; 
 
     const modalMessage = document.getElementById("modal-message");
     const errorModal = document.getElementById("error-modal");
@@ -167,7 +167,7 @@
 
     if (loginForm) {
         loginForm.addEventListener("submit", function (event) {
-            event.preventDefault(); // Empêcher l'envoi du formulaire immédiatement
+            event.preventDefault(); 
 
             fetch("/check-cookies", { method: "GET", credentials: "include" })
                 .then(response => {
@@ -176,7 +176,7 @@
                             throw new Error(data.error);
                         });
                     }
-                    loginForm.submit(); // Si tout va bien, envoyer le formulaire
+                    loginForm.submit(); 
                 })
                 .catch(error => {
                     showErrorModal(error.message);

@@ -1,24 +1,21 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // Initialisation de la carte
     const map = L.map('map', {
         center: [46.603354, 1.888334],
         zoom: 6,
         maxZoom: 19,
     });
-    const markers = L.markerClusterGroup(); // Utiliser le clustering
+    const markers = L.markerClusterGroup(); 
     map.addLayer(markers);
 
     const loadingElement = document.getElementById('loading');
     loadingElement.style.display = 'block';
 
-    // Ajout des tuiles de carte Mapbox
     L.tileLayer(`https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=${MAPBOX_API_KEY}`, {
         maxZoom: 19,
         id: 'mapbox/streets-v11',
         attribution: '© Mapbox'
     }).addTo(map);
 
-    // Ajout des couches 3D (bâtiments)
     const buildingsLayer = L.geoJSON(null, {
         style: function () {
             return {
@@ -28,7 +25,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }).addTo(map);
 
-    // Fonction debounce pour la recherche
     function debounce(func, wait) {
         let timeout;
         return function (...args) {
@@ -37,7 +33,6 @@ document.addEventListener('DOMContentLoaded', function () {
         };
     }
 
-    // Fonction pour calculer la distance entre deux points géographiques (en kilomètres)
     function calculateDistance(lat1, lon1, lat2, lon2) {
         const R = 6371; // Rayon de la Terre en kilomètres
         const dLat = (lat2 - lat1) * Math.PI / 180;
@@ -51,7 +46,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
-    // Charger les studios depuis l'API
     let isLoadingStudios = false; // Ajouter un indicateur global
 
     async function loadStudios() {
@@ -108,7 +102,6 @@ document.addEventListener('DOMContentLoaded', function () {
         addBatch();
     }
 
-    // Ajouter les marqueurs des studios sur la carte
     const addedStudios = new Set(); // Conserver les studios déjà ajoutés
 
     function addMarkers(studios) {
@@ -166,7 +159,6 @@ document.addEventListener('DOMContentLoaded', function () {
             userMarker.bindPopup("<b>Votre Position</b>").openPopup();
             map.setView(userLocation, 14);
 
-            // Charger et afficher les studios proches
             const response = await fetch('/studio-data');
             const studios = await response.json();
 
@@ -177,7 +169,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
                 addMarkers(nearbyStudios);
 
-                // Afficher le reste des studios progressivement
                 setTimeout(() => {
                     const farStudios = studios.filter(studio => !nearbyStudios.includes(studio));
                     addMarkersProgressively(farStudios, 50);
@@ -203,12 +194,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const route = data.routes[0];
 
-            // Supprimer l'ancien itinéraire s'il existe
             if (currentRouteLayer) {
                 map.removeLayer(currentRouteLayer);
             }
 
-            // Ajouter le nouvel itinéraire
             currentRouteLayer = L.geoJSON(route.geometry, {
                 style: { color: 'blue', weight: 4, opacity: 0.7 }
             }).addTo(map);
@@ -220,7 +209,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Gestion du bouton d'itinéraire dans le popup
     map.on('popupopen', function (e) {
         const directionButton = e.popup._contentNode.querySelector('.get-directions');
         if (directionButton) {
@@ -229,7 +217,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
             calculateRouteEstimation(lat, lon, directionButton);
 
-            // Ajouter l'événement au bouton pour afficher l'itinéraire
             directionButton.addEventListener('click', async function () {
                 try {
                     const userLocation = await getUserLocation();

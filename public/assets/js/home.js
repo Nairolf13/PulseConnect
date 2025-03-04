@@ -259,9 +259,11 @@ document.querySelectorAll('.like-button').forEach(button => {
                 button.classList.toggle('liked', isLiked);
             } else {
                 console.error('Erreur lors du changement du statut de like');
+                showErrorModal('Erreur lors du changement du statut de like');
             }
         } catch (error) {
             console.error('Erreur lors de l\'action de like/dislike:', error);
+            showErrorModal('Erreur lors de l\'action de like/dislike');
         }
     };
 
@@ -407,7 +409,7 @@ editCommentBtn.addEventListener('click', () => {
                 newContentElement.className = 'comment-content';
                 editContainer.replaceWith(newContentElement);
             } else {
-                showErrorModal("Erreur lors de la modification du commentaire.");
+                showErrorModal("Vous n'etes pas l'auteur de ce commentaire.");
                 editContainer.replaceWith(commentElement);
             }
         } catch (error) {
@@ -436,7 +438,7 @@ confirmDeleteBtn.addEventListener('click', async () => {
             window.location.reload();
             window.scrollTo(0, scrollPosition);
         } else {
-            alert("Erreur lors de la suppression du commentaire.");
+            showErrorModal("Vous n'etes pas l'auteur de ce commentaire.");
         }
     } catch (error) {
         console.error("Erreur :", error);

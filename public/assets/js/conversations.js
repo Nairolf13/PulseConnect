@@ -102,10 +102,8 @@ saveButton.addEventListener('click', async () => {
             saveButton.remove(); 
             cancelButton.remove(); 
             console.log('Message mis à jour avec succès');
-            showSuccessModal('Message mis à jour avec succès tu as un don'); 
         } else {
             console.error('Erreur lors de la mise à jour du message');
-            showErrorModal('Une erreur est survenue lors de la mise à jour.');
         }
     } catch (error) {
         console.error('Erreur:', error);

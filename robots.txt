@@ -11,12 +11,13 @@ Disallow: /friends/
 Disallow: /addFriend/
 Disallow: /addCollaboration/
 Disallow: /addContent/
+Disallow: /collaboration/
+disallow: /studio/
+disallow: /projects/
 
 Allow: /home/
 Allow: /blog/
-Allow: /collaboration/
-Allow: /studio/
-Allow: /projects/
 Allow: /welcome/
+Allow: /confidentials/
 
 Sitemap: https://pulseconnect.duckdns.org/sitemap.xml

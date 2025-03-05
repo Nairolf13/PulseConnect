@@ -165,78 +165,7 @@ collaborationRouter.get('/searchFollowers', authguard, async (req, res) => {
     }
 });
 
-
-collaborationRouter.post("/project/:id_project/upload", authguard, uploadAndGenerateThumbnail, async (req, res) => {
-    try {
-        const { id_project } = req.params;  
-        const userId = req.session.users.id_user;  
-        const { genre, description, price } = req.body; 
-        const file_url = req.file ? req.file.path : null;  
-
-        if (!id_project) {
-            return res.status(400).send('ID du projet manquant');
-        }
-
-        if (!file_url) {
-            return res.status(400).send('Aucun fichier uploadé.');
-        }
-
-        await prisma.assets.create({
-            data: {
-                id_user: userId,
-                name: req.body.name, 
-                isPublic: false,
-                url: req.file.filename,
-                genre: req.body.genre || null,
-                description: req.body.description || null,
-                id_project: parseInt(id_project),  
-            },
-        });
-
-        res.redirect(`/project/${id_project}`);
-    } catch (error) {
-        console.error("Erreur lors du téléversement du fichier :", error);
-        res.status(500).send("Erreur lors du téléversement du fichier.");
-    }
-});
-
-
-collaborationRouter.post("/project/:id_project/:id_asset/comment", authguard, async (req, res) => {
-    try {
-        const { id_project, id_asset } = req.params;
-        const { commentContent } = req.body;
-        const userId = req.session.users.id_user;
-
-        const newComment = await prisma.commentaires.create({
-            data: {
-                id_user: userId,
-                id_project: parseInt(id_project),
-                id_asset: parseInt(id_asset),
-                content: commentContent,
-            },
-        });
-
-        res.redirect(`/project/${id_project}`);
-    } catch (err) {
-        console.error(err);
-        res.status(500).send("Erreur lors de l'ajout du commentaire");
-    }
-});
-
-collaborationRouter.post("/project/:id_project/comment/:id_comment/delete", authguard, async (req, res) => {
-    const { id_comment } = req.params;
-
-    try {
-        await prisma.comments.delete({
-            where: { id_comment: parseInt(id_comment) },
-        });
-
-        res.json({ success: true });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: "Erreur lors de la suppression du commentaire." });
-    }
-});
+// code pour l'espace de collaboration 
 
 collaborationRouter.get("/project/:id_project", authguard, async (req, res) => {
     const { id_project } = req.params;
@@ -319,12 +248,84 @@ collaborationRouter.get("/project/:id_project", authguard, async (req, res) => {
 });
 
 
+collaborationRouter.post("/project/:id_project/upload", authguard, uploadAndGenerateThumbnail, async (req, res) => {
+    try {
+        const { id_project } = req.params;  
+        const userId = req.session.users.id_user;  
+        const { genre, description, price } = req.body; 
+        const file_url = req.file ? req.file.path : null;  
 
-// code pour l'espace de collaboration 
+        if (!id_project) {
+            return res.status(400).send('ID du projet manquant');
+        }
+
+        if (!file_url) {
+            return res.status(400).send('Aucun fichier uploadé.');
+        }
+
+        await prisma.assets.create({
+            data: {
+                id_user: userId,
+                name: req.body.name, 
+                isPublic: false,
+                url: req.file.filename,
+                genre: req.body.genre || null,
+                description: req.body.description || null,
+                id_project: parseInt(id_project),  
+            },
+        });
+
+        res.redirect(`/project/${id_project}`);
+    } catch (error) {
+        console.error("Erreur lors du téléversement du fichier :", error);
+        res.status(500).send("Erreur lors du téléversement du fichier.");
+    }
+});
+
+
+collaborationRouter.post("/project/:id_project/:id_asset/comment", authguard, async (req, res) => {
+    try {
+        const { id_project, id_asset } = req.params;
+        const { commentContent } = req.body;
+        const userId = req.session.users.id_user;
+
+        const newComment = await prisma.commentaires.create({
+            data: {
+                id_user: userId,
+                id_project: parseInt(id_project),
+                id_asset: parseInt(id_asset),
+                content: commentContent,
+            },
+        });
+
+        res.redirect(`/project/${id_project}`);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Erreur lors de l'ajout du commentaire");
+    }
+});
+
+collaborationRouter.post("/project/:id_project/comment/:id_comment/delete", authguard, async (req, res) => {
+    const { id_comment } = req.params;
+
+    try {
+        await prisma.comments.delete({
+            where: { id_comment: parseInt(id_comment) },
+        });
+
+        res.json({ success: true });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Erreur lors de la suppression du commentaire." });
+    }
+});
+
+
+
 
 collaborationRouter.post("/project/:id_project/file/:id_file/edit", authguard, async (req, res) => {
     const { id_file } = req.params;
-    const { name, description, genre } = req.body;
+    const { name, description } = req.body;
 
     try {
         await prisma.assets.update({

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
-    <!-- Page d'accueil -->
     <url>
         <loc>https://pulseconnect.duckdns.org</loc>
         <lastmod>2025-02-19</lastmod>
@@ -9,7 +8,6 @@
         <priority>1.0</priority>
     </url>
 
-    <!-- Blog -->
     <url>
         <loc>https://pulseconnect.duckdns.org/blog</loc>
         <lastmod>2025-02-19</lastmod>
@@ -17,7 +15,6 @@
         <priority>0.9</priority>
     </url>
 
-    <!-- Pages importantes -->
       <url>
         <loc>https://pulseconnect.duckdns.org/home</loc>
         <lastmod>2025-02-19</lastmod>

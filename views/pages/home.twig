@@ -235,29 +235,7 @@
         });
     });
 });
-  function shareOnFacebook(contentId) {
-        console.log('jhjhjh');
-        const postUrl = encodeURIComponent(`${window.location.origin}/uploads/${contentId}`);
-        window.open(`https://www.facebook.com/sharer.php?u=${postUrl}`, '_blank');
-    }
-
-    function shareOnTwitter(contentId) {
-        const postUrl = encodeURIComponent(`${window.location.origin}/uploads/${contentId}`);
-        const postTitle = encodeURIComponent(document.title);
-        window.open(`https://twitter.com/intent/tweet?url=${postUrl}&text=${postTitle}`, '_blank');
-    }
-
-    function shareOnLinkedIn(contentId) {
-        const postUrl = encodeURIComponent(`${window.location.origin}/uploads/${contentId}`);
-        const postTitle = encodeURIComponent(document.title);
-        window.open(`https://www.linkedin.com/shareArticle?mini=true&url=${postUrl}&title=${postTitle}`, '_blank');
-    }
-
-    function shareOnWhatsApp(contentId) {
-        const postUrl = encodeURIComponent(`${window.location.origin}/uploads/${contentId}`);
-        const postTitle = encodeURIComponent(document.title);
-        window.open(`https://api.whatsapp.com/send?text=${postTitle} ${postUrl}`, '_blank');
-    }
+ 
 </script>
 <script src="/../../assets/js/home.js"></script>
 	{% endblock %}

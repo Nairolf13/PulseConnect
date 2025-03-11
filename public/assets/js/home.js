@@ -89,7 +89,7 @@ document.addEventListener("DOMContentLoaded", function () {
             event.stopPropagation();
         });
     });
-
+});
  
     
     
@@ -555,5 +555,3 @@ document.addEventListener("DOMContentLoaded", function () {
             deleteModal.style.display = 'none';
         }
     });
-
-});

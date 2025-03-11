@@ -1,4 +1,3 @@
-document.addEventListener('DOMContentLoaded', function () {
     function shareOnFacebook(contentId) {
         console.log('jhjhjh');
         const postUrl = encodeURIComponent(`${window.location.origin}/uploads/${contentId}`);
@@ -461,4 +460,3 @@ document.addEventListener('DOMContentLoaded', function () {
             deleteModal.style.display = 'none';
         }
     });
-});

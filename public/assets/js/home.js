@@ -1,8 +1,74 @@
-
-
-
 document.addEventListener('DOMContentLoaded', function () {
-    let lastScrollTop = 0;
+    function shareOnFacebook(contentId) {
+        console.log('jhjhjh');
+        const postUrl = encodeURIComponent(`${window.location.origin}/uploads/${contentId}`);
+        window.open(`https://www.facebook.com/sharer.php?u=${postUrl}`, '_blank');
+    }
+
+    function shareOnTwitter(contentId) {
+        const postUrl = encodeURIComponent(`${window.location.origin}/uploads/${contentId}`);
+        const postTitle = encodeURIComponent(document.title);
+        window.open(`https://twitter.com/intent/tweet?url=${postUrl}&text=${postTitle}`, '_blank');
+    }
+
+    function shareOnLinkedIn(contentId) {
+        const postUrl = encodeURIComponent(`${window.location.origin}/uploads/${contentId}`);
+        const postTitle = encodeURIComponent(document.title);
+        window.open(`https://www.linkedin.com/shareArticle?mini=true&url=${postUrl}&title=${postTitle}`, '_blank');
+    }
+
+    function shareOnWhatsApp(contentId) {
+        const postUrl = encodeURIComponent(`${window.location.origin}/uploads/${contentId}`);
+        const postTitle = encodeURIComponent(document.title);
+        window.open(`https://api.whatsapp.com/send?text=${postTitle} ${postUrl}`, '_blank');
+    }
+
+    function showModal(message) {
+        const modal = document.getElementById('customModal');
+        if (!modal) {
+            console.error("Modal element not found");
+            return;
+        }
+
+        const modalContent = modal.querySelector('.modal-content');
+        const modalMessage = modal.querySelector('#modalMessage');
+        const closeButton = modal.querySelector('#closeModal');
+
+        if (!modalContent || !modalMessage || !closeButton) {
+            console.error("One or more modal elements not found");
+            return;
+        }
+
+        modalMessage.textContent = message;
+        modal.style.display = 'block';
+
+        closeButton.onclick = function () {
+            modal.style.display = 'none';
+        };
+
+        modal.onclick = function (event) {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        };
+
+        modalContent.onclick = function (event) {
+            event.stopPropagation();
+        };
+    }
+
+    function copyLink(contentId) {
+        const link = `${window.location.origin}/content/${contentId}`;
+
+        navigator.clipboard.writeText(link)
+            .then(() => {
+                showCopyMessage(contentId);
+            })
+            .catch((err) => {
+                alert('La copie n’est pas supportée sur ce navigateur.');
+                console.error('Erreur lors de la copie :', err);
+            });
+    }    let lastScrollTop = 0;
     const header = document.querySelector('.headerRes');
 
     window.addEventListener("scroll", function () {
@@ -77,75 +143,7 @@ document.addEventListener('DOMContentLoaded', function () {
         };
     }
 
-    function shareOnFacebook(contentId) {
-        const postUrl = encodeURIComponent(`${window.location.origin}/uploads/${contentId}`);
-        window.open(`https://www.facebook.com/sharer.php?u=${postUrl}`, '_blank');
-    }
 
-    function shareOnTwitter(contentId) {
-        const postUrl = encodeURIComponent(`${window.location.origin}/uploads/${contentId}`);
-        const postTitle = encodeURIComponent(document.title);
-        window.open(`https://twitter.com/intent/tweet?url=${postUrl}&text=${postTitle}`, '_blank');
-    }
-
-    function shareOnLinkedIn(contentId) {
-        const postUrl = encodeURIComponent(`${window.location.origin}/uploads/${contentId}`);
-        const postTitle = encodeURIComponent(document.title);
-        window.open(`https://www.linkedin.com/shareArticle?mini=true&url=${postUrl}&title=${postTitle}`, '_blank');
-    }
-
-    function shareOnWhatsApp(contentId) {
-        const postUrl = encodeURIComponent(`${window.location.origin}/uploads/${contentId}`);
-        const postTitle = encodeURIComponent(document.title);
-        window.open(`https://api.whatsapp.com/send?text=${postTitle} ${postUrl}`, '_blank');
-    }
-
-    function showModal(message) {
-        const modal = document.getElementById('customModal');
-        if (!modal) {
-            console.error("Modal element not found");
-            return;
-        }
-
-        const modalContent = modal.querySelector('.modal-content');
-        const modalMessage = modal.querySelector('#modalMessage');
-        const closeButton = modal.querySelector('#closeModal');
-
-        if (!modalContent || !modalMessage || !closeButton) {
-            console.error("One or more modal elements not found");
-            return;
-        }
-
-        modalMessage.textContent = message;
-        modal.style.display = 'block';
-
-        closeButton.onclick = function () {
-            modal.style.display = 'none';
-        };
-
-        modal.onclick = function (event) {
-            if (event.target === modal) {
-                modal.style.display = 'none';
-            }
-        };
-
-        modalContent.onclick = function (event) {
-            event.stopPropagation();
-        };
-    }
-
-    function copyLink(contentId) {
-        const link = `${window.location.origin}/content/${contentId}`;
-
-        navigator.clipboard.writeText(link)
-            .then(() => {
-                showCopyMessage(contentId);
-            })
-            .catch((err) => {
-                alert('La copie n’est pas supportée sur ce navigateur.');
-                console.error('Erreur lors de la copie :', err);
-            });
-    }
 
     function showCopyMessage(contentId) {
         const messageId = `copyMessage-${contentId}`;

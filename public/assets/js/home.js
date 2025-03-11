@@ -1,3 +1,98 @@
+document.addEventListener("DOMContentLoaded", function () {
+    const videos = document.querySelectorAll(".video");
+
+    function checkVisibility() {
+        videos.forEach(video => {
+            const rect = video.getBoundingClientRect();
+            const halfVisible = rect.top < window.innerHeight / 2 && rect.bottom > window.innerHeight / 2;
+
+            if (halfVisible) {
+                video.play();
+            } else {
+                video.pause();
+            }
+        });
+    }
+
+    window.addEventListener("scroll", checkVisibility);
+    checkVisibility();
+
+    videos.forEach(video => {
+        let touchStartY = 0;
+        let touchEndY = 0;
+        
+        video.dataset.userMuted = video.muted; 
+
+        function enterFullscreen() {
+            video.dataset.userMuted = video.muted; 
+
+            if (video.requestFullscreen) {
+                video.requestFullscreen();
+            } else if (video.webkitRequestFullscreen) {
+                video.webkitRequestFullscreen();
+            } else if (video.msRequestFullscreen) {
+                video.msRequestFullscreen();
+            }
+
+            video.muted = false;
+            video.volume = 1;
+        }
+
+        function exitFullscreen() {
+            if (document.fullscreenElement || document.webkitFullscreenElement) {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+            }
+
+            video.muted = (video.dataset.userMuted === "true");
+            setTimeout(checkVisibility, 500);
+        }
+
+        video.addEventListener("click", function () {
+            enterFullscreen();
+        });
+
+        video.addEventListener("dblclick", function () {
+            enterFullscreen();
+        });
+
+        document.addEventListener("fullscreenchange", function () {
+            if (!document.fullscreenElement) {
+                exitFullscreen();
+            }
+        });
+
+        video.addEventListener("touchstart", function (event) {
+            touchStartY = event.touches[0].clientY;
+        });
+
+        video.addEventListener("touchmove", function (event) {
+            touchEndY = event.touches[0].clientY;
+            if (touchEndY - touchStartY > 50) {
+                exitFullscreen();
+            }
+        });
+    });
+
+    document.querySelectorAll(".mute-btn").forEach(button => {
+        button.addEventListener("click", function (event) {
+            let video = this.closest(".video-container").querySelector(".video");
+
+            video.muted = !video.muted;
+            video.dataset.userMuted = video.muted.toString(); 
+
+            event.stopPropagation();
+        });
+    });
+
+ 
+    
+    
     function shareOnFacebook(contentId) {
         console.log('jhjhjh');
         const postUrl = encodeURIComponent(`${window.location.origin}/uploads/${contentId}`);
@@ -460,3 +555,5 @@
             deleteModal.style.display = 'none';
         }
     });
+
+});
